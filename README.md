@@ -1,4 +1,4 @@
-T1APICore-Python
+T1ClientLibrary-Python
 ================
 
 Python implementation of a T1 API Library.
