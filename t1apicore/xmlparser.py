@@ -6,17 +6,17 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-myobject = {
-	'entity_count': 594,
-	'entities': self.entities,
-	'status_code': self.status_code
-}
+# myobject = {
+# 	'entity_count': 594,
+# 	'entities': self.entities,
+# 	'status_code': self.status_code
+# }
 
 try:
 	import xml.etree.cElementTree as ET
 except ImportError:
 	import xml.etree.ElementTree as ET
-from . import t1error
+import t1error
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
@@ -53,7 +53,7 @@ class T1XMLParser(object):
 			pass
 		elif status_code == 'not_found':
 			self.status_code = False
-			raise t1error.T1NotFoundError(status_code, text)
+			raise t1error.T1NotFoundError(status_code, message)
 		pass
 	
 	def dictify_entity(self, entity):

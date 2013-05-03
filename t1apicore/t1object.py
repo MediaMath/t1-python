@@ -6,12 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+from __future__ import division
 from datetime import datetime
 from math import ceil
 from sys import version_info
-from . import t1connection
-if version_info.major < 3:
-	from __future__ import division
+import t1connection
 pass
 
 class T1Object(t1connection.T1Connection):

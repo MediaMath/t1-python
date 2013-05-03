@@ -14,8 +14,8 @@ try:
 except ImportError:
 	import pickle
 import requests
-from requests.utils import dict_from_cookiejar, cookiejar_from_dict
-from .xmlparser import T1XMLParser, T1RawParse
+from requests.utils import dict_from_cookiejar#, cookiejar_from_dict
+import xmlparser
 
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
 T1NOWTIME = lambda: int(time())
@@ -36,7 +36,7 @@ class T1LoginError(T1LoginException):
 		self.message = message
 		self.credentials = credentials
 	def __str__(self):
-		return repr(self.code.capitalize() + ": " + self.message + ' -- ' + credentials)
+		return repr(self.code.capitalize() + ": " + self.message + ' -- ' + self.credentials)
 
 class T1Connection(object):
 	"""docstring for T1Connection"""
@@ -53,7 +53,7 @@ class T1Connection(object):
 		# Test connection by getting the session data and checking the status code
 		session_response = self.adama_session.get(self.api_base + '/session', stream=True,
 												params={'nowTime': T1NOWTIME()})
-		session_check = T1RawParse(session_response.raw)
+		session_check = xmlparser.T1RawParse(session_response.raw)
 		status_code = session_check.find('status').get('code')
 		if status_code == 'ok':
 			self.active = True
@@ -66,11 +66,11 @@ class T1Connection(object):
 	
 	def open_connection(self):
 		"""This is used to log in"""
-		credentials = {'user': self.config['username'], 
-						'password': self.config['password'])
+		credentials = {'user': self.config['username'],
+						'password': self.config['password']}
 		login_response = self.adama_session.post(self.api_base + '/login',
 												params=credentials, stream=True)
-		result = T1RawParse(login_response.raw)
+		result = xmlparser.T1RawParse(login_response.raw)
 		status_code = result.find('status').get('code')
 		if status_code == 'ok':
 			return None
@@ -83,6 +83,9 @@ class T1Connection(object):
 											'cookie_path'])
 		with open(configfile) as f:
 			config = json.load(f)
+		for field in required_config_fields:
+			if field not in config:
+				raise T1LoginException('Invalid config')
 		return config
 
 	def _get(self, url, params=None):
@@ -90,9 +93,9 @@ class T1Connection(object):
 		if not self.active:
 			self.open_connection()
 		response = self.adama_session.get(url, params=params, stream=True)
-		result = T1XMLParser(response)
-		# return result.attribs
+		result = xmlparser.T1XMLParser(response)
 		pass
+		return result.attribs
 	
 	def _post(self, url, data):
 		"""Base method for subclasses to call."""
@@ -101,9 +104,9 @@ class T1Connection(object):
 		if not self.active:
 			self.open_connection()
 		response = self.adama_session.post(url, data=data, stream=True)
-		result = T1XMLParser(response)
-		# return result.attribs
+		result = xmlparser.T1XMLParser(response)
 		pass
+		return result.attribs
 	pass
 
 pass
