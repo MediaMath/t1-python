@@ -19,8 +19,9 @@ from requests.utils import dict_from_cookiejar, cookiejar_from_dict
 import xmlparser
 
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
-T1_API_ENV = 'production'
+# T1_API_ENV = 'production'
 
+# xmlparser imports t1error so don't want to import it here too
 class T1LoginException(Exception):
 	"""Base Exception for T1LoginError."""
 	pass
