@@ -16,7 +16,7 @@ pass
 class T1Object(t1connection.T1Connection):
 	"""Mainly a superclass for all the various T1 Objects."""
 	def __init__(self):
-		# super(T1Object, self).__init__()
+		super(T1Object, self).__init__()
 		# dttp = datetime # DateTimeTyPe
 		self.dttp = lambda ti: datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
 		self.dttf = lambda ti: datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
@@ -76,7 +76,7 @@ class T1Object(t1connection.T1Connection):
 				params['page_offset'] = 100*page
 				next_page = self._get(url, params=params)
 				t1_object['entities'].extend(next_page['entities'])
-		# return t1_object
+		return t1_object
 		pass
 	
 	def new_entity(self, collection, data):

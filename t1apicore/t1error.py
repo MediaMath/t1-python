@@ -28,7 +28,7 @@ KNOWN_CODES = {'ok': None, 'auth_required': 'Authentication Required',
 class Error(Exception):
 	pass
 
-class T1Error(object):
+class T1Error(Error):
 	"""docstring for T1Error"""
 	def __init__(self, code, message):
 		# super(T1Error, self).__init__()

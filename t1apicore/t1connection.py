@@ -6,19 +6,19 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
-from time import time
 # import contextlib
 import json
+from os.path import getsize, isfile
+from time import time
 try:
 	import cPickle as pickle
 except ImportError:
 	import pickle
 import requests
-from requests.utils import dict_from_cookiejar#, cookiejar_from_dict
+from requests.utils import dict_from_cookiejar, cookiejar_from_dict
 import xmlparser
 
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
-T1NOWTIME = lambda: int(time())
 T1_API_ENV = 'production'
 
 class T1LoginException(Exception):
@@ -45,24 +45,34 @@ class T1Connection(object):
 		self.config = self.load_config('t1api.{}.json'.format(environment if environment 
 															in T1Connection.VALID_ENVS else 'sandbox'))
 		# super(T1Connection, self).__init__()
-		self.cookie_file = self.config['cookie_path']
+		self.t1nowtime = lambda: int(time())
 		self.adama_session = requests.Session()
-		with open(self.cookie_file) as f:
-			self.adama_session.cookies = pickle.load(f)
+		self.cookie_file = self.config['cookie_path']
+		if isfile(self.cookie_file) and getsize(self.cookie_file) > 0:
+			with open(self.cookie_file) as f:
+				self.adama_session.cookies = cookiejar_from_dict(pickle.load(f))
 		self.api_base = 'https://' + self.config['base_uri']
 		# Test connection by getting the session data and checking the status code
-		session_response = self.adama_session.get(self.api_base + '/session', stream=True,
-												params={'nowTime': T1NOWTIME()})
-		session_check = xmlparser.T1RawParse(session_response.raw)
+		if not hasattr(self, 'active'):
+			self.check_session()
+		elif not self.active:
+			self.check_session()
+	
+	def check_session(self):
+		response = self.adama_session.get(self.api_base + '/session', stream=True,
+											params={'nowTime': self.t1nowtime()})
+		session_check = xmlparser.T1RawParse(response.raw)
 		status_code = session_check.find('status').get('code')
 		if status_code == 'ok':
 			self.active = True
 		elif status_code == 'auth_required':
+			# if isfile(self.cookie_file) and getsize(self.cookie_file) > 0:
+			# 	with open(self.cookie_file) as f:
+			# 		self.adama_session.cookies = cookiejar_from_dict(pickle.load(f))
 			self.open_connection()
 			self.active = True
-		with open(self.cookie_file, 'w') as f:
-			pickle.dump(dict_from_cookiejar(self.adama_session.cookies), f)
-		pass
+			with open(self.cookie_file, 'w') as f:
+				pickle.dump(dict_from_cookiejar(self.adama_session.cookies), f)
 	
 	def open_connection(self):
 		"""This is used to log in"""
@@ -92,8 +102,13 @@ class T1Connection(object):
 		"""Base method for subclasses to call."""
 		if not self.active:
 			self.open_connection()
-		response = self.adama_session.get(url, params=params, stream=True)
-		result = xmlparser.T1XMLParser(response)
+		while True:
+			try:
+				response = self.adama_session.get(url, params=params, stream=True)
+				result = xmlparser.T1XMLParser(response.raw)
+				break
+			except xmlparser.T1Error:
+				self.check_session()
 		pass
 		return result.attribs
 	
@@ -103,8 +118,13 @@ class T1Connection(object):
 			raise requests.exceptions.RequestException('No POST data.')
 		if not self.active:
 			self.open_connection()
-		response = self.adama_session.post(url, data=data, stream=True)
-		result = xmlparser.T1XMLParser(response)
+		while True:
+			try:
+				response = self.adama_session.post(url, data=data, stream=True)
+				result = xmlparser.T1XMLParser(response.raw)
+				break
+			except xmlparser.T1Error:
+				self.check_session()
 		pass
 		return result.attribs
 	pass

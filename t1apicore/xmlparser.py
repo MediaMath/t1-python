@@ -16,7 +16,7 @@ try:
 	import xml.etree.cElementTree as ET
 except ImportError:
 	import xml.etree.ElementTree as ET
-import t1error
+from t1error import *
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
@@ -47,13 +47,13 @@ class T1XMLParser(object):
 			return True # Assumes using self.status_code = self.get_status(result)
 		elif status_code == 'auth_required':
 			self.status_code = False
-			raise t1error.T1Error(status_code, 'Authentication required')
+			raise T1Error(status_code, 'Authentication required')
 		elif status_code == 'invalid':
 			# Aggregate all the errors, then raise T1Exception/T1Error
 			pass
 		elif status_code == 'not_found':
 			self.status_code = False
-			raise t1error.T1NotFoundError(status_code, message)
+			raise T1NotFoundError(status_code, message)
 		pass
 	
 	def dictify_entity(self, entity):

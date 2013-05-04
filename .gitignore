@@ -1,5 +1,5 @@
 # Credentials file
-t1apicore/t1api.production.json
+t1apicore/t1api.*.json
 
 *.py[cod]
 
