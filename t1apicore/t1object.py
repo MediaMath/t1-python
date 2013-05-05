@@ -46,6 +46,15 @@ class T1Object(t1connection.T1Connection):
 		# Get attribute default values?
 	pass
 	
+	def valid_id(self, id_):
+		try:
+			int(id_)
+		except (ValueError, TypeError):
+			return False
+		if id_ < 1:
+			return False
+		return True
+	
 	def get_entity_by_id(self, collection, entity_id):
 		"""Wrapper for _get that enforces type.
 		
@@ -62,16 +71,26 @@ class T1Object(t1connection.T1Connection):
 		entity = self._get(url)
 		pass
 	
-	def get_collection(self, collection, sort_by='id', full=False):
+	def get_collection(self, collection, sort_by='id', full=False, overload=False):
 		if collection not in self.t1_collections:
 			raise T1Error('Invalid collection.')
 		params = {'page_limit': 100, 'page_offset': 0, 'sort_by': sort_by}
-		if full:
+		if full is True:
 			params['full'] = collection[:-1]
+		elif isinstance(full, list):
+			params['full'] = ','.join(full)
 		url = '/'.join([self.api_base, collection])
 		t1_object = self._get(url, params=params)
 		count = t1_object['entity_count']
-		if count > 100:
+		if count > 1000 and not overload:
+			print 'There are %d entities in this collection.' % count
+			print('Only retrieving first thousand. If you\'re sure you want all '
+					'of them, re-call with "overload=True"')
+			for page in xrange(1, 10):
+				params['page_offset'] = 100*page
+				next_page = self._get(url, params=params)
+				t1_object['entities'].extend(next_page['entities'])
+		elif count > 100 or overload:
 			for page in xrange(1, int(ceil(count/100))):
 				params['page_offset'] = 100*page
 				next_page = self._get(url, params=params)
@@ -90,9 +109,7 @@ class T1Object(t1connection.T1Connection):
 	def update_entity(self, collection, data):
 		if collection not in self.t1_collections:
 			raise T1Error('Invalid collection.')
-		try:
-			myid = int(data['id'])
-		except (ValueError, TypeError):
+		if not self.valid_id(data['id']):
 			raise T1Error('Cannot update object without ID! Are you trying to create?')
 		url = '/'.join([self.api_base, collection, str(myid)])
 		data = self.validate_types(data)
@@ -112,6 +129,12 @@ class T1Object(t1connection.T1Connection):
 			proper_val = self.conversion_funcs[key](value)
 			data[key] = proper_val
 		return data
+	
+	def entity_history(self, collection, ent_id):
+		if collection not in self.t1_collections:
+			raise T1Error('Invalid collection.')
+		if not self.valid_id(ent_id):
+			raise T1Error('Valid entity ID not given')
 	
 	pass
 

@@ -16,28 +16,12 @@ except ImportError:
 	import pickle
 import requests
 from requests.utils import dict_from_cookiejar, cookiejar_from_dict
-import xmlparser
+from xmlparser import *
 
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
 # T1_API_ENV = 'production'
 
 # xmlparser imports t1error so don't want to import it here too
-class T1LoginException(Exception):
-	"""Base Exception for T1LoginError."""
-	pass
-class T1LoginError(T1LoginException):
-	"""Exception class for invalid T1 Logins. Returns details of invalid login.
-	
-	If you encounter this class, it's because there's an issue with your T1 login.
-	Logins are define in the config file, and need to be kept up-to-date.
-	"""
-	def __init__(self, code, message, credentials):
-		# super(T1LoginError, self).__init__()
-		self.code = code
-		self.message = message
-		self.credentials = credentials
-	def __str__(self):
-		return repr(self.code.capitalize() + ": " + self.message + ' -- ' + self.credentials)
 
 class T1Connection(object):
 	"""docstring for T1Connection"""
@@ -53,7 +37,6 @@ class T1Connection(object):
 			with open(self.cookie_file) as f:
 				self.adama_session.cookies = cookiejar_from_dict(pickle.load(f))
 		self.api_base = 'https://' + self.config['base_uri']
-		# Test connection by getting the session data and checking the status code
 		if not hasattr(self, 'active'):
 			self.check_session()
 		elif not self.active:
@@ -62,7 +45,7 @@ class T1Connection(object):
 	def check_session(self):
 		response = self.adama_session.get(self.api_base + '/session', stream=True,
 											params={'nowTime': self.t1nowtime()})
-		session_check = xmlparser.T1RawParse(response.raw)
+		session_check = T1RawParse(response.raw)
 		status_code = session_check.find('status').get('code')
 		if status_code == 'ok':
 			self.active = True
@@ -81,7 +64,7 @@ class T1Connection(object):
 						'password': self.config['password']}
 		login_response = self.adama_session.post(self.api_base + '/login',
 												params=credentials, stream=True)
-		result = xmlparser.T1RawParse(login_response.raw)
+		result = T1RawParse(login_response.raw)
 		status_code = result.find('status').get('code')
 		if status_code == 'ok':
 			return None
@@ -106,10 +89,12 @@ class T1Connection(object):
 		while True:
 			try:
 				response = self.adama_session.get(url, params=params, stream=True)
-				result = xmlparser.T1XMLParser(response.raw)
+				result = T1XMLParser(response.raw)
 				break
-			except xmlparser.T1Error:
+			except T1AuthenticationRequiredError:
 				self.check_session()
+			# except T1Error: # If xmlparser is going to raise it anyway, why re-raise it here?
+			# 	raise
 		pass
 		return result.attribs
 	
@@ -122,10 +107,12 @@ class T1Connection(object):
 		while True:
 			try:
 				response = self.adama_session.post(url, data=data, stream=True)
-				result = xmlparser.T1XMLParser(response.raw)
+				result = T1XMLParser(response.raw)
 				break
-			except xmlparser.T1Error:
+			except T1AuthenticationRequiredError:
 				self.check_session()
+			# except T1Error:
+			# 	raise
 		pass
 		return result.attribs
 	pass

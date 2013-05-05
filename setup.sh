@@ -13,14 +13,14 @@ install_requests() {
 			sudo easy_install requests
 		else
 			echo "Unable to install requests. Please install requests with pip or easy_install and try again."
-			exit
+			exit 1
 		fi
 	fi
 }
 
 if [[ $mypy < '2.6' ]]; then
 	echo "Too old for this library! This requires Python 2.6 or above."
-	exit
+	exit 1
 elif [[ $mypy > '2.9' ]]; then
 	#statements
 	echo "This supports Python 3! Making the necessary changes (xrange -> range, etc)...\n"
