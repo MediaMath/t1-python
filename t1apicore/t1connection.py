@@ -91,7 +91,7 @@ class T1Connection(object):
 				response = self.adama_session.get(url, params=params, stream=True)
 				result = T1XMLParser(response.raw)
 				break
-			except T1AuthenticationRequiredError:
+			except T1AuthRequiredError:
 				self.check_session()
 			# except T1Error: # If xmlparser is going to raise it anyway, why re-raise it here?
 			# 	raise
@@ -109,7 +109,7 @@ class T1Connection(object):
 				response = self.adama_session.post(url, data=data, stream=True)
 				result = T1XMLParser(response.raw)
 				break
-			except T1AuthenticationRequiredError:
+			except T1AuthRequiredError:
 				self.check_session()
 			# except T1Error:
 			# 	raise

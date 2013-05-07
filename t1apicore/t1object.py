@@ -6,18 +6,18 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from __future__ import division
+from __future__ import division, absolute_import
 from datetime import datetime
 from math import ceil
-from sys import version_info
-import t1connection
+from t1connection import *
 pass
 
-class T1Object(t1connection.T1Connection):
+class T1Object(T1Connection):
 	"""Mainly a superclass for all the various T1 Objects."""
 	def __init__(self):
 		super(T1Object, self).__init__()
 		# dttp = datetime # DateTimeTyPe
+		self.collection = None
 		self.dttp = lambda ti: datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
 		self.dttf = lambda ti: datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
 		self.bool_deffalse = lambda x: x if x in frozenset(['on', 'off']) else 'off'
@@ -61,19 +61,20 @@ class T1Object(t1connection.T1Connection):
 		banana
 		"""
 		if collection not in self.t1_collections:
-			raise T1Error('Invalid collection.')
+			raise T1ClientError('Invalid collection.')
 		try:
 			entity_id = int(entity_id)
 			assert entity_id != 0
 		except (ValueError, TypeError, AssertionError):
-			raise T1Error('Entity called is not a valid entity ID')
+			raise T1ClientError('Entity called is not a valid entity ID')
 		url = '/'.join([self.api_base, collection, entity_id])
 		entity = self._get(url)
+		return entity
 		pass
 	
 	def get_collection(self, collection, sort_by='id', full=False, overload=False):
 		if collection not in self.t1_collections:
-			raise T1Error('Invalid collection.')
+			raise T1ClientError('Invalid collection.')
 		params = {'page_limit': 100, 'page_offset': 0, 'sort_by': sort_by}
 		if full is True:
 			params['full'] = collection[:-1]
@@ -100,7 +101,7 @@ class T1Object(t1connection.T1Connection):
 	
 	def new_entity(self, collection, data):
 		if collection not in self.t1_collections:
-			raise T1Error('Invalid collection.')
+			raise T1ClientError('Invalid collection.')
 		data = self.validate_types(data)
 		url = '/'.join([self.api_base, collection])
 		entity = self._post(url, params=data)
@@ -108,10 +109,10 @@ class T1Object(t1connection.T1Connection):
 	
 	def update_entity(self, collection, data):
 		if collection not in self.t1_collections:
-			raise T1Error('Invalid collection.')
+			raise T1ClientError('Invalid collection.')
 		if not self.valid_id(data['id']):
-			raise T1Error('Cannot update object without ID! Are you trying to create?')
-		url = '/'.join([self.api_base, collection, str(myid)])
+			raise T1ClientError('Cannot update object without ID! Are you trying to create?')
+		url = '/'.join([self.api_base, collection, int(data['id'])])
 		data = self.validate_types(data)
 		if 'version' not in data:
 			version = self._get(url)['entities'][0]['version']
@@ -125,16 +126,18 @@ class T1Object(t1connection.T1Connection):
 				del data[attribute]
 		for key, value in data.copy().iteritems():
 			if key not in self.conversion_funcs:
-				raise T1Error('Unknown key: ' + key)
+				raise T1ClientError('Unknown key: ' + key)
 			proper_val = self.conversion_funcs[key](value)
 			data[key] = proper_val
 		return data
 	
 	def entity_history(self, collection, ent_id):
 		if collection not in self.t1_collections:
-			raise T1Error('Invalid collection.')
+			raise T1ClientError('Invalid collection.')
 		if not self.valid_id(ent_id):
-			raise T1Error('Valid entity ID not given')
+			raise T1ClientError('Valid entity ID not given')
+		url  = '/'.join([self.api_base, collection, str(ent_id), 'history'])
+		history = self._get(url)
+		return history
 	
 	pass
-
