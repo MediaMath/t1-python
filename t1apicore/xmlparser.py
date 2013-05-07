@@ -64,10 +64,15 @@ class T1XMLParser(object):
 			return True # Assumes using self.status_code = self.get_status(result)
 		elif status_code == 'auth_required':
 			self.status_code = False
-			raise T1AuthenticationRequredError(status_code, 'Authentication required')
+			raise T1AuthRequiredError(status_code, message)
 		elif status_code == 'invalid':
-			# Aggregate all the errors, then raise T1Exception/T1Error
-			pass
+			errors = {}
+			for error in xmlresult.iter('field-error'):
+				attribs = error.attrib
+				errors[attribs['name']] = {'code': attribs['code'],
+											'error': attribs['error']}
+			self.status_code = False
+			raise T1ValidationError(staus_code, errors)
 		elif status_code == 'not_found':
 			self.status_code = False
 			raise T1NotFoundError(status_code, message)

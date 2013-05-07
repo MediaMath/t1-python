@@ -12,38 +12,50 @@ KNOWN_CODES = {'ok': None, 'auth_required': 'Authentication Required',
 # auth_required also has 'reason': 'not_logged_in'. Incorrect auths get 'invalid': 'Login Incorrect'
 
 class T1BaseException(Exception):
-	"""docstring for T1Exception"""
+	"""Base Exception for the module"""
 	pass
 
-class T1Error(T1BaseException):
-	"""docstring for T1Error"""
+class T1ClientError(T1BaseException):
+	"""Used for improper usages of the module.
+	
+	Improper usage includes attempting to retrieve a collection not in T1,
+	attempting to send data that doesn't match an API object, etc.
+	"""
+	pass
+
+class T1APIError(T1BaseException):
+	"""Base class that includes error code and message.
+	
+	Takes two arguments (minus self), the API error code and message. This allows
+	for the Exception to include both args.
+	"""
 	def __init__(self, code, message):
-		# super(T1Error, self).__init__()
 		self.code = code
 		self.message = message
-		pass
-	pass
+	def __str__(self):
+		return repr("{}: {}".format(self.code, self.message))
 
-class T1AuthenticationRequiredError(T1BaseException):
+class T1Error(T1APIError):
+	"""docstring for T1Error"""
+	def __str__(self):
+		return repr('Uknown error: {}: {}'.format(self.code, self.message))
+
+class T1AuthRequiredError(T1APIError):
 	"""docstring for T1AuthenticationRequired"""
 	pass
 
-class T1ValidationError(T1BaseException):
+class T1ValidationError(T1APIError):
 	"""docstring for T1ValidationError"""
-	def __init__(self, code, message):
-		# super(T1ValidationError, self).__init__()
-		self.code = code
-		self.message = message
-		pass
-	pass
+	def __init__(self, code, errors):
+		msg_list = ['{} (code: {}): {}'.format(error, val['code'], val['error'])
+			for (error, val) in errors.iteritems()]
+		messages = [code] + msg_list
+		self.message = '\n'.join(messages)
+	def __str__(self):
+		return self.message
 
-class T1NotFoundError(T1BaseException):
+class T1NotFoundError(T1APIError):
 	"""docstring for T1NotFoundError"""
-	def __init__(self, code, message):
-		# super(T1NotFoundError, self).__init__()
-		self.code = code
-		self.message = message
-		pass
 	pass
 
 class T1LoginError(T1BaseException):
@@ -53,9 +65,9 @@ class T1LoginError(T1BaseException):
 	Logins are defined in the config file, and need to be kept up-to-date.
 	"""
 	def __init__(self, code, message, credentials):
-		# super(T1LoginError, self).__init__()
 		self.code = code
 		self.message = message
 		self.credentials = credentials
 	def __str__(self):
-		return repr(self.code.capitalize() + ": " + self.message + ' -- ' + self.credentials)
+		return repr('{}: {} -- {}'.format(self.code, self.message,
+											self.credentials))
