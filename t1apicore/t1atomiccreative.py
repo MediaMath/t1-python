@@ -13,6 +13,7 @@ class T1AtomicCreative(T1Object):
 	"""docstring for T1AtomicCreative"""
 	def __init__(self):
 		super(T1AtomicCreative, self).__init__()
+		self.collection = 'atomic_creatives'
 		self.writeable_attributes = {}
 		# MORE ATTRIBUTES INCOMING??
 		pass
