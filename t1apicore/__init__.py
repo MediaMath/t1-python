@@ -5,8 +5,7 @@ to parse it.
 """
 
 __author__ = 'Prasanna Swaminathan'
-__copyright__ = 'Copyright 2013, MediaMath'
-__credits__ = ['Ben Donohue', 'Peter Schwartz', 'Daniel Tyner-Bryan', 'Amalia Viti']
+__copyright__ = 'Copyright 2013, Prasanna Swaminathan'
 __version__ = '0.1.0'
 __maintainer__ = 'Prasanna Swaminathan'
 __email__ = 'pswaminathan@mediamath.com'
