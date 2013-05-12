@@ -14,24 +14,19 @@ class T1AtomicCreative(T1Object):
 	def __init__(self):
 		super(T1AtomicCreative, self).__init__()
 		self.collection = 'atomic_creatives'
-		self.writeable_attributes = {}
-		# MORE ATTRIBUTES INCOMING??
-		pass
+		self._readonly.update({'t1as'})
+		self._types.update({'advertiser_id': int, 'concept_id': int,
+			'external_identifier': str, 'file_type': str, 'tag_type': str,
+			'width': int, 'height': int, 'is_https': str, 'has_sound': str,
+			'is_multi_creative': str, 'ad_server_type': int, 'tag': str,
+			'tpas_ad_tag_name': str, 'edited_tag': str, 'tpas_ad_tag': str})
 		
-		self.attribute_types = {'id': int, 'version': int, 'name': str, 'build_date': datetime,
-			'created_on': datetime, 'updated_on': datetime, 'last_modified': datetime,
-			'advertiser_id': int, 'concept_id': int, 'external_identifier': str,
-			'file_type': str, 'tag_type': str, 'width': int, 'height': int,
-			'is_https': str, 'has_sound': str, 'is_multi_creative': str,
-			'ad_server_type': int, 'tag': str, 'tpas_ad_tag_name': str, 'status': str}
-		
-		self.conversion_funcs = {'id': int, 'version': int, 'name': str, 'build_date': self.dttp,
-			'created_on': self.dttp, 'updated_on': self.dttp, 'last_modified': self.dttp,
-			'advertiser_id': int, 'concept_id': int, 'external_identifier': str,
-			'file_type': lambda x: x if str(x).lower() in frozenset(['gif', 'jpg', 'swf', 'unknown']) else 'unknown',
-			'tag_type': lambda x: x if str(x).upper() in frozenset(['SCRIPT', 'IFRAME', 'NOSCRIPT']) else 'NOSCRIPT',
-			'width': int, 'height': int, 'is_https': self.bool_deffalse,
-			'has_sound': self.bool_deffalse, 'is_multi_creative': self.bool_deffalse,
-			'ad_server_type': int, 'tag': str, 'tpas_ad_tag_name': str, 'status': self.bool_deftrue}
+		self._convert.update({'advertiser_id': int, 'concept_id': int,
+			'file_type': lambda x: x if str(x) in frozenset(['gif', 'jpg', 'swf', 'unknown']) else 'unknown',
+			'tag_type': lambda x: x if str(x) in frozenset(['SCRIPT', 'IFRAME', 'NOSCRIPT']) else 'NOSCRIPT',
+			'width': int, 'height': int, 'is_https': self._bool_deffalse, 'external_identifier': str,
+			'has_sound': self._bool_deffalse, 'is_multi_creative': self._bool_deffalse,
+			'ad_server_type': int, 'tag': str, 'tpas_ad_tag_name': str,
+			'edited_tag': str, 'tpas_ad_tag': str})
 		
 		pass
