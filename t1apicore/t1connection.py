@@ -50,9 +50,6 @@ class T1Connection(object):
 		if status_code == 'ok':
 			self.active = True
 		elif status_code == 'auth_required':
-			# if isfile(self.cookie_file) and getsize(self.cookie_file) > 0:
-			# 	with open(self.cookie_file) as f:
-			# 		self.adama_session.cookies = cookiejar_from_dict(pickle.load(f))
 			self.open_connection()
 			self.active = True
 			with open(self.cookie_file, 'w') as f:
