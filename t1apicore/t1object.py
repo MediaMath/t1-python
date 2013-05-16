@@ -21,54 +21,66 @@ class T1Object(T1Connection):
 			'strategy_day_parts', 'users'])
 	def __init__(self):
 		super(T1Object, self).__init__()
-		# dttp = datetime # DateTimeTyPe
 		self.collection = None
 		self._writable = {'version', 'status'} # defined for all objects
-		
+		self._type = self._valid_enum(map(self._singular, T1Object.t1_collections), None)
 		self._readonly = {'id', 'build_date',' created_on', 'type',
 							'updated_on', 'last_modified'}
 		
 		self._types = {'id': int, 'version': int, 'build_date': datetime,
 			'created_on': datetime, 'updated_on': datetime, 'last_modified': datetime,
-			'status': str, 'name': str}
+			'status': str, 'name': str, 'type': str}
 		
 		self._convert = {'id': int, 'version': int, 'build_date': self._strpt,
 			'created_on': self._strpt, 'updated_on': self._strpt, 'last_modified': self._strpt,
-			'status': self._bool_deftrue, 'name': str}
+			'status': self._bool_deftrue, 'name': str, 'type': self._type}
 		
 		pass
 		# Get attribute definitions?
 		# Get attribute default values?
 	pass
 	
+	def _singular(self, collection):
+		return collection[:-1]
+	def _int_to_bool(self, value):
+		return bool(int(value))
+	def _bool_to_int(self, value):
+		return int(bool(value)) # int(True) = 1 and vice-versa
+	def _valid_enum(self, all_vars, default):
+		def get_value(test_value):
+			if test_value in all_vars:
+				return test_value
+			else:
+				return default
+		return get_value
 	def _strpt(self, ti):
 		return datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
-	
 	def _strft(self, ti):
 		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
-	
 	def _bool_deffalse(self, x, comp=frozenset(['on', 'off'])):
 		if x in comp:
 			return x
-		return 'off'
+		else:
+			return 'off'
 	def _bool_deftrue(self, x, comp=frozenset(['on', 'off'])):
 		if x in comp:
 			return x
-		return 'on'
-	
+		else:
+			return 'on'
 	def _valid_id(self, id_):
 		try:
-			int(id_)
+			myid = int(id_)
 		except (ValueError, TypeError):
 			return False
-		if id_ < 1:
+		if myid < 1:
 			return False
-		return True
-	
-	def _validate_types(self, data):
-		for attribute in data.copy():
-			if attribute in self._readonly:
-				del data[attribute]
+		else:
+			return True
+	def _validate_types(self, data, write=False):
+		if write:
+			for attribute in data.copy():
+				if attribute in self._readonly:
+					del data[attribute]
 		for key, value in data.copy().iteritems():
 			if key not in self._convert:
 				raise T1ClientError('Unknown key: ' + key)
@@ -92,7 +104,10 @@ class T1Object(T1Connection):
 			raise T1ClientError('Entity called is not a valid entity ID')
 		url = '/'.join([self.api_base, collection, entity_id])
 		entity = self._get(url)
-		pass
+		entity = map(self._validate_types, entity['entities'])
+		# for index, ent in enumerate(entity['entities']):
+		# 	for key, value in ent.iteritems():
+		# 		entity['entities'][index][key] = 
 		return entity
 	
 	def get_all(self, collection=None, sort_by='id', full=False, overload=False):
@@ -111,7 +126,7 @@ class T1Object(T1Connection):
 		if count > 1000 and not overload:
 			print 'There are %d entities in this collection.' % count
 			print('Only retrieving first thousand. If you\'re sure you want all '
-					'of them, re-call with "overload set to True"')
+					'of them, re-call with "overload" set to True')
 			for page in xrange(1, 10):
 				params['page_offset'] = 100*page
 				next_page = self._get(url, params=params)
@@ -121,7 +136,7 @@ class T1Object(T1Connection):
 				params['page_offset'] = 100*page
 				next_page = self._get(url, params=params)
 				t1_object['entities'].extend(next_page['entities'])
-		pass
+		t1_object = map(self._validate_types, t1_object['entities'])
 		return t1_object
 	
 	def limit(self, relation, relation_id, collection=None, sort_by='id',
