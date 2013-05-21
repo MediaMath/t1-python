@@ -32,42 +32,12 @@ class T1Connection(object):
 		# super(T1Connection, self).__init__()
 		self.t1nowtime = lambda: int(time())
 		self.adama_session = requests.Session()
-		self.cookie_file = self.config['cookie_path']
-		if isfile(self.cookie_file) and getsize(self.cookie_file) > 0:
-			with open(self.cookie_file) as f:
-				self.adama_session.cookies = cookiejar_from_dict(pickle.load(f))
 		self.api_base = 'https://' + self.config['base_uri']
-		if not hasattr(self, 'active'):
-			self.check_session()
-		elif not self.active:
-			self.check_session()
-	
-	def check_session(self):
-		response = self.adama_session.get(self.api_base + '/session', stream=True,
-											params={'nowTime': self.t1nowtime()})
-		session_check = T1RawParse(response.raw)
-		status_code = session_check.find('status').get('code')
-		if status_code == 'ok':
-			self.active = True
-		elif status_code == 'auth_required':
-			self.open_connection()
-			self.active = True
-			with open(self.cookie_file, 'w') as f:
-				pickle.dump(dict_from_cookiejar(self.adama_session.cookies), f)
-	
-	def open_connection(self):
-		"""This is used to log in"""
-		credentials = {'user': self.config['username'],
-						'password': self.config['password']}
-		login_response = self.adama_session.post(self.api_base + '/login',
-												params=credentials, stream=True)
-		result = T1RawParse(login_response.raw)
-		status_code = result.find('status').get('code')
-		if status_code == 'ok':
-			return None
-		elif status_code == 'invalid' or status_code == 'auth_error':
-			raise T1LoginError(status_code, result.find('status').text, credentials)
-		pass
+		if self.config.get('api_key'):
+			authuser = '{}|{}'.format(self.config['username'], self.config['api_key'])
+		else:
+			authuser = self.config['username']
+		self.auth = (authuser, self.config['password'])
 	
 	def load_config(self, configfile):
 		required_config_fields = frozenset(['username', 'password', 'base_uri',
@@ -81,35 +51,29 @@ class T1Connection(object):
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""
-		if not self.active:
-			self.open_connection()
-		while True:
-			try:
-				response = self.adama_session.get(url, params=params, stream=True)
-				result = T1XMLParser(response.raw)
-				break
-			except T1AuthRequiredError:
-				self.check_session()
-			# except T1Error: # If xmlparser is going to raise it anyway, why re-raise it here?
-			# 	raise
+		try:
+			response = self.adama_session.get(url, params=params,
+							auth=self.auth, stream=True)
+			result = T1XMLParser(response.raw)
+		except T1AuthRequiredError as e:
+			print('Your T1 credentials appear to be incorrect. '
+					'Please check your configuration.')
+			raise
 		pass
 		return result.attribs
 	
 	def _post(self, url, data):
 		"""Base method for subclasses to call."""
 		if not data:
-			raise requests.exceptions.RequestException('No POST data.')
-		if not self.active:
-			self.open_connection()
-		while True:
-			try:
-				response = self.adama_session.post(url, data=data, stream=True)
-				result = T1XMLParser(response.raw)
-				break
-			except T1AuthRequiredError:
-				self.check_session()
-			# except T1Error:
-			# 	raise
+			raise T1ClientError('No POST data.')
+		try:
+			response = self.adama_session.post(url, data=data,
+							auth=self.auth, stream=True)
+			result = T1XMLParser(response.raw)
+		except T1AuthRequiredError as e:
+			print('Your T1 credentials appear to be incorrect. '
+					'Please check your configuration.')
+			raise
 		pass
 		return result.attribs
 	pass
