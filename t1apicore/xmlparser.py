@@ -30,10 +30,8 @@ from t1error import *
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
-	def __init__(self, response):
-		# super(T1XMLParser, self).__init__()
-		# self.response = response
-		result = ET.parse(response)
+	def __init__(self, raw_response):
+		result = ET.parse(raw_response)
 		self.status_code = self.get_status(result)
 		dictify_entity = self.dictify_entity
 		xiter = result.iter
@@ -62,9 +60,6 @@ class T1XMLParser(object):
 		message = xmlresult.find('status').text
 		if status_code == 'ok':
 			return True # Assumes using self.status_code = self.get_status(result)
-		elif status_code == 'auth_required':
-			self.status_code = False
-			raise T1AuthRequiredError(status_code, message)
 		elif status_code == 'invalid':
 			errors = {}
 			for error in xmlresult.iter('field-error'):
@@ -76,6 +71,9 @@ class T1XMLParser(object):
 		elif status_code == 'not_found':
 			self.status_code = False
 			raise T1NotFoundError(status_code, message)
+		elif status_code == 'auth_required':
+			self.status_code = False
+			raise T1AuthRequiredError(status_code, message)
 		pass
 	
 	def dictify_entity(self, entity):
@@ -96,7 +94,7 @@ class T1XMLParser(object):
 		
 	pass
 
-def T1RawParse(response):
+def T1RawParse(raw_response):
 	"""Raw access to ET parsing.
 	
 	Argument should be a raw HTTP Response object -- from requests, this means
@@ -107,4 +105,4 @@ def T1RawParse(response):
 	importing it. This lets All the XML parsing happen here, while the rest of the 
 	library can use it freely.
 	"""
-	return ET.parse(response)
+	return ET.parse(raw_response)
