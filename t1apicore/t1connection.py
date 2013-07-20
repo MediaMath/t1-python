@@ -26,7 +26,7 @@ from xmlparser import *
 class T1Connection(object):
 	"""docstring for T1Connection"""
 	VALID_ENVS = frozenset(['production', 'sandbox'])
-	def __init__(self, environment='sandbox'):
+	def __init__(self, environment='production'):
 		self.config = self.load_config('t1api.{}.json'.format(environment if environment 
 															in T1Connection.VALID_ENVS else 'sandbox'))
 		# super(T1Connection, self).__init__()
