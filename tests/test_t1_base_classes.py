@@ -7,7 +7,7 @@ class TestT1Login(unittest.TestCase):
 	def test_correct_login_works(self):
 		pass
 	
-	def test_incorrect_login_raises_erorr(self):
+	def test_incorrect_login_raises_error(self):
 		pass
 	
 	def test_no_data_fails(self):
