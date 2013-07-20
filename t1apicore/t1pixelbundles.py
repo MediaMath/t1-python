@@ -16,19 +16,44 @@ class T1PixelBundles(T1Object):
 		del self._types['status']
 		del self._convert['status']
 		self.collection = 'pixel_bundles'
-		self.data_only = {'agency_id', 'pricing', 'cost_pct_cpm',
-							'cost_cpts', 'cost_cpm'}
-		self.event_only = {'advertiser_id'}
 		self._readonly.update({'pixel_type', 'tags', 'external_identifier',
 								'tag_type'})
-		self._types.update({'advertiser_id': int, 'agency_id': int, 'tag_type': str,
-			'external_identifier': str, 'keywords': str, 'eligible': str,
-			'pixel_type': str, 'provider_id': int, 'pricing': str,
-			'cost_cpts': str, 'cost_pct_cpm': str, 'cost_cpm': str})
-		self._convert.update({'advertiser_id': int, 'agency_id': int,
-			'pixel_type': lambda x: x if x in frozenset(['event', 'data']) else 'event',
-			'tag_type': lambda x: x if x in frozenset(['image', 'js', 'dfa', 'uat']) else 'image',
-			'provider_id': int, 'pricing': None,
-			pass}
+		self._pixel_types = self._enum({'creative', 'event', 'data', 'segment'},
+										'event')
+		self._pricing = self._enum({'CPM', 'CPTS'}, 'CPM')
+		self._rmx_conv_types = self._enum({'one', 'variable'}, 'one')
+		self._tag_types = self._enum({'dfa', 'uat', 'image', 'iframe', 'js'},
+										'image')
+		self._pull.update({
+			'advertiser_id': int,
+			'agency_id': int,
+			'cost_cpm': float,
+			'cost_cpts': float,
+			'cost_pct_cpm': float,
+			'eligible': self._int_to_bool,
+			'external_identifier': str,
+			'pixel_type': str,
+			'pricing': str,
+			'provider_id': int,
+			'rmx_conversion_minutes': int,
+			'rmx_conversion_type': str,
+			'rmx_friendly': self._int_to_bool,
+			'rmx_merit': self._int_to_bool,
+			'rmx_pc_window_minutes': int,
+			'rmx_pv_window_minutes': int,
+			'segment_op': str,
+			'tag_type': str,
+			'tags': str,
+		})
+		self._push = self._pull.copy()
+		self._push.update({
+			'eligible': int,
+			'pixel_type': self._pixel_types,
+			'pricing': self._pricing,
+			'rmx_conversion_type': self._rmx_conv_types,
+			'rmx_friendly': int,
+			'rmx_merit': int,
+			'tag_type': str,
+		})
 		
 		pass
