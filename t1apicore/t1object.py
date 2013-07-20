@@ -13,7 +13,7 @@ from t1connection import *
 pass
 
 class T1Object(T1Connection):
-	"""Mainly a superclass for all the various T1 Objects."""
+	"""Superclass for all the various T1 Objects. Implements methods for """
 	t1_collections = frozenset(['organizations', 'agencies', 'advertisers',
 			'campaigns', 'strategies', 'atomic_creatives', 'concepts', 'pixel_bundles',
 			'strategy_concepts', 'target_dimensions', 'reports', 'site_lists',
@@ -23,7 +23,7 @@ class T1Object(T1Connection):
 		super(T1Object, self).__init__()
 		self.collection = None
 		self._writable = {'version', 'status'} # defined for all objects
-		self._type = self._valid_enum(map(self._singular, T1Object.t1_collections), None)
+		# self._type = self._valid_enum(map(self._singular, T1Object.t1_collections), None)
 		self._readonly = {'id', 'build_date',' created_on', 'type',
 							'updated_on', 'last_modified'}
 		
@@ -31,9 +31,9 @@ class T1Object(T1Connection):
 			'created_on': datetime, 'updated_on': datetime, 'last_modified': datetime,
 			'status': str, 'name': str, 'type': str}
 		
-		self._convert = {'id': int, 'version': int, 'build_date': self._strpt,
+		self._pull = {'id': int, 'version': int, 'build_date': self._strpt,
 			'created_on': self._strpt, 'updated_on': self._strpt, 'last_modified': self._strpt,
-			'status': self._bool_deftrue, 'name': str, 'type': self._type}
+			'status': self._bool_to_int, 'name': str, 'type': str}
 		
 		pass
 		# Get attribute definitions?
@@ -44,9 +44,9 @@ class T1Object(T1Connection):
 		return collection[:-1]
 	def _int_to_bool(self, value):
 		return bool(int(value))
-	def _bool_to_int(self, value):
+	def _bool_to_int(self, value): # Necessary? Don't think so...
 		return int(bool(value)) # int(True) = 1 and vice-versa
-	def _valid_enum(self, all_vars, default):
+	def _enum(self, all_vars, default):
 		def get_value(test_value):
 			if test_value in all_vars:
 				return test_value
@@ -57,16 +57,6 @@ class T1Object(T1Connection):
 		return datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
 	def _strft(self, ti):
 		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
-	def _bool_deffalse(self, x, comp=frozenset(['on', 'off'])):
-		if x in comp:
-			return x
-		else:
-			return 'off'
-	def _bool_deftrue(self, x, comp=frozenset(['on', 'off'])):
-		if x in comp:
-			return x
-		else:
-			return 'on'
 	def _valid_id(self, id_):
 		try:
 			myid = int(id_)
@@ -74,18 +64,20 @@ class T1Object(T1Connection):
 			return False
 		if myid < 1:
 			return False
-		else:
-			return True
+		return True
 	def _validate_types(self, data, write=False):
 		if write:
-			for attribute in data.copy():
-				if attribute in self._readonly:
-					del data[attribute]
+			for key, value in data.copy().iteritems():
+				if key in self._readonly:
+					continue
+				if key not in self._push:
+					raise T1ClientError('Unknown key: ' + key)
+				data[key] = self._push[key](value)
+			return data
 		for key, value in data.copy().iteritems():
-			if key not in self._convert:
-				raise T1ClientError('Unknown key: ' + key)
-			proper_val = self._convert[key](value)
-			data[key] = proper_val
+			if key not in self._pull:
+				continue
+			data[key] = self._pull[key](value)
 		return data
 	
 	def get_one(self, entity_id, collection=None):
@@ -97,18 +89,12 @@ class T1Object(T1Connection):
 			collection = self.collection
 		if collection not in T1Object.t1_collections:
 			raise T1ClientError('Invalid collection.')
-		try:
-			entity_id = int(entity_id)
-			assert entity_id != 0
-		except (ValueError, TypeError, AssertionError):
+		if not self._valid_id(entity_id):
 			raise T1ClientError('Entity called is not a valid entity ID')
-		url = '/'.join([self.api_base, collection, entity_id])
+		url = '/'.join([self.api_base, collection, str(entity_id)])
 		entity = self._get(url)
 		entity = map(self._validate_types, entity['entities'])
-		# for index, ent in enumerate(entity['entities']):
-		# 	for key, value in ent.iteritems():
-		# 		entity['entities'][index][key] = 
-		return entity
+		return entity[0]
 	
 	def get_all(self, collection=None, sort_by='id', full=False, overload=False):
 		if collection is None:
