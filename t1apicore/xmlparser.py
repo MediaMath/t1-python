@@ -56,7 +56,7 @@ class T1XMLParser(object):
 		
 		If the code is valid, returns True; otherwise raises the appropriate T1 Error.
 		"""
-		status_code = xmlresult.find('status').get('code')
+		status_code = xmlresult.find('status').attrib['code']
 		message = xmlresult.find('status').text
 		if status_code == 'ok':
 			return True # Assumes using self.status_code = self.get_status(result)
