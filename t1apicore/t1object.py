@@ -171,7 +171,7 @@ class T1Object(T1Connection):
 			collection = self.collection
 		if collection not in T1Object.t1_collections:
 			raise T1ClientError('Invalid collection.')
-		if not self._valid_id(data['id']):
+		if 'id' in data and not self._valid_id(data['id']):
 			raise T1ClientError('Cannot update object without ID! Are you trying to create?')
 		url = '/'.join([self.api_base, collection, int(data['id'])])
 		data = self._validate_types(data)
