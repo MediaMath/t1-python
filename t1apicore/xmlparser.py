@@ -26,7 +26,7 @@ try:
 	import xml.etree.cElementTree as ET
 except ImportError:
 	import xml.etree.ElementTree as ET
-from t1error import *
+from .t1error import *
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
