@@ -10,13 +10,13 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 import json
 from os.path import getsize, isfile
 from time import time
-try:
-	import cPickle as pickle
-except ImportError:
-	import pickle
+# try:
+# 	import cPickle as pickle
+# except ImportError:
+# 	import pickle
 import requests
-from requests.utils import dict_from_cookiejar, cookiejar_from_dict
-from xmlparser import *
+# from requests.utils import dict_from_cookiejar, cookiejar_from_dict
+from .xmlparser import *
 
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
 # T1_API_ENV = 'production'
@@ -40,8 +40,7 @@ class T1Connection(object):
 		self.auth = (authuser, self.config['password'])
 	
 	def load_config(self, configfile):
-		required_config_fields = frozenset(['username', 'password', 'base_uri',
-											'cookie_path'])
+		required_config_fields = frozenset(['username', 'password', 'base_uri'])
 		with open(configfile) as f:
 			config = json.load(f)
 		for field in required_config_fields:
