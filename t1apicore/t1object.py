@@ -6,10 +6,10 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from __future__ import division, absolute_import
+from __future__ import division#, absolute_import
 from datetime import datetime
 from math import ceil
-from t1connection import *
+from .t1connection import *
 pass
 
 class T1Object(T1Connection):
@@ -71,7 +71,8 @@ class T1Object(T1Connection):
 				if key in self._readonly:
 					continue
 				if key not in self._push:
-					raise T1ClientError('Unknown key: ' + key)
+					# raise T1ClientError('Unknown key: ' + key)
+					continue
 				data[key] = self._push[key](value)
 			return data
 		for key, value in data.copy().iteritems():
