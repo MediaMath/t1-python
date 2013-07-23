@@ -10,16 +10,10 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 import json
 from os.path import getsize, isfile, realpath, dirname
 from time import time
-# try:
-# 	import cPickle as pickle
-# except ImportError:
-# 	import pickle
 import requests
-# from requests.utils import dict_from_cookiejar, cookiejar_from_dict
 from .xmlparser import T1XMLParser
 
 CURRENT_DIR = dirname(realpath(__file__))
-# API_BASE = 'https://t1.mediamath.com/api/v1/'
 # T1_API_ENV = 'production'
 
 
