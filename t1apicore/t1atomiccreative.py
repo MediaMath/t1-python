@@ -6,7 +6,7 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from t1object import T1Object
+from .t1object import *
 from datetime import datetime
 # IMPORT
 
@@ -17,7 +17,7 @@ class T1AtomicCreative(T1Object):
 		self.collection = 'atomic_creatives'
 		self._readonly.update({'t1as', 'built'})
 		self._ad_formats = self._enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'}, 'DISPLAY')
-		self._ad_servers = self._enum('ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
+		self._ad_servers = self._enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
 									'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
 									'TERMINALONE', 'MEDIAFORGE', 'OTHER'}, 'OTHER')
 		self._approved = self._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
