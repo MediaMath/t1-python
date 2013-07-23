@@ -6,7 +6,7 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from t1object import T1Object
+from .t1object import *
 # IMPORT
 
 class T1PixelBundles(T1Object):
