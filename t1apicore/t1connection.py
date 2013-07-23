@@ -8,7 +8,7 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 
 # import contextlib
 import json
-from os.path import getsize, isfile
+from os.path import getsize, isfile, realpath, dirname
 from time import time
 # try:
 # 	import cPickle as pickle
@@ -16,19 +16,20 @@ from time import time
 # 	import pickle
 import requests
 # from requests.utils import dict_from_cookiejar, cookiejar_from_dict
-from .xmlparser import *
+from .xmlparser import T1XMLParser
 
+CURRENT_DIR = dirname(realpath(__file__))
 # API_BASE = 'https://t1.mediamath.com/api/v1/'
 # T1_API_ENV = 'production'
 
-# xmlparser imports t1error so don't want to import it here too
 
 class T1Connection(object):
 	"""docstring for T1Connection"""
 	VALID_ENVS = frozenset(['production', 'sandbox'])
 	def __init__(self, environment='production'):
-		self.config = self.load_config('t1api.{}.json'.format(environment if environment 
-															in T1Connection.VALID_ENVS else 'sandbox'))
+		self.config = self.load_config('{}/t1api.{}.json'.format(CURRENT_DIR,
+										environment if environment in
+										T1Connection.VALID_ENVS else 'sandbox'))
 		# super(T1Connection, self).__init__()
 		self.t1nowtime = lambda: int(time())
 		self.adama_session = requests.Session()

@@ -6,15 +6,13 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import *
+from .t1object import T1Object
 # IMPORT
 
-class T1PixelBundles(T1Object):
-	"""docstring for T1PixelBundles"""
+class T1PixelBundle(T1Object):
+	"""docstring for T1PixelBundle"""
 	def __init__(self):
-		super(T1PixelBundles, self).__init__()
-		del self._types['status']
-		del self._convert['status']
+		super(T1PixelBundle, self).__init__()
 		self.collection = 'pixel_bundles'
 		self._readonly.update({'pixel_type', 'tags', 'external_identifier',
 								'tag_type'})
@@ -24,6 +22,7 @@ class T1PixelBundles(T1Object):
 		self._rmx_conv_types = self._enum({'one', 'variable'}, 'one')
 		self._tag_types = self._enum({'dfa', 'uat', 'image', 'iframe', 'js'},
 										'image')
+		del self._pull['status']
 		self._pull.update({
 			'advertiser_id': int,
 			'agency_id': int,

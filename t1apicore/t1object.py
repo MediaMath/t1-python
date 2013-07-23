@@ -9,7 +9,7 @@ to parse it.
 from __future__ import division#, absolute_import
 from datetime import datetime
 from math import ceil
-from .t1connection import *
+from .t1connection import T1Connection
 pass
 
 class T1Object(T1Connection):
