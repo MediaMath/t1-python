@@ -1,5 +1,6 @@
 # Credentials file
 t1apicore/t1api.*.json
+benchmarking.py
 
 *.py[cod]
 
