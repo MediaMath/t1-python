@@ -6,9 +6,16 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object
+from .t1object import T1Object#, T1Ojbects
 from datetime import datetime
 # IMPORT
+
+# class T1AtomicCreatives(T1Objects):
+# 	"""docstring for T1AtomicCreatives"""
+# 	def __init__(self):
+# 		self.collection = 'atomic_creatives'
+# 		pass
+# 	pass
 
 class T1AtomicCreative(T1Object):
 	"""docstring for T1AtomicCreative"""

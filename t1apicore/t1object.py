@@ -27,9 +27,9 @@ class T1Object(T1Connection):
 		self._readonly = {'id', 'build_date',' created_on', 'type',
 							'updated_on', 'last_modified'}
 		
-		self._types = {'id': int, 'version': int, 'build_date': datetime,
-			'created_on': datetime, 'updated_on': datetime, 'last_modified': datetime,
-			'status': str, 'name': str, 'type': str}
+		# self._types = {'id': int, 'version': int, 'build_date': datetime,
+		# 	'created_on': datetime, 'updated_on': datetime, 'last_modified': datetime,
+		# 	'status': str, 'name': str, 'type': str}
 		
 		self._pull = {'id': int, 'version': int, 'build_date': self._strpt,
 			'created_on': self._strpt, 'updated_on': self._strpt, 'last_modified': self._strpt,
@@ -39,6 +39,12 @@ class T1Object(T1Connection):
 		# Get attribute definitions?
 		# Get attribute default values?
 	pass
+	
+	def __getattr__(self, attribute):
+		if attribute in self.properties:
+			return self.properties[attribute]
+		else:
+			raise AttributeError
 	
 	def _singular(self, collection):
 		return collection[:-1]
@@ -164,7 +170,7 @@ class T1Object(T1Connection):
 			raise T1ClientError('Invalid collection.')
 		data = self._validate_types(data)
 		url = '/'.join([self.api_base, collection])
-		entity = self._post(url, params=data)
+		entity = self._post(url, data=data)
 		return entity
 	
 	def update(self, data, collection=None):
@@ -174,12 +180,12 @@ class T1Object(T1Connection):
 			raise T1ClientError('Invalid collection.')
 		if 'id' in data and not self._valid_id(data['id']):
 			raise T1ClientError('Cannot update object without ID! Are you trying to create?')
-		url = '/'.join([self.api_base, collection, int(data['id'])])
+		url = '/'.join([self.api_base, collection, str(data['id'])])
 		data = self._validate_types(data)
 		if 'version' not in data:
 			version = self._get(url)['entities'][0]['version']
 			data['version'] = int(version)
-		entity = self._post(url, params=data)
+		entity = self._post(url, data=data)
 		return entity
 	
 	def history(self, ent_id, collection=None):
@@ -194,3 +200,6 @@ class T1Object(T1Connection):
 		return history
 	
 	pass
+
+# class T1Objects(object):
+# 	pass
