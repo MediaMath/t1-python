@@ -32,34 +32,33 @@ class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
 	def __init__(self, raw_response):
 		result = ET.parse(raw_response)
-		self.status_code = self.get_status(result)
-		dictify_entity = self.dictify_entity
-		xiter = result.iter
+		self.get_status(result)
 		if result.find('entities') is not None:
 			self.entity_count = int(result.find('entities').get('count'))
-			self.type = 'entities'
-			self.entities = map(dictify_entity, xiter('entity'))
+			# self.type = 'entities'
+			self.entities = map(self.dictify_entity, result.iter('entity'))
 		elif result.find('entity') is not None:
 			self.entity_count = 1
-			self.type = 'entity'
-			self.entities = map(dictify_entity, xiter('entity'))
+			# self.type = 'entity'
+			self.entities = map(self.dictify_entity, result.iter('entity'))
 		elif result.find('log_entries') is not None:
-			self.type = 'history'
-			self.entities = map(dictify_history_entry, xiter('entry'))
+			self.entity_count = 1
+			# self.type = 'history'
+			self.entities = map(dictify_history_entry, result.iter('entry'))
 		# return self.entities
-		self.attribs = {'entity_count': self.entity_count, 'entities': self.entities,
-						'status_code': self.status_code, 'type': self.type}
+		# self.attribs = {'entity_count': self.entity_count,
+		# 				'entities': self.entities,}
 		pass
 	
 	def get_status(self, xmlresult, error=False):
 		"""Uses a simple ET method to get the status code of T1 XML response.
 		
-		If the code is valid, returns True; otherwise raises the appropriate T1 Error.
+		If code is valid, returns True; otherwise raises the appropriate T1 Error.
 		"""
 		status_code = xmlresult.find('status').attrib['code']
 		message = xmlresult.find('status').text
 		if status_code == 'ok':
-			return True # Assumes using self.status_code = self.get_status(result)
+			return
 		elif status_code == 'invalid':
 			errors = {}
 			for error in xmlresult.iter('field-error'):
@@ -80,19 +79,22 @@ class T1XMLParser(object):
 		output = entity.attrib
 		for prop in entity:
 			output[prop.attrib['name']] = prop.attrib['value']
+		parent = entity.find('entity')
+		if parent:
+			output['parent'] = self.dictify_entity(parent)
 		return output
 	
 	def dictify_history_entry(self, entry):
 		output = entry.attrib
 		fields = {}
 		for field in entry:
-			if field.attrib['name'] != 'last_modified':
-				fields[field.attrib['name']] = {'old_value': field.attrib['old_value'],
-												'new_value': field.attrib['new_value']}
+			kind = field.attrib['name']
+			if kind != 'last_modified':
+				fields[kind] = {'old_value': field.attrib['old_value'],
+								'new_value': field.attrib['new_value']}
 		output['fields'] = fields
 		return output
-		
-	pass
+
 
 def T1RawParse(raw_response):
 	"""Raw access to ET parsing.
@@ -102,7 +104,7 @@ def T1RawParse(raw_response):
 	argument should be resp.raw
 	
 	Mainly used for T1 Connection objects to access cElementTree without directly
-	importing it. This lets All the XML parsing happen here, while the rest of the 
-	library can use it freely.
+	importing it. This lets all the XML parsing happen here, while the rest of
+	the library can use it freely.
 	"""
 	return ET.parse(raw_response)
