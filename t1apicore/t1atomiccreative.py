@@ -6,115 +6,84 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object#, T1Ojbects
-from datetime import datetime
+from .t1object import T1Object
 # IMPORT
-
-# class T1AtomicCreatives(T1Objects):
-# 	"""docstring for T1AtomicCreatives"""
-# 	def __init__(self):
-# 		self.collection = 'atomic_creatives'
-# 		pass
-# 	pass
 
 class T1AtomicCreative(T1Object):
 	"""docstring for T1AtomicCreative"""
-	def __init__(self):
-		super(T1AtomicCreative, self).__init__()
-		self.collection = 'atomic_creatives'
-		self._readonly.update({'t1as', 'built'})
-		self._ad_formats = self._enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'}, 'DISPLAY')
-		self._ad_servers = self._enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
-									'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
-									'TERMINALONE', 'MEDIAFORGE', 'OTHER'}, 'OTHER')
-		self._approved = self._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
-		self._expand_dir = self._enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU',
-											'RU', 'NONRESTRICTED'}, 'NONRESTRICTED')
-		self._expand_trig = self._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'}, 'CLICK')
-		self._file_types = self._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unkown')
-		self._tag_types = self._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
-		self._pull.update({
-			'advertiser_id': int,
-			'ad_format': str,
-			'ad_server_type': str,
-			'approval_status': str,
-			'build_errors': str,
-			'built': self._int_to_bool,
-			'built_by_user_id': int,
-			'click_through_url': str,
-			'click_url': str,
-			'concept_id': int,
-			'creative_import_file_id': int,
-			'edited_tag': str,
-			'end_date': self._strpt,
-			'expansion_direction': str,
-			'expansion_trigger': str,
-			'external_identifier': str,
-			'file_type': str,
-			'has_sound': self._int_to_bool,
-			'height': int,
-			'is_https': self._int_to_bool,
-			'is_multi_creative': self._int_to_bool,
-			'rejected_reason': str,
-			'rich_media': self._int_to_bool,
-			'rich_media_provider': str,
-			'start_date': self._strpt,
-			't1as': self._int_to_bool,
-			'tag': str,
-			'tag_type': str,
-			'tpas_ad_tag': str,
-			'tpas_ad_tag_name': str,
-			'width': int,
-		})
-		self._push = self._pull.copy()
-		self._push.update({
-			'ad_format': self._ad_formats,
-			'ad_server_type': self._ad_servers,
-			'approval_status': self._approved,
-			'end_date': self._strft,
-			'expansion_direction': self._expand_dir,
-			'expansion_trigger': self._expand_trig,
-			'file_type': self._file_types,
-			'has_sound': int,
-			'is_https': int,
-			'is_multi_creative': int,
-			'rich_media': int,
-			'start_date': self._strft,
-			't1as': int,
-			'tag_type': self._tag_types,
-		})
-		
-		
-		pass
-# self._types.update({'advertiser_id': int,
-# 			'ad_format': str,
-# 			'ad_server_type': str,
-# 			'approval_status': str,
-# 			'build_errors': str,
-# 			'built': bool,
-# 			'built_by_user_id': int,
-# 			'click_through_url': str,
-# 			'click_url': str,
-# 			'concept_id': int,
-# 			'creative_import_file_id': int,
-# 			'edited_tag': str,
-# 			'end_date': datetime,
-# 			'expansion_direction': str,
-# 			'expansion_trigger': str,
-# 			'external_identifier': str,
-# 			'file_type': str,
-# 			'has_sound': str,
-# 			'height': int,
-# 			'is_https': str,
-# 			'is_multi_creative': str,
-# 			'rejected_reason': str,
-# 			'rich_media': bool,
-# 			'rich_media_provider': str,
-# 			'start_date': datetime,
-# 			't1as': bool,
-# 			'tag': str,
-# 			'tag_type': str,
-# 			'tpas_ad_tag': str,
-# 			'tpas_ad_tag_name': str,
-# 			'width': int,
-# 			})
+	collection = 'atomic_creatives'
+	type = 'atomic_creative'
+	_ad_formats = T1Object._enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'},
+									'DISPLAY')
+	_ad_servers = T1Object._enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
+								'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
+								'TERMINALONE', 'MEDIAFORGE', 'OTHER'}, 'OTHER')
+	_approved = T1Object._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
+	_expand_dir = T1Object._enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU',
+									'RU', 'NONRESTRICTED'}, 'NONRESTRICTED')
+	_expand_trig = T1Object._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'},'CLICK')
+	_file_types = T1Object._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unkown')
+	_tag_types = T1Object._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
+	_pull = {
+		'advertiser_id': int,
+		'ad_format': str,
+		'ad_server_type': str,
+		'approval_status': str,
+		'build_date': T1Object._strpt,
+		'build_errors': str,
+		'built': T1Object._int_to_bool,
+		'built_by_user_id': int,
+		'click_through_url': str,
+		'click_url': str,
+		'concept_id': int,
+		'created_on': T1Object._strpt,
+		'creative_import_file_id': int,
+		'edited_tag': str,
+		'end_date': T1Object._strpt,
+		'expansion_direction': str,
+		'expansion_trigger': str,
+		'external_identifier': str,
+		'file_type': str,
+		'has_sound': T1Object._int_to_bool,
+		'height': int,
+		'id': int,
+		'is_https': T1Object._int_to_bool,
+		'is_multi_creative': T1Object._int_to_bool,
+		'last_modified': T1Object._strpt,
+		'name': str,
+		'rejected_reason': str,
+		'rich_media': T1Object._int_to_bool,
+		'rich_media_provider': str,
+		'start_date': T1Object._strpt,
+		'status': T1Object._int_to_bool,
+		't1as': T1Object._int_to_bool,
+		'tag': str,
+		'tag_type': str,
+		'tpas_ad_tag': str,
+		'tpas_ad_tag_name': str,
+		'type': 'atomic_creative',
+		'updated_on': T1Object._strpt,
+		'version': int,
+		'width': int,
+	}
+	_push = _pull.copy()
+	_push.update({
+		'ad_format': _ad_formats,
+		'ad_server_type': _ad_servers,
+		# 'approval_status': _approved,
+		'end_date': T1Object._strft,
+		'expansion_direction': _expand_dir,
+		'expansion_trigger': _expand_trig,
+		'file_type': _file_types,
+		'has_sound': int,
+		'is_https': int,
+		'is_multi_creative': int,
+		'rich_media': int,
+		'start_date': T1Object._strft,
+		't1as': int,
+		'tag_type': _tag_types,
+	})
+	_readonly = T1Object._readonly.copy()
+	_readonly.update({'t1as', 'built, approval_status'})
+	def __init__(self, auth, properties=None):
+		super(T1AtomicCreative, self).__init__(auth, properties)
