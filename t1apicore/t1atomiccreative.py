@@ -61,7 +61,7 @@ class T1AtomicCreative(T1Object):
 		'tag_type': str,
 		'tpas_ad_tag': str,
 		'tpas_ad_tag_name': str,
-		'type': 'atomic_creative',
+		'type': str,
 		'updated_on': T1Object._strpt,
 		'version': int,
 		'width': int,
@@ -80,6 +80,7 @@ class T1AtomicCreative(T1Object):
 		'is_multi_creative': int,
 		'rich_media': int,
 		'start_date': T1Object._strft,
+		'status': int,
 		't1as': int,
 		'tag_type': _tag_types,
 	})
