@@ -77,6 +77,9 @@ class T1XMLParser(object):
 	
 	def dictify_entity(self, entity):
 		output = entity.attrib
+		if 'type' in output:
+			output['_type'] = output['type']
+			del output['type']
 		for prop in entity:
 			output[prop.attrib['name']] = prop.attrib['value']
 		parent = entity.find('entity')
