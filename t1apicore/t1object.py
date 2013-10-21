@@ -14,12 +14,7 @@ pass
 
 class T1Object(T1Connection):
 	"""Superclass for all the various T1 Objects. Implements methods for """
-	# t1_collections = frozenset(['organizations', 'agencies', 'advertisers',
-	# 		'campaigns','strategies','atomic_creatives','concepts','pixel_bundles',
-	# 		'strategy_concepts', 'target_dimensions', 'reports', 'site_lists',
-	# 		'vendor_contracts', 'ad_servers', 'strategy_supply_sources',
-	# 		'strategy_day_parts', 'users'])
-	_readonly = {'id', 'build_date',' created_on', 'type',
+	_readonly = {'id', 'build_date',' created_on', '_type', # _type is used because "type" is taken by T1User.
 						'updated_on', 'last_modified'}
 	def __init__(self, auth, properties=None):
 		super(T1Object, self).__init__(auth)
