@@ -54,9 +54,6 @@ class T1Object(T1Connection):
 	def _int_to_bool(cls, value):
 		return bool(int(value))
 	@classmethod
-	def _bool_to_int(cls, value): # Necessary? Don't think so...
-		return int(bool(value)) # int(True) = 1 and vice-versa
-	@classmethod
 	def _enum(cls, all_vars, default):
 		def get_value(test_value):
 			if test_value in all_vars:
