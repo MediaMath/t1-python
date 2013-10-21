@@ -89,7 +89,7 @@ class T1Service(T1Connection):
 			return SINGULAR[collection](self.adama.auth)
 
 	def return_class(self, ent_dict):
-		ent_type = ent_dict['type']
+		ent_type = ent_dict.get('_type', ent_dict['type'])
 		parent = ent_dict.get('parent')
 		if parent:
 			ent_dict['parent'] = self.return_class(parent)
