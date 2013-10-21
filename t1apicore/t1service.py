@@ -9,32 +9,39 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 from functools import partial
 from .t1connection import T1Connection
 from .t1atomiccreative import T1AtomicCreative
+from .t1advertiser import T1Advertiser
+from .t1agency import T1Agency
+from .t1campaign import T1Campaign
+from .t1concept import T1Concept
+from .t1organization import T1Organization
 from .t1pixelbundle import T1PixelBundle
+from .t1strategy import T1Strategy
+from .t1user import T1User
 
 CLASSES = {
 	'atomic_creatives': T1AtomicCreative,
 	'pixel_bundles': T1PixelBundle,
-	# 'advertisers': T1Advertiser,
-	# 'agencies': T1Agency,
-	# 'organizations': T1Organization,
-	# 'campaigns': T1Campaign,
-	# 'strategies': T1Strategy,
-	# 'concepts': T1Concept,
+	'advertisers': T1Advertiser,
+	'agencies': T1Agency,
+	'organizations': T1Organization,
+	'campaigns': T1Campaign,
+	'strategies': T1Strategy,
+	'concepts': T1Concept,
 	# 'pixels': T1Pixel,
-	# 'users': T1User,
+	'users': T1User,
 	
 }
 SINGULAR = {
 	'atomic_creative': T1AtomicCreative,
 	'pixel_bundle': T1PixelBundle,
-	# 'advertiser': T1Advertiser,
-	# 'agency': T1Agency,
-	# 'organization': T1Organization,
-	# 'campaign': T1Campaign,
-	# 'strategy': T1Strategy,
-	# 'concept': T1Concept,
+	'advertiser': T1Advertiser,
+	'agency': T1Agency,
+	'organization': T1Organization,
+	'campaign': T1Campaign,
+	'strategy': T1Strategy,
+	'concept': T1Concept,
 	# 'pixel': T1Pixel,
-	# 'user': T1User,
+	'user': T1User,
 }
 
 class T1Service(T1Connection):
