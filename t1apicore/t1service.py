@@ -120,11 +120,11 @@ class T1Service(T1Connection):
 			params['full'] = full
 		url = '/'.join(url)
 		if params:
-			entities, ent_count = self._get(url, params=params, count=count)
+			entities, ent_count = self._get(url, params=params)
 		else:
-			entities, ent_count = self._get(url, count=count)
+			entities, ent_count = self._get(url)
 		if entity:
-			return self.return_class(entities)
+			return self.return_class(entities[0])
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
 		if count:
@@ -172,7 +172,7 @@ class T1Service(T1Connection):
 		elif full is not None:
 			params['full'] = full
 		clas = CLASSES[collection]
-		entities, ent_count = self._get(url, params=params, count=count)
+		entities, ent_count = self._get(url, params=params)
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
 		if count:
