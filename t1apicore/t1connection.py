@@ -7,7 +7,7 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
 # import contextlib
-import json
+# import json
 from os.path import getsize, isfile, realpath, dirname
 from time import time
 import requests
@@ -17,59 +17,54 @@ CURRENT_DIR = dirname(realpath(__file__))
 # T1_API_ENV = 'production'
 
 
+# def _load_config(configfile):
+# 	required_config_fields = frozenset(['username', 'password', 'base_uri'])
+# 	with open(configfile) as f:
+# 		config = json.load(f)
+# 	for field in required_config_fields:
+# 		if field not in config:
+# 			raise T1LoginException('Invalid config')
+# 	return config
+
 class T1Connection(object):
 	"""docstring for T1Connection"""
-	VALID_ENVS = frozenset(['production', 'sandbox'])
-	def __init__(self, environment='production'):
-		self.config = self.load_config('{}/t1api.{}.json'.format(CURRENT_DIR,
-										environment if environment in
-										T1Connection.VALID_ENVS else 'sandbox'))
-		# super(T1Connection, self).__init__()
-		self.t1nowtime = lambda: int(time())
-		self.adama_session = requests.Session()
-		self.api_base = 'https://' + self.config['base_uri']
-		if self.config.get('api_key'):
-			authuser = '{}|{}'.format(self.config['username'], self.config['api_key'])
+	VALID_ENVS = frozenset(['production', 'sandbox', 'demo'])
+	API_BASES = {'production': 'https://api.mediamath.com/api/v1',
+				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
+				'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'}
+	def __init__(self, auth, environment='production', base=None):
+		if base is None:
+			T1Connection.__setattr__(self, 'api_base',
+						T1Connection.API_BASES[environment])
+			# self.api_base = self.API_BASES[environment]
 		else:
-			authuser = self.config['username']
-		self.auth = (authuser, self.config['password'])
-	
-	def load_config(self, configfile):
-		required_config_fields = frozenset(['username', 'password', 'base_uri'])
-		with open(configfile) as f:
-			config = json.load(f)
-		for field in required_config_fields:
-			if field not in config:
-				raise T1LoginException('Invalid config')
-		return config
+			T1Connection.__setattr__(self, 'api_base', base)
+			# self.api_base = base
+		T1Connection.__setattr__(self, 'adama', requests.Session())
+		self.adama.__setattr__('auth', auth)
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""
 		try:
-			response = self.adama_session.get(url, params=params,
-							auth=self.auth, stream=True)
+			response = self.adama.get(url, params=params, stream=True)
 			result = T1XMLParser(response.raw)
 		except T1AuthRequiredError as e:
 			print('Your T1 credentials appear to be incorrect. '
 					'Please check your configuration.')
 			raise
-		pass
-		return result.attribs
+		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
 		"""Base method for subclasses to call."""
 		if not data:
 			raise T1ClientError('No POST data.')
 		try:
-			response = self.adama_session.post(url, data=data,
-							auth=self.auth, stream=True)
+			response = self.adama.post(url, data=data,
+							stream=True)
 			result = T1XMLParser(response.raw)
 		except T1AuthRequiredError as e:
 			print('Your T1 credentials appear to be incorrect. '
 					'Please check your configuration.')
 			raise
-		pass
-		return result.attribs
+		return result.entities, result.entity_count
 	pass
-
-pass
