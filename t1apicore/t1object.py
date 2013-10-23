@@ -82,113 +82,14 @@ class T1Object(T1Connection):
 				data[key] = self._pull[key](value)
 		return data
 	def _validate_write(self, data):
+		if 'version' not in data:
+			data['version'] = self.version
 		for key, value in data.copy().iteritems():
 			if key in self._readonly:
 				del data[key]
 			if key in self._push:
 				data[key] = self._push[key](value)
 		return data
-	
-	# def get_one(self, entity_id, collection=None):
-	# 	"""Wrapper for _get that enforces type.
-		
-	# 	banana
-	# 	"""
-	# 	if collection is None:
-	# 		collection = self.collection
-	# 	if collection not in T1Object.t1_collections:
-	# 		raise T1ClientError('Invalid collection.')
-	# 	if not self._valid_id(entity_id):
-	# 		raise T1ClientError('Entity called is not a valid entity ID')
-	# 	url = '/'.join([self.api_base, collection, str(entity_id)])
-	# 	entity = self._get(url)
-	# 	entity = map(self._validate_types, entity['entities'])
-	# 	return entity[0]
-	
-	# def get_all(self, collection=None, sort_by='id', full=False, overload=False):
-	# 	if collection is None:
-	# 		collection = self.collection
-	# 	if collection not in T1Object.t1_collections:
-	# 		raise T1ClientError('Invalid collection.')
-	# 	params = {'page_limit': 100, 'page_offset': 0, 'sort_by': sort_by}
-	# 	if full is True:
-	# 		params['full'] = collection[:-1]
-	# 	elif isinstance(full, list):
-	# 		params['full'] = ','.join(full)
-	# 	url = '/'.join([self.api_base, collection])
-	# 	t1_object = self._get(url, params=params)
-	# 	count = t1_object['entity_count']
-	# 	if count > 1000 and not overload:
-	# 		print 'There are %d entities in this collection.' % count
-	# 		print('Only retrieving first thousand. If you\'re sure you want all '
-	# 				'of them, re-call with "overload" set to True')
-	# 		for page in xrange(1, 10):
-	# 			params['page_offset'] = 100*page
-	# 			next_page = self._get(url, params=params)
-	# 			t1_object['entities'].extend(next_page['entities'])
-	# 	elif count > 100 or overload:
-	# 		for page in xrange(1, int(ceil(count/100))):
-	# 			params['page_offset'] = 100*page
-	# 			next_page = self._get(url, params=params)
-	# 			t1_object['entities'].extend(next_page['entities'])
-	# 	t1_object = map(self._validate_types, t1_object['entities'])
-	# 	return t1_object
-	
-	# def limit(self, relation, relation_id, collection=None, sort_by='id',
-	# 			full=False, overload=False):
-	# 	if collection is None:
-	# 		collection = self.collection
-	# 	if collection not in T1Object.t1_collections:
-	# 		raise T1ClientError('Invalid collection.')
-	# 	params = {'page_limit': 100, 'page_offset': 0, 'sort_by': sort_by}
-	# 	if full is True:
-	# 		params['full'] = collection[:-1]
-	# 	elif isinstance(full, list):
-	# 		params['full'] = ','.join(full)
-	# 	relation_path = '{}={}'.format(relation, relation_id)
-	# 	url = '/'.join([self.api_base, collection, 'limit', relation_path])
-	# 	t1_object = self._get(url, params=params)
-	# 	count = t1_object['entity_count']
-	# 	if count > 1000 and not overload:
-	# 		print 'There are %d entities in this collection.' % count
-	# 		print('Only retrieving first thousand. If you\'re sure you want all '
-	# 				'of them, re-call with "overload set to True"')
-	# 		for page in xrange(1, 10):
-	# 			params['page_offset'] = 100*page
-	# 			next_page = self._get(url, params=params)
-	# 			t1_object['entities'].extend(next_page['entities'])
-	# 	elif count > 100 or overload:
-	# 		for page in xrange(1, int(ceil(count/100))):
-	# 			params['page_offset'] = 100*page
-	# 			next_page = self._get(url, params=params)
-	# 			t1_object['entities'].extend(next_page['entities'])
-	# 	pass
-	# 	return t1_object
-	
-	# def new(self, data, collection=None):
-	# 	if collection is None:
-	# 		collection = self.collection
-	# 	if collection not in T1Object.t1_collections:
-	# 		raise T1ClientError('Invalid collection.')
-	# 	data = self._validate_types(data)
-	# 	url = '/'.join([self.api_base, collection])
-	# 	entity = self._post(url, data=data)
-	# 	return entity
-
-	# def update(self, data, collection=None):
-	# 	if collection is None:
-	# 		collection = self.collection
-	# 	if collection not in T1Object.t1_collections:
-	# 		raise T1ClientError('Invalid collection.')
-	# 	if 'id' in data and not self._valid_id(data['id']):
-	# 		raise T1ClientError('Cannot update object without ID! Are you trying to create?')
-	# 	url = '/'.join([self.api_base, collection, str(data['id'])])
-	# 	data = self._validate_types(data)
-	# 	if 'version' not in data:
-	# 		version = self._get(url)['entities'][0]['version']
-	# 		data['version'] = int(version)
-	# 	entity = self._post(url, data=data)
-	# 	return entity
 
 	def save(self, data=None):
 		if self.properties.get('id'):
