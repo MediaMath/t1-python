@@ -82,7 +82,7 @@ class T1Object(T1Connection):
 				data[key] = self._pull[key](value)
 		return data
 	def _validate_write(self, data):
-		if 'version' not in data:
+		if 'version' not in data and 'id' in self.properties:
 			data['version'] = self.version
 		for key, value in data.copy().iteritems():
 			if key in self._readonly:
