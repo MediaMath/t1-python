@@ -35,7 +35,7 @@ class T1Object(T1Connection):
 		if attribute in self.properties:
 			return self.properties[attribute]
 		else:
-			raise AttributeError
+			raise AttributeError(attribute)
 	def __setitem__(self, attribute, value):
 		self.properties[attribute] = self._pull[attribute](value)
 
@@ -43,7 +43,7 @@ class T1Object(T1Connection):
 		if attribute in self.properties:
 			return self.properties[attribute]
 		else:
-			raise AttributeError
+			raise AttributeError(attribute)
 	def __setattr__(self, attribute, value):
 		try:
 			self.properties[attribute] = self._pull[attribute](value)
