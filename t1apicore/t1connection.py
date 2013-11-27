@@ -12,6 +12,7 @@ from os.path import getsize, isfile, realpath, dirname
 from time import time
 import requests
 from .xmlparser import T1XMLParser
+from t1error import T1AuthRequiredError
 
 CURRENT_DIR = dirname(realpath(__file__))
 # T1_API_ENV = 'production'
