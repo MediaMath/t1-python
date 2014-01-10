@@ -22,6 +22,7 @@ to parse it.
 # }
 # ]
 
+from itertools import imap
 try:
 	import xml.etree.cElementTree as ET
 except ImportError:
@@ -30,21 +31,28 @@ from .t1error import *
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
-	def __init__(self, raw_response):
+	def __init__(self, raw_response, iter_=False):
 		result = ET.parse(raw_response)
 		self.get_status(result)
+		if iter_:
+			map_ = imap
+		else:
+			map_ = map
 		if result.find('entities') is not None:
 			self.entity_count = int(result.find('entities').get('count'))
 			# self.type = 'entities'
-			self.entities = map(self.dictify_entity, result.iter('entity'))
+			self.entities = map_(self.dictify_entity,
+								result.iterfind('entities/entity'))
 		elif result.find('entity') is not None:
 			self.entity_count = 1
 			# self.type = 'entity'
-			self.entities = map(self.dictify_entity, result.iter('entity'))
+			self.entities = map_(self.dictify_entity,
+								result.iterfind('entity'))
 		elif result.find('log_entries') is not None:
 			self.entity_count = 1
 			# self.type = 'history'
-			self.entities = map(dictify_history_entry, result.iter('entry'))
+			self.entities = map_(self.dictify_history_entry,
+								result.iterfind('log_entries/entry'))
 		# return self.entities
 		# self.attribs = {'entity_count': self.entity_count,
 		# 				'entities': self.entities,}
@@ -77,14 +85,18 @@ class T1XMLParser(object):
 	
 	def dictify_entity(self, entity):
 		output = entity.attrib
+		output['rels'] = {}
 		if 'type' in output:
 			output['_type'] = output['type']
 			del output['type']
 		for prop in entity:
-			output[prop.attrib['name']] = prop.attrib['value']
-		parent = entity.find('entity')
-		if parent:
-			output['parent'] = self.dictify_entity(parent)
+			if prop.tag == 'entity': # Get parent entities recursively
+				output['rels'][prop.attrib['rel']] = self.dictify_entity(prop)
+			else:
+				output[prop.attrib['name']] = prop.attrib['value']
+		# parent = entity.find('entity')
+		# if parent:
+		# 	output['parent'] = self.dictify_entity(parent)
 		return output
 	
 	def dictify_history_entry(self, entry):

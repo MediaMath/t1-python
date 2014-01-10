@@ -10,15 +10,17 @@ from __future__ import division#, absolute_import
 from datetime import datetime
 from math import ceil
 from .t1connection import T1Connection
-pass
+
 
 class T1Object(T1Connection):
 	"""Superclass for all the various T1 Objects. Implements methods for """
-	_readonly = {'id', 'build_date',' created_on', '_type', # _type is used because "type" is taken by T1User.
+	_readonly = {'id', 'build_date', 'created_on', '_type', # _type is used because "type" is taken by T1User.
 						'updated_on', 'last_modified'}
 	def __init__(self, auth, properties=None):
 		super(T1Object, self).__init__(auth)
-		# self.adama.auth = auth # Called by T1Service so auth should be there
+
+		# __setattr__ is overridden below. So, to set self.properties as an empty
+		# dict, we need to use the built-in __setattr__ method; thus, super()
 		super(T1Object, self).__setattr__('properties', {})
 		if isinstance(properties, dict):
 			for attr, val in properties.iteritems():
@@ -27,9 +29,6 @@ class T1Object(T1Connection):
 				except KeyError:
 					self.properties[attr] = val
 				# setattr(self, attr, val)
-		pass
-		# Get attribute definitions?
-		# Get attribute default values?
 
 	def __getitem__(self, attribute):
 		if attribute in self.properties:
@@ -81,15 +80,21 @@ class T1Object(T1Connection):
 			if key in self._pull:
 				data[key] = self._pull[key](value)
 		return data
+
 	def _validate_write(self, data):
 		if 'version' not in data and 'id' in self.properties:
 			data['version'] = self.version
 		for key, value in data.copy().iteritems():
-			if key in self._readonly:
+			if key in self._readonly or key in self._relations:
 				del data[key]
-			if key in self._push:
-				data[key] = self._push[key](value)
+			else:
+				if key in self._push:
+					data[key] = self._push[key](value)
 		return data
+
+	def _update_self(self, entity):
+		for key, value in entity.iteritems():
+			setattr(self, key, value)
 
 	def save(self, data=None):
 		if self.properties.get('id'):
@@ -100,8 +105,8 @@ class T1Object(T1Connection):
 			data = self._validate_write(data)
 		else:
 			data = self._validate_write(self.properties)
-		entity = self._post(url, data=data)
-		return entity
+		entity = self._post(url, data=data)[0][0]
+		self._update_self(entity)
 
 	def update(self, *args, **kwargs):
 		return self.save(*args, **kwargs)

@@ -90,9 +90,11 @@ class T1Service(T1Connection):
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
-		parent = ent_dict.get('parent')
-		if parent:
-			ent_dict['parent'] = self.return_class(parent)
+		rels = ent_dict['rels']
+		if rels:
+			for rel_name, data in rels.iteritems():
+				ent_dict[rel_name] = self.return_class(data)
+		del rels, ent_dict['rels']
 		try:
 			return SINGULAR[ent_type](self.adama.auth, properties=ent_dict)
 		except KeyError:
@@ -110,10 +112,10 @@ class T1Service(T1Connection):
 						'sort_by': sort_by}
 		if isinstance(limit, dict):
 			url.extend(['limit', '%s=%d' % limit.items()[0]])
-		# if isinstance(inc, list): # NOT YET IMPLEMENTED
-		# 	params['with'] = ','.join(inc)
-		# elif inc is not None:
-		# 	params['with'] = inc
+		if isinstance(inc, list): # NOT YET IMPLEMENTED
+			params['with'] = ','.join(inc)
+		elif inc is not None:
+			params['with'] = inc
 		if isinstance(full, list):
 			params['full'] = ','.join(full)
 		elif full is not None:
