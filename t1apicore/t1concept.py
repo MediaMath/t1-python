@@ -12,6 +12,9 @@ class T1Concept(T1Object):
 	"""docstring for T1Concept."""
 	collection = 'concepts'
 	type = 'concept'
+	_relations = {
+		'advertiser',
+	}
 	_pull = {
 		'advertiser_id': int,
 		'created_on': T1Object._strpt,

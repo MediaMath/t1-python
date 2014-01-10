@@ -12,6 +12,9 @@ class T1Organization(T1Object):
 	"""docstring for T1Organization"""
 	collection = 'organizations'
 	type = 'organization'
+	_relations = {
+		'currency',
+	}
 	_pull = {
 		'address_1': str,
 		'address_2': str,

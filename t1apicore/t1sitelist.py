@@ -12,6 +12,9 @@ class T1SiteList(T1Object):
 	"""docstring for T1SiteList."""
 	collection = 'site_lists'
 	type = 'site_list'
+	_relations = {
+		'organization',
+	}
 	_restrictions = T1Object._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
 	_pull = {
 		'created_on': T1Object._strpt,

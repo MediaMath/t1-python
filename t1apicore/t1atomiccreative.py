@@ -13,6 +13,9 @@ class T1AtomicCreative(T1Object):
 	"""docstring for T1AtomicCreative"""
 	collection = 'atomic_creatives'
 	type = 'atomic_creative'
+	_relations = {
+		'advertiser', 'concept', 'creatives',
+	}
 	_ad_formats = T1Object._enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'},
 									'DISPLAY')
 	_ad_servers = T1Object._enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',

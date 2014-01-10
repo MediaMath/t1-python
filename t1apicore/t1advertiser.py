@@ -12,6 +12,9 @@ class T1Advertiser(T1Object):
 	"""docstring for T1Advertiser"""
 	collection = 'advertisers'
 	type = 'advertiser'
+	_relations = {
+		'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
+	}
 	_pull = {
 		'ad_server_fee': float,
 		'ad_server_id': int,

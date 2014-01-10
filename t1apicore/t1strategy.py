@@ -12,6 +12,9 @@ class T1Strategy(T1Object):
 	"""docstring for T1Strategy."""
 	collection = 'strategies'
 	type = 'strategy'
+	_relations = {
+		'campaign', 'currency', 'time_zone',
+	}
 	_aud_seg_exc = T1Object._enum({'AND', 'OR'}, 'OR')
 	_aud_seg_inc = T1Object._enum({'AND', 'OR'}, 'OR')
 	_freq_int = T1Object._enum({'hour', 'day', 'week', 'month', 'campaign',

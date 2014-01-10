@@ -14,6 +14,9 @@ class T1Campaign(T1Object):
 	When creating a new campaign, "zone_name" must be """
 	collection = 'campaigns'
 	type = 'campaign'
+	_relations = {
+		'advertiser', 'ad_server', 'currency', 'merit_pixel', 'time_zone',
+	}
 	_conv = T1Object._enum({'every', 'one', 'variable'}, 'variable')
 	_freq_ints = T1Object._enum({'hour', 'day', 'week', 'month',
 								'not-applicable'}, 'not-applicable')

@@ -12,7 +12,10 @@ from .t1object import T1Object
 class T1PixelBundle(T1Object):
 	"""docstring for T1PixelBundle"""
 	collection = 'pixel_bundles'
-	type = 'pixel_bundle'
+	type = 'pixel_bundle',
+	_relations = {
+		'advertiser', 'agency', 'provider',
+	}
 	_pixel_types = T1Object._enum({'creative', 'event', 'data', 'segment'},
 									'event')
 	_pricing = T1Object._enum({'CPM', 'CPTS'}, 'CPM')

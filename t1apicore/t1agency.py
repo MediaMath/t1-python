@@ -12,6 +12,10 @@ class T1Agency(T1Object):
 	"""docstring for T1Agency"""
 	collection = 'agencies'
 	type = 'agency'
+	_relations = {
+		'organization', 'billing_contact', 'sales_contact',
+		'traffic_contact',
+	}
 	_pull = {
 		'allow_x_adv_optimization': T1Object._int_to_bool,
 		'allow_x_adv_pixels': T1Object._int_to_bool,

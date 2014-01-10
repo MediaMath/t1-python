@@ -12,6 +12,9 @@ class T1User(T1Object):
 	"""docstring for T1User."""
 	collection = 'users'
 	type = 'user'
+	_relations = {
+		'creator',
+	}
 	_role = T1Object._enum({'ADMIN', 'MANAGER', 'REPORTER'}, 'REPORTER')
 	_scope = T1Object._enum({'GLOBAL', 'SELECT'}, 'SELECT')
 	_type = T1Object._enum({'INTERNAL', 'AGENCY', 'VPAN', 'ADVERTISER'},
