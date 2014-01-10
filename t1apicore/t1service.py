@@ -103,13 +103,13 @@ class T1Service(T1Connection):
 		url = [self.api_base, collection]
 		clas = CLASSES[collection]
 		if entity is not None:
-			url.append(str(entity))
+			url.append(str(entity)) # str so that we can use join
 			params = {}
 		else:
 			params = {'page_limit': 100, 'page_offset': page_offset,
 						'sort_by': sort_by}
 		if isinstance(limit, dict):
-			url.extend(['limit', '%s=%d' % limit.popitem()])
+			url.extend(['limit', '%s=%d' % limit.items()[0]])
 		# if isinstance(inc, list): # NOT YET IMPLEMENTED
 		# 	params['with'] = ','.join(inc)
 		# elif inc is not None:
@@ -140,7 +140,7 @@ class T1Service(T1Connection):
 		clas = CLASSES[collection]
 		params = {'sort_by': sort_by}
 		if isinstance(limit, dict):
-			url.extend(['limit', '%s=%d' % limit.popitem()])
+			url.extend(['limit', '%s=%d' % limit.items()[0]])
 		# if isinstance(inc, list): # NOT YET IMPLEMENTED
 		# 	params['with'] = ','.join(inc)
 		# elif inc is not None:
