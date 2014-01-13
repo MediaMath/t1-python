@@ -26,6 +26,7 @@ class T1Advertiser(T1Object):
 		'created_on': T1Object._strpt,
 		'domain': unicode,
 		'id': int,
+		'minimize_multi_ads': T1Object._int_to_bool,
 		'name': unicode,
 		'sales_contact_id': int,
 		'status': T1Object._int_to_bool,
@@ -36,6 +37,7 @@ class T1Advertiser(T1Object):
 	_push = _pull.copy()
 	_push.update({
 		'allow_x_strat_optimization': int,
+		'minimize_multi_ads': int,
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
