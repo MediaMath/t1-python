@@ -12,7 +12,7 @@ from os.path import getsize, isfile, realpath, dirname
 from time import time
 import requests
 from .xmlparser import T1XMLParser
-from t1error import T1AuthRequiredError
+from .t1error import T1AuthRequiredError
 
 CURRENT_DIR = dirname(realpath(__file__))
 # T1_API_ENV = 'production'
@@ -49,10 +49,9 @@ class T1Connection(object):
 		try:
 			response = self.adama.get(url, params=params, stream=True)
 			result = T1XMLParser(response.raw)
-		except T1AuthRequiredError as e:
-			print('Your T1 credentials appear to be incorrect. '
-					'Please check your configuration.')
-			raise
+		except T1AuthRequiredError:
+			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
+					' Please check your configuration')
 		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
@@ -60,12 +59,10 @@ class T1Connection(object):
 		if not data:
 			raise T1ClientError('No POST data.')
 		try:
-			response = self.adama.post(url, data=data,
-							stream=True)
+			response = self.adama.post(url, data=data, stream=True)
 			result = T1XMLParser(response.raw)
-		except T1AuthRequiredError as e:
-			print('Your T1 credentials appear to be incorrect. '
-					'Please check your configuration.')
-			raise
+		except T1AuthRequiredError:
+			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
+					' Please check your configuration')
 		return result.entities, result.entity_count
 	pass
