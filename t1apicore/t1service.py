@@ -123,7 +123,7 @@ class T1Service(T1Connection):
 				raise T1ClientError('Limit must consist of one parent collection'
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
-			url.extend(['limit', '{0!s}={1!d}'.format(*limit.items()[0])])
+			url.extend(['limit', '{0!s}={1:d}'.format(*limit.items()[0])])
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
@@ -157,7 +157,7 @@ class T1Service(T1Connection):
 				raise T1ClientError('Limit must consist of one parent collection'
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
-			url.extend(['limit', '{0!s}={1!d}'.format(*limit.items()[0])])
+			url.extend(['limit', '{0!s}={1:d}'.format(*limit.items()[0])])
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
