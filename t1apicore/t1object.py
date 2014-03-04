@@ -16,8 +16,8 @@ class T1Object(T1Connection):
 	"""Superclass for all the various T1 Objects. Implements methods for """
 	_readonly = {'id', 'build_date', 'created_on', '_type', # _type is used because "type" is taken by T1User.
 						'updated_on', 'last_modified'}
-	def __init__(self, auth, properties=None):
-		super(T1Object, self).__init__(auth)
+	def __init__(self, auth, properties=None, **kwargs):
+		super(T1Object, self).__init__(auth, **kwargs)
 
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()

@@ -63,5 +63,5 @@ class T1User(T1Object):
 		'view_organizations': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None):
-		super(T1User, self).__init__(auth, properties)
+	def __init__(self, auth, properties=None, **kwargs):
+		super(T1User, self).__init__(auth, properties, **kwargs)
