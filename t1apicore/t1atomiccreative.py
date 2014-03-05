@@ -89,5 +89,5 @@ class T1AtomicCreative(T1Object):
 	})
 	_readonly = T1Object._readonly.copy()
 	_readonly.update({'t1as', 'built, approval_status'})
-	def __init__(self, auth, properties=None):
-		super(T1AtomicCreative, self).__init__(auth, properties)
+	def __init__(self, auth, properties=None, **kwargs):
+		super(T1AtomicCreative, self).__init__(auth, properties, **kwargs)

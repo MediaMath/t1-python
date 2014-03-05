@@ -56,6 +56,7 @@ class T1Service(T1Connection):
 	"""
 	def __init__(self, username, password, apikey=None,
 					environment='production'):
+		self.environment = environment
 		self.password = password
 		if apikey is not None:
 			self.username = '{}|{}'.format(username, apikey)
@@ -104,9 +105,9 @@ class T1Service(T1Connection):
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
 		try:
-			return SINGULAR[ent_type](self.adama.auth, properties=ent_dict)
+			return SINGULAR[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
 		except KeyError:
-			return CLASSES[ent_type](self.adama.auth, properties=ent_dict)
+			return CLASSES[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
 
 	def get(self, collection, entity=None, limit=None,
 			include=None, full=None, sort_by='id',

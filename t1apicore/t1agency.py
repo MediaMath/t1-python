@@ -37,5 +37,5 @@ class T1Agency(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None):
-		super(T1Agency, self).__init__(auth, properties)
+	def __init__(self, auth, properties=None, **kwargs):
+		super(T1Agency, self).__init__(auth, properties, **kwargs)

@@ -102,5 +102,5 @@ class T1Strategy(T1Object):
 		'use_optimization': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None):
-		super(T1Strategy, self).__init__(auth, properties)
+	def __init__(self, auth, properties=None, **kwargs):
+		super(T1Strategy, self).__init__(auth, properties, **kwargs)
