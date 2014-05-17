@@ -49,25 +49,25 @@ class T1Object(T1Connection):
 		except KeyError:
 			super(T1Object, self).__setattr__(attribute, value)
 
-	@classmethod
-	def _int_to_bool(cls, value):
+	@staticmethod
+	def _int_to_bool(value):
 		return bool(int(value))
-	@classmethod
-	def _enum(cls, all_vars, default):
+	@staticmethod
+	def _enum(all_vars, default):
 		def get_value(test_value):
 			if test_value in all_vars:
 				return test_value
 			else:
 				return default
 		return get_value
-	@classmethod
-	def _strpt(cls, ti):
+	@staticmethod
+	def _strpt(ti):
 		return datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
-	@classmethod
-	def _strft(cls, ti):
+	@staticmethod
+	def _strft(ti):
 		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
-	@classmethod
-	def _valid_id(cls, id_):
+	@staticmethod
+	def _valid_id(id_):
 		try:
 			myid = int(id_)
 		except (ValueError, TypeError):

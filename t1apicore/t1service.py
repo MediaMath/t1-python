@@ -32,7 +32,7 @@ CLASSES = {
 	'pixel_bundles': T1PixelBundle,
 	'strategies': T1Strategy,
 	'users': T1User,
-	
+
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -50,7 +50,7 @@ SINGULAR = {
 
 class T1Service(T1Connection):
 	"""Service class for ALL other T1 entities, e.g.: t1 = T1Service(auth)
-	
+
 	Accepts authentication parameters.Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
@@ -69,15 +69,14 @@ class T1Service(T1Connection):
 	def __getattr__(self, attr):
 		"""Provides further active-record-like support.
 		Proper method is:
-		ac = t1.new('atomic_creatives') BUT ALSO SUPPORTS
+		ac = t1.new('atomic_creatives') but this also supports
 		ac = t1.new_atomic_creatives() OR
 		ac = t1.new_atomic_creative() (because of the `new` behavior)
 		"""
 		if 'new_' in attr:
-			attr = attr[4:]
-			return partial(self.new, attr)
+			return partial(self.new, attr[4:])
 		else:
-			raise AttributeError
+			raise AttributeError(attr)
 
 	def _check_session(self):
 		self._get(self.api_base + '/session')
@@ -89,8 +88,6 @@ class T1Service(T1Connection):
 		t1 = T1Service(auth)
 		ac = t1.new('atomic_creatives') OR
 		ac = t1.new('atomic_creative')
-		Provides KeyError support for singular entity. Recommended is
-		to use the proper plural collection name.
 		"""
 		try:
 			return CLASSES[collection](self.adama.auth)
@@ -147,7 +144,7 @@ class T1Service(T1Connection):
 	def __get_all(self, collection, limit=None,
 				include=None, full=None, sort_by='id', count=False):
 		"""Retrieves all records for a collection or limited collection.
-		
+
 		ONLY INCLUDED FOR COMPLETENESS. Normally self.get should be used, as
 		T1 will soon reject queries without a page_limit parameter.
 		"""
@@ -172,13 +169,13 @@ class T1Service(T1Connection):
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
 		return entities
-	
+
 	def get_sub(self, collection, entity, sub, *args):
 		pass
 
 	def find(self, collection, key, query, full=None, count=False):
 		url = '/'.join([self.api_base, collection])
-		params = {'q': '{}%3D%3A{}'.format(key, query)}
+		params = {'q': '{}=:{}'.format(key, query)}
 		if isinstance(full, list):
 			params['full'] = ','.join(full)
 		elif full is not None:

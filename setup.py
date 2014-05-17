@@ -19,5 +19,4 @@ setup(name='t1apicore',
 		packages=packages,
 		install_requires=requrements,
 		platforms=['any'],
-		license='MIT',
 )

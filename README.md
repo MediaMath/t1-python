@@ -3,7 +3,7 @@ T1ClientLibrary-Python
 
 **WIP** Python implementation of a T1 API Library. This library consists of Python classes for working with T1 entities. This library is written for Python 2.7. I have tried to ensure compatibility with 3.x, but this is not guaranteed and should be used at your own risk.
 
-The best way to use this class is to initiate the `T1Service` class, and do everything through there. That way, the only thing you have to import is T1Service (`from t1apicore import t1service` or `from t1apicore.t1service import T1Service`), then instantiate the class (`t1 = t1service.T1Service(username, password, apikey, environment)` or `t1 = T1Service(username, password, apikey, environment)`, respectively).
+The best way to use this package is to initiate the `T1Service` class, and do everything through there. That way, the only thing you have to import is T1Service (`from t1apicore import t1service` or `from t1apicore.t1service import T1Service`), then instantiate the class (`t1 = t1service.T1Service(username, password, apikey, environment)` or `t1 = T1Service(username, password, apikey, environment)`, respectively).
 
 A specific entity can be retrieved by using the `get` method from `T1Service`:
 ```python
