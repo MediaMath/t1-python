@@ -31,8 +31,9 @@ from .t1error import *
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
-	def __init__(self, raw_response, iter_=False):
-		result = ET.parse(raw_response)
+	def __init__(self, response, iter_=False):
+		response.encoding = 'utf-8'
+		result = ET.fromstring(response.text)
 		self.get_status(result)
 		if iter_:
 			map_ = imap
