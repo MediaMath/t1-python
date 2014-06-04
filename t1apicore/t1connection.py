@@ -48,7 +48,7 @@ class T1Connection(object):
 		"""Base method for subclasses to call."""
 		try:
 			response = self.adama.get(url, params=params, stream=True)
-			result = T1XMLParser(response.raw)
+			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
 					' Please check your configuration')
@@ -60,7 +60,7 @@ class T1Connection(object):
 			raise T1ClientError('No POST data.')
 		try:
 			response = self.adama.post(url, data=data, stream=True)
-			result = T1XMLParser(response.raw)
+			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
 					' Please check your configuration')
