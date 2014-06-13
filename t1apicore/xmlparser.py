@@ -70,7 +70,7 @@ class T1XMLParser(object):
 				errors[attribs['name']] = {'code': attribs['code'],
 											'error': attribs['error']}
 			self.status_code = False
-			raise T1ValidationError(staus_code, errors)
+			raise T1ValidationError(status_code, errors)
 		elif status_code == 'not_found':
 			self.status_code = False
 			raise T1NotFoundError(status_code, message)
