@@ -19,7 +19,7 @@ class T1Concept(T1Object):
 		'advertiser_id': int,
 		'created_on': T1Object._strpt,
 		'id': int,
-		'name': str,
+		'name': None,
 		'status': T1Object._int_to_bool,
 		'updated_on': T1Object._strpt,
 		'version': int,
@@ -29,5 +29,5 @@ class T1Concept(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Concept, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1Concept, self).__init__(adama, properties, **kwargs)

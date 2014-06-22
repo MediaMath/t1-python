@@ -51,48 +51,67 @@ SINGULAR = {
 class T1Service(T1Connection):
 	"""Service class for ALL other T1 entities, e.g.: t1 = T1Service(auth)
 
-	Accepts authentication parameters.Supports get methods to get
+	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, apikey=None,
+	def __init__(self, username, password, api_key, method=None,
 					environment='production'):
-		self.environment = environment
+		self.username = username
 		self.password = password
-		if apikey is not None:
-			self.username = '{}|{}'.format(username, apikey)
-		else:
-			self.username = username
-		auth = (self.username, self.password)
-		super(T1Service, self).__init__(auth, environment)
-		self._check_session()
-		# self.adama.auth = (self.username, self.password)
-	def __getattr__(self, attr):
-		"""Provides further active-record-like support.
-		Proper method is:
-		ac = t1.new('atomic_creatives') but this also supports
-		ac = t1.new_atomic_creatives() OR
-		ac = t1.new_atomic_creative() (because of the `new` behavior)
-		"""
-		if 'new_' in attr:
-			return partial(self.new, attr[4:])
-		else:
-			raise AttributeError(attr)
+		self.api_key = api_key
+		self.auth = (self.username, self.password, self.api_key)
+		super(T1Service, self).__init__(environment)
+		if method is not None:
+			self.authenticate(method)
+
+	# def __getattr__(self, attr):
+	# 	"""Provides further active-record-like support.
+	# 	Proper method is:
+	# 	ac = t1.new('atomic_creatives') but this also supports
+	# 	ac = t1.new_atomic_creatives() OR
+	# 	ac = t1.new_atomic_creative() (because of the `self.new` behavior)
+	# 	"""
+	# 	if 'new_' in attr:
+	# 		return partial(self.new, attr[4:])
+	# 	else:
+	# 		raise AttributeError(attr)
 
 	def _check_session(self):
 		self._get(self.api_base + '/session')
 
-	# @classmethod # Because we need auth here, can't be class method
-	# def new(cls, collection):
+	def _auth_cookie(*args, **kwargs):
+		payload = {
+			'user': self.username,
+			'password': self.password,
+			'api_key': self.api_key
+		}
+		self._post(self.api_base + '/login', data=payload)
+
+	def _auth_basic(*args, **kwargs):
+		self.adama.auth = ('{}|{}'.format(self.username, self.api_key),
+							self.password)
+		self._check_session()
+
+	def authenticate(self, method, *args, **kwargs):
+		if method == 'cookie':
+			return self._auth_cookie(*args, **kwargs)
+		elif method == 'basic':
+			return self._auth_basic(*args, **kwargs)
+		else:
+			raise AttributeError('No authentication method for ' + method)
+
+
 	def new(self, collection):
 		"""Returns a fresh class instance for a new entity.
-		t1 = T1Service(auth)
-		ac = t1.new('atomic_creatives') OR
-		ac = t1.new('atomic_creative')
+		t1 = T1Service(username, password, api_key, method="cookie")
+		ac = t1.new('atomic_creative') OR
+		ac = t1.new('atomic_creatives')
 		"""
 		try:
-			return CLASSES[collection](self.adama.auth)
+			ret = SINGULAR[collection]
 		except KeyError:
-			return SINGULAR[collection](self.adama.auth)
+			ret = CLASSES[collection]
+		return ret(self.adama)
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -102,9 +121,10 @@ class T1Service(T1Connection):
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
 		try:
-			return SINGULAR[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
+			ret = SINGULAR[ent_type]
 		except KeyError:
-			return CLASSES[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
+			ret = CLASSES[ent_type]
+		return ret(self.adama, properties=ent_dict)
 
 	def get(self, collection, entity=None, limit=None,
 			include=None, full=None, sort_by='id',

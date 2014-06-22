@@ -22,8 +22,8 @@ class T1Agency(T1Object):
 		'billing_contact_id': int,
 		'created_on': T1Object._strpt,
 		'id': int,
-		'logo': unicode,
-		'name': unicode,
+		'logo': None,
+		'name': None,
 		'organization_id': int,
 		'sales_contact_id': int,
 		'status': T1Object._int_to_bool,
@@ -37,5 +37,5 @@ class T1Agency(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Agency, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1Agency, self).__init__(adama, properties, **kwargs)

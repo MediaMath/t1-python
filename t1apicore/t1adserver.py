@@ -15,10 +15,10 @@ class T1AdServer(T1Object):
 	_relations = set()
 	_pull = {
 		'id': int,
-		'name': str,
+		'name': None,
 		'version': int,
 	}
 	_push = _pull.copy()
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1AdServer, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1AdServer, self).__init__(adama, properties, **kwargs)

@@ -29,21 +29,21 @@ class T1PixelBundle(T1Object):
 		'cost_pct_cpm': float,
 		'created_on': T1Object._strpt,
 		'eligible': T1Object._int_to_bool,
-		'external_identifier': unicode,
+		'external_identifier': None,
 		'id': int,
-		'name': unicode,
-		'pixel_type': unicode,
-		'pricing': unicode,
+		'name': None,
+		'pixel_type': None,
+		'pricing': None,
 		'provider_id': int,
 		'rmx_conversion_minutes': int,
-		'rmx_conversion_type': unicode,
+		'rmx_conversion_type': None,
 		'rmx_friendly': T1Object._int_to_bool,
 		'rmx_merit': T1Object._int_to_bool,
 		'rmx_pc_window_minutes': int,
 		'rmx_pv_window_minutes': int,
-		'segment_op': unicode,
-		'tag_type': unicode,
-		'tags': unicode,
+		'segment_op': None,
+		'tag_type': None,
+		'tags': None,
 		'type': 'pixel_bundle',
 		'updated_on': T1Object._strpt,
 		'version': int,
@@ -60,6 +60,6 @@ class T1PixelBundle(T1Object):
 	})
 	_readonly = T1Object._readonly.copy()
 	_readonly.update({'tags', 'external_identifier',})
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1PixelBundle, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1PixelBundle, self).__init__(adama, properties, **kwargs)
 		pass

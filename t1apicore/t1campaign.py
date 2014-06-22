@@ -28,34 +28,34 @@ class T1Campaign(T1Object):
 	_pull = {
 		'ad_server_fee': float,
 		'ad_server_id': int,
-		'ad_server_password': unicode,
-		'ad_server_username': unicode,
+		'ad_server_password': None,
+		'ad_server_username': None,
 		'advertiser_id': int,
 		'agency_fee_pct': float,
 		'conversion_type': unicode, # COME BACK HERE
 		'conversion_variable_minutes': int,
 		'created_on': T1Object._strpt,
-		'currency_code': unicode,
+		'currency_code': None,
 		'end_date': T1Object._strpt,
 		'frequency_amount': int,
-		'frequency_interval': unicode,
-		'frequency_type': unicode,
+		'frequency_interval': None,
+		'frequency_type': None,
 		'goal_alert': float,
-		'goal_category': unicode,
-		'goal_type': unicode,
+		'goal_category': None,
+		'goal_type': None,
 		'goal_value': float,
 		'has_custom_attribution': T1Object._int_to_bool,
 		'id': int,
-		'io_name': unicode,
-		'io_reference_num': unicode,
+		'io_name': None,
+		'io_reference_num': None,
 		'margin_pct': float,
 		'merit_pixel_id': int,
-		'name': unicode,
+		'name': None,
 		'pacing_alert': float,
 		'pc_window_minutes': int,
 		'pv_pct': float,
 		'pv_window_minutes': int,
-		'service_type': unicode,
+		'service_type': None,
 		'spend_cap_amount': float,
 		'spend_cap_automatic': T1Object._int_to_bool,
 		'spend_cap_enabled': T1Object._int_to_bool,
@@ -66,7 +66,7 @@ class T1Campaign(T1Object):
 		'use_default_ad_server': T1Object._int_to_bool,
 		'use_mm_freq': T1Object._int_to_bool,
 		'version': int,
-		'zone_name': unicode,
+		'zone_name': None,
 	}
 	_push = _pull.copy()
 	_push.update({
@@ -86,5 +86,5 @@ class T1Campaign(T1Object):
 		'use_mm_freq': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Campaign, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1Campaign, self).__init__(adama, properties, **kwargs)

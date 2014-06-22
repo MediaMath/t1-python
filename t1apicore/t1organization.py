@@ -16,27 +16,27 @@ class T1Organization(T1Object):
 		'currency',
 	}
 	_pull = {
-		'address_1': str,
-		'address_2': str,
+		'address_1': None,
+		'address_2': None,
 		'adx_seat_account_id': int,
 		'allow_byo_price': T1Object._int_to_bool,
 		'allow_x_agency_pixels': T1Object._int_to_bool,
-		'city': str,
-		'contact_name': str,
-		'country': str,
+		'city': None,
+		'contact_name': None,
+		'country': None,
 		'created_on': T1Object._strpt,
-		'curency_code': str,
+		'curency_code': None,
 		'id': int,
-		'mm_contact_name': str,
-		'name': str,
-		'phone': str,
-		'state': str,
+		'mm_contact_name': None,
+		'name': None,
+		'phone': None,
+		'state': None,
 		'status': T1Object._int_to_bool,
-		'tag_ruleset': str,
+		'tag_ruleset': None,
 		'updated_on': T1Object._strpt,
 		'use_evidon_optout': T1Object._int_to_bool,
 		'version': int,
-		'zip': str,
+		'zip': None,
 	}
 	_push = _pull.copy()
 	_push.update({
@@ -46,5 +46,5 @@ class T1Organization(T1Object):
 		'use_evidon_optout': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Organization, self).__init__(auth, properties, **kwargs)
+	def __init__(self, adama, properties=None, **kwargs):
+		super(T1Organization, self).__init__(adama, properties, **kwargs)
