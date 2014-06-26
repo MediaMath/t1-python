@@ -63,5 +63,5 @@ class T1User(T1Object):
 		'view_organizations': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, adama, properties=None, **kwargs):
-		super(T1User, self).__init__(adama, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1User, self).__init__(session, properties, **kwargs)

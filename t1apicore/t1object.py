@@ -16,10 +16,10 @@ class T1Object(T1Connection):
 	_readonly = {'id', 'build_date', 'created_on',
 					'_type', # _type is used because "type" is taken by T1User.
 					'updated_on', 'last_modified'}
-	def __init__(self, adama, properties=None, *args, **kwargs):
+	def __init__(self, session, properties=None, *args, **kwargs):
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
-		super(T1Object, self).__setattr__('adama', adama)
+		super(T1Object, self).__setattr__('session', session)
 		if properties is None:
 			super(T1Object, self).__setattr__('properties', {})
 			return
@@ -121,4 +121,24 @@ class T1Object(T1Connection):
 		url  = '/'.join([self.api_base, collection, str(self.id), 'history'])
 		history = self._get(url)
 		return history
+
+def T1SubObject(T1Object):
+	def __init__(self, session, parent, pid, properties=None, *args, **kwargs):
+		self.parent = parent
+		self.parent_id = pid
+		super(T1SubObject, self).__init__(session, properties, *args, **kwargs)
+
+	def save(self, data=None):
+		if self.properties.get('id'):
+			url = '/'.join([self.api_base, self.parent, self.parent_id,
+							self.collection, self.id])
+		else:
+			url = '/'.join([self.api_base, self.parent,
+							self.parent_id, self.collection])
+		if data is not None:
+			data = self._validate_write(data)
+		else:
+			data = self._validate_write(self.properties)
+		entity = self._post(url, data=data)[0][0]
+		self._update_self(entity)
 

@@ -39,12 +39,12 @@ class T1Connection(object):
 						T1Connection.API_BASES[environment])
 		else:
 			T1Connection.__setattr__(self, 'api_base', base)
-		T1Connection.__setattr__(self, 'adama', requests.Session())
+		T1Connection.__setattr__(self, 'session', requests.Session())
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""
 		try:
-			response = self.adama.get(url, params=params, stream=True)
+			response = self.session.get(url, params=params, stream=True)
 			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
@@ -56,7 +56,7 @@ class T1Connection(object):
 		if not data:
 			raise T1ClientError('No POST data.')
 		try:
-			response = self.adama.post(url, data=data, stream=True)
+			response = self.session.post(url, data=data, stream=True)
 			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'

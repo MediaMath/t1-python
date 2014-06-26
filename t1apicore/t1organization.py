@@ -46,5 +46,5 @@ class T1Organization(T1Object):
 		'use_evidon_optout': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, adama, properties=None, **kwargs):
-		super(T1Organization, self).__init__(adama, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1Organization, self).__init__(session, properties, **kwargs)

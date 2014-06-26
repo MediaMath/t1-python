@@ -6,7 +6,7 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
-from functools import partial
+# from functools import partial
 from .t1connection import T1Connection
 from .t1error import T1ClientError
 from .t1adserver import T1AdServer
@@ -54,15 +54,16 @@ class T1Service(T1Connection):
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, api_key, method=None,
+	def __init__(self, username, password, api_key, auth_method=None,
 					environment='production'):
 		self.username = username
 		self.password = password
 		self.api_key = api_key
+		self._authenticated = False
 		self.auth = (self.username, self.password, self.api_key)
 		super(T1Service, self).__init__(environment)
-		if method is not None:
-			self.authenticate(method)
+		if auth_method is not None:
+			self.authenticate(auth_method)
 
 	# def __getattr__(self, attr):
 	# 	"""Provides further active-record-like support.
@@ -79,26 +80,28 @@ class T1Service(T1Connection):
 	def _check_session(self):
 		self._get(self.api_base + '/session')
 
-	def _auth_cookie(*args, **kwargs):
+	def _auth_cookie(self, *args, **kwargs):
 		payload = {
 			'user': self.username,
 			'password': self.password,
 			'api_key': self.api_key
 		}
 		self._post(self.api_base + '/login', data=payload)
+		self._authenticated = True
 
-	def _auth_basic(*args, **kwargs):
-		self.adama.auth = ('{}|{}'.format(self.username, self.api_key),
+	def _auth_basic(self, *args, **kwargs):
+		self.session.auth = ('{}|{}'.format(self.username, self.api_key),
 							self.password)
 		self._check_session()
+		self._authenticated = True
 
-	def authenticate(self, method, *args, **kwargs):
-		if method == 'cookie':
+	def authenticate(self, auth_method, *args, **kwargs):
+		if auth_method == 'cookie':
 			return self._auth_cookie(*args, **kwargs)
-		elif method == 'basic':
+		elif auth_method == 'basic':
 			return self._auth_basic(*args, **kwargs)
 		else:
-			raise AttributeError('No authentication method for ' + method)
+			raise AttributeError('No authentication method for ' + auth_method)
 
 
 	def new(self, collection):
@@ -111,7 +114,7 @@ class T1Service(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			ret = CLASSES[collection]
-		return ret(self.adama)
+		return ret(self.session)
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -124,11 +127,17 @@ class T1Service(T1Connection):
 			ret = SINGULAR[ent_type]
 		except KeyError:
 			ret = CLASSES[ent_type]
-		return ret(self.adama, properties=ent_dict)
+		return ret(self.session, properties=ent_dict)
 
-	def get(self, collection, entity=None, limit=None,
-			include=None, full=None, sort_by='id',
-			page_offset=0, page_limit=100, count=False):
+	def get(self, collection,
+			entity=None,
+			limit=None,
+			include=None,
+			full=None,
+			page_limit=100,
+			page_offset=0,
+			sort_by='id',
+			count=False):
 		url = [self.api_base, collection]
 		if entity is not None:
 			url.append(str(entity)) # str so that we can use join
@@ -160,6 +169,9 @@ class T1Service(T1Connection):
 			return entities, ent_count
 		else:
 			return entities
+	def get_all(*args, **kwargs):
+		first_pg, count = self.get(*args, **kwargs)
+		pass # TODO finish implementing iterating over pages
 
 	def __get_all(self, collection, limit=None,
 				include=None, full=None, sort_by='id', count=False):
@@ -207,3 +219,5 @@ class T1Service(T1Connection):
 			return entities, ent_count
 		else:
 			return entities
+
+T1 = T1Service

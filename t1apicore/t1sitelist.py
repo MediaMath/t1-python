@@ -33,5 +33,5 @@ class T1SiteList(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, adama, properties=None, **kwargs):
-		super(T1SiteList, self).__init__(adama, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1SiteList, self).__init__(session, properties, **kwargs)

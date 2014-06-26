@@ -60,6 +60,6 @@ class T1PixelBundle(T1Object):
 	})
 	_readonly = T1Object._readonly.copy()
 	_readonly.update({'tags', 'external_identifier',})
-	def __init__(self, adama, properties=None, **kwargs):
-		super(T1PixelBundle, self).__init__(adama, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1PixelBundle, self).__init__(session, properties, **kwargs)
 		pass
