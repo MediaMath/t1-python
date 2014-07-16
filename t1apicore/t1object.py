@@ -19,6 +19,7 @@ class T1Object(T1Connection):
 	def __init__(self, session, properties=None, *args, **kwargs):
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
+		super(T1Object, self).__init__(create_session=False, **kwargs)
 		super(T1Object, self).__setattr__('session', session)
 		if properties is None:
 			super(T1Object, self).__setattr__('properties', {})
@@ -118,9 +119,9 @@ class T1Object(T1Connection):
 	def history(self):
 		if not self.properties.get('id'):
 			raise T1ClientError('Valid entity ID not given')
-		url  = '/'.join([self.api_base, collection, str(self.id), 'history'])
+		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
-		return history
+		return history[0]
 
 def T1SubObject(T1Object):
 	def __init__(self, session, parent, pid, properties=None, *args, **kwargs):

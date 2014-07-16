@@ -33,13 +33,14 @@ class T1Connection(object):
 	API_BASES = {'production': 'https://api.mediamath.com/api/v1',
 				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
 				'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'}
-	def __init__(self, environment='production', base=None):
+	def __init__(self, environment='production', base=None, create_session=True):
 		if base is None:
 			T1Connection.__setattr__(self, 'api_base',
 						T1Connection.API_BASES[environment])
 		else:
 			T1Connection.__setattr__(self, 'api_base', base)
-		T1Connection.__setattr__(self, 'session', requests.Session())
+		if create_session:
+			T1Connection.__setattr__(self, 'session', requests.Session())
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""

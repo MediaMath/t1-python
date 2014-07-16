@@ -61,6 +61,7 @@ class T1Service(T1Connection):
 		self.api_key = api_key
 		self._authenticated = False
 		self.auth = (self.username, self.password, self.api_key)
+		self.environment = environment
 		super(T1Service, self).__init__(environment)
 		if auth_method is not None:
 			self.authenticate(auth_method)
@@ -114,7 +115,7 @@ class T1Service(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			ret = CLASSES[collection]
-		return ret(self.session)
+		return ret(self.session, environment=self.environment)
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -127,7 +128,8 @@ class T1Service(T1Connection):
 			ret = SINGULAR[ent_type]
 		except KeyError:
 			ret = CLASSES[ent_type]
-		return ret(self.session, properties=ent_dict)
+		return ret(self.session, properties=ent_dict,
+					environment=self.environment)
 
 	def get(self, collection,
 			entity=None,
