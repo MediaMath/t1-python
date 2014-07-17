@@ -33,7 +33,7 @@ class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
 	def __init__(self, response, iter_=False):
 		response.encoding = 'utf-8'
-		result = ET.fromstring(response.text)
+		result = ET.fromstring(response.content)
 		self.get_status(result)
 		if iter_:
 			map_ = imap
