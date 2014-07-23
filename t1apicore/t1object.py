@@ -123,10 +123,11 @@ class T1Object(T1Connection):
 		history = self._get(url)
 		return history[0]
 
-def T1SubObject(T1Object):
-	def __init__(self, session, parent, pid, properties=None, *args, **kwargs):
-		self.parent = parent
-		self.parent_id = pid
+class T1SubObject(T1Object):
+	def __init__(self, session, properties=None, *args, **kwargs):
+		self.parent = properties['parent']
+		self.parent_id = properties['pid']
+		del properties['parent'], properties['pid']
 		super(T1SubObject, self).__init__(session, properties, *args, **kwargs)
 
 	def save(self, data=None):

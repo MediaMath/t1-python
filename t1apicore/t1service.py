@@ -20,9 +20,10 @@ from .t1organization import T1Organization
 from .t1pixelbundle import T1PixelBundle
 from .t1region import T1Region
 from .t1strategy import T1Strategy
+from .t1targetdimension import T1TargetDimension
 from .t1user import T1User
 
-SUBOB_CLASSES = {
+TARGET_DIMENSIONS = {
 	#'dma': T1DMA,
 	'connection speed': None,
 	'isp': None,
@@ -38,7 +39,7 @@ SUBOB_CLASSES = {
 	'content initiation': None,
 	'audio': None,
 	'player size': None,
-	'device': None
+	'device': None,
 }
 CLASSES = {
 	'ad_servers': T1AdServer,
@@ -52,7 +53,7 @@ CLASSES = {
 	'pixel_bundles': T1PixelBundle,
 	'strategies': T1Strategy,
 	'users': T1User,
-	'target_values': SUBOB_CLASSES
+	'target_dimensions': T1TargetDimension,
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -66,7 +67,7 @@ SINGULAR = {
 	'pixel_bundle': T1PixelBundle,
 	'strategy': T1Strategy,
 	'user': T1User,
-	'target_value': SUBOB_CLASSES
+	'target_dimension': T1TargetDimension,
 }
 SUBOB_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -84,7 +85,7 @@ SUBOB_PATHS = {
 	'content initiation': 'target_dimensions/21',
 	'audio': 'target_dimensions/22',
 	'player size': 'target_dimensions/23',
-	'device': 'target_dimensions/24'
+	'device': 'target_dimensions/24',
 }
 
 class T1Service(T1Connection):
@@ -168,10 +169,9 @@ class T1Service(T1Connection):
 		except KeyError:
 			ret = CLASSES[ent_type]
 		
-		if isinstance(ret, dict):
-			if subob:
-				return ret[subob](self.session, properties=ent_dict,
-									environment=self.environment)
+		if ent_type == 'target_dimension' or ent_type == 'target_dimensions':
+			return ret(self.session, subob_class=TARGET_DIMENSIONS[subob],
+				properties=ent_dict, environment=self.environment)
 
 		return ret(self.session, properties=ent_dict,
 					environment=self.environment)
@@ -214,16 +214,15 @@ class T1Service(T1Connection):
 			params['full'] = full
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
-		if entity and not subob:
+		if entity:
+			if subob:
+				entities[0]['id'] = url.split('/')[-1]
+				entities[0]['pid'] = entity
+				entities[0]['parent'] = collection
+				return self.return_class(entities[0], subob=subob)
 			return self.return_class(entities[0])
-		if isinstance(entities, list):
-			for index, entity in enumerate(entities):
-				entities[index] = self.return_class(entity)
-		if isinstance(entities, dict) and subob:
-			for index, entity in enumerate(entities['include']):
-				entities['include'][index] = self.return_class(entity, subob)
-			for index, entity in enumerate(entities['exclude']):
-				entities['exclude'][index] = self.return_class(entity, subob)
+		for index, entity in enumerate(entities):
+			entities[index] = self.return_class(entity)
 		if count:
 			return entities, ent_count
 		else:
