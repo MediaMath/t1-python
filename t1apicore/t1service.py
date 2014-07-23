@@ -15,11 +15,31 @@ from .t1agency import T1Agency
 from .t1atomiccreative import T1AtomicCreative
 from .t1campaign import T1Campaign
 from .t1concept import T1Concept
+#from .t1dma import T1DMA
 from .t1organization import T1Organization
 from .t1pixelbundle import T1PixelBundle
+from .t1region import T1Region
 from .t1strategy import T1Strategy
 from .t1user import T1User
 
+SUBOB_CLASSES = {
+	#'dma': T1DMA,
+	'connection speed': None,
+	'isp': None,
+	'browser': None,
+	'os': None,
+	'region': T1Region,
+	'mathselect250': None,
+	'country': None,
+	'safety': None,
+	'channels': None,
+	'fold position': None,
+	'linear format': None,
+	'content initiation': None,
+	'audio': None,
+	'player size': None,
+	'device': None
+}
 CLASSES = {
 	'ad_servers': T1AdServer,
 	'advertisers': T1Advertiser,
@@ -32,7 +52,7 @@ CLASSES = {
 	'pixel_bundles': T1PixelBundle,
 	'strategies': T1Strategy,
 	'users': T1User,
-
+	'target_values': SUBOB_CLASSES
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -46,6 +66,25 @@ SINGULAR = {
 	'pixel_bundle': T1PixelBundle,
 	'strategy': T1Strategy,
 	'user': T1User,
+	'target_value': SUBOB_CLASSES
+}
+SUBOB_PATHS = {
+	'dma': 'target_dimensions/1',
+	'connection speed': 'target_dimensions/2',
+	'isp': 'target_dimensions/3',
+	'browser': 'target_dimensions/4',
+	'os': 'target_dimensions/5',
+	'region': 'target_dimensions/7',
+	'mathselect250': 'target_dimensions/8',
+	'country': 'target_dimensions/14',
+	'safety': 'target_dimensions/15',
+	'channels': 'target_dimensions/16',
+	'fold position': 'target_dimensions/19',
+	'linear format': 'target_dimensions/20',
+	'content initiation': 'target_dimensions/21',
+	'audio': 'target_dimensions/22',
+	'player size': 'target_dimensions/23',
+	'device': 'target_dimensions/24'
 }
 
 class T1Service(T1Connection):
@@ -117,7 +156,7 @@ class T1Service(T1Connection):
 			ret = CLASSES[collection]
 		return ret(self.session, environment=self.environment)
 
-	def return_class(self, ent_dict):
+	def return_class(self, ent_dict, subob=None):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
@@ -128,11 +167,18 @@ class T1Service(T1Connection):
 			ret = SINGULAR[ent_type]
 		except KeyError:
 			ret = CLASSES[ent_type]
+		
+		if isinstance(ret, dict):
+			if subob:
+				return ret[subob](self.session, properties=ent_dict,
+									environment=self.environment)
+
 		return ret(self.session, properties=ent_dict,
 					environment=self.environment)
 
 	def get(self, collection,
 			entity=None,
+			subob=None,
 			limit=None,
 			include=None,
 			full=None,
@@ -147,6 +193,11 @@ class T1Service(T1Connection):
 		else:
 			params = {'page_limit': page_limit, 'page_offset': page_offset,
 						'sort_by': sort_by}
+		if isinstance(subob, str):
+			try:
+				url.append(SUBOB_PATHS[subob.lower()])
+			except KeyError:
+				raise T1ClientError('Attempted to retreive a sub-object not in T1.')
 		if isinstance(limit, dict):
 			if len(limit) != 1:
 				raise T1ClientError('Limit must consist of one parent collection'
@@ -163,10 +214,16 @@ class T1Service(T1Connection):
 			params['full'] = full
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
-		if entity:
+		if entity and not subob:
 			return self.return_class(entities[0])
-		for index, entity in enumerate(entities):
-			entities[index] = self.return_class(entity)
+		if isinstance(entities, list):
+			for index, entity in enumerate(entities):
+				entities[index] = self.return_class(entity)
+		if isinstance(entities, dict) and subob:
+			for index, entity in enumerate(entities['include']):
+				entities['include'][index] = self.return_class(entity, subob)
+			for index, entity in enumerate(entities['exclude']):
+				entities['exclude'][index] = self.return_class(entity, subob)
 		if count:
 			return entities, ent_count
 		else:

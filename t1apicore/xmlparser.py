@@ -47,6 +47,15 @@ class T1XMLParser(object):
 			self.entity_count = 1
 			self.entities = map_(self.dictify_entity,
 								result.iterfind('entity'))
+		elif result.find('include') or result.find('exclude'):
+			exclude = map_(self.dictify_entity,
+								result.iterfind('exclude/entities/entity'))
+			include = map_(self.dictify_entity,
+								result.iterfind('include/entities/entity'))
+			self.entity_count = len(exclude) + len(include)
+			self.entities = {}
+			self.entities['exclude'] = exclude
+			self.entities['include'] = include
 		elif result.find('log_entries') is not None:
 			self.entity_count = 1
 			self.entities = map_(self.dictify_history_entry,
