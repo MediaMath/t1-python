@@ -46,3 +46,6 @@ class T1Region(T1Object):
 	_readonly = T1Object._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(T1Region, self).__init__(session, properties, **kwargs)
+
+	def save(self):
+		raise T1ClientError('T1Regions are not editable.')
