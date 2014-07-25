@@ -126,8 +126,8 @@ class T1Object(T1Connection):
 class T1SubObject(T1Object):
 	def __init__(self, session, properties=None, *args, **kwargs):
 		self.parent = properties['parent']
-		self.parent_id = properties['pid']
-		del properties['parent'], properties['pid']
+		self.parent_id = properties['parent_id']
+		del properties['parent'], properties['parent_id']
 		super(T1SubObject, self).__init__(session, properties, *args, **kwargs)
 
 	def save(self, data=None):

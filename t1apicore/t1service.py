@@ -53,7 +53,7 @@ SINGULAR = {
 	'target_dimension': T1TargetDimension,
 	'target_value': T1TargetValue,
 }
-SUBOB_PATHS = {
+CHILD_PATHS = {
 	'dma': 'target_dimensions/1',
 	'connection speed': 'target_dimensions/2',
 	'isp': 'target_dimensions/3',
@@ -172,11 +172,13 @@ class T1Service(T1Connection):
 		else:
 			params = {'page_limit': page_limit, 'page_offset': page_offset,
 						'sort_by': sort_by}
-		if isinstance(child, str):
+		if child is not None:
 			try:
-				url.append(SUBOB_PATHS[child.lower()])
+				url.append(CHILD_PATHS[child.lower()])
+			except AttributeError:
+				raise T1ClientError("child must be a string corresponding to the entity retrieved")
 			except KeyError:
-				raise T1ClientError('Attempted to retreive a sub-object not in T1.')
+				raise T1ClientError("Attempted to retrieve an entity not in T1")
 		if isinstance(limit, dict):
 			if len(limit) != 1:
 				raise T1ClientError('Limit must consist of one parent collection'
@@ -193,10 +195,10 @@ class T1Service(T1Connection):
 			params['full'] = full
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
-		if entity:
-			if child:
+		if entity is not None:
+			if child is not None:
 				entities[0]['id'] = url.split('/')[-1]
-				entities[0]['pid'] = entity
+				entities[0]['parent_id'] = entity
 				entities[0]['parent'] = collection
 				return self.return_class(entities[0], child=child)
 			return self.return_class(entities[0])
