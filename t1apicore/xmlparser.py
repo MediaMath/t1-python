@@ -33,7 +33,7 @@ class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
 	def __init__(self, response, iter_=False):
 		response.encoding = 'utf-8'
-		result = ET.fromstring(response.text)
+		result = ET.fromstring(response.content)
 		self.get_status(result)
 		if iter_:
 			map_ = imap
@@ -47,6 +47,18 @@ class T1XMLParser(object):
 			self.entity_count = 1
 			self.entities = map_(self.dictify_entity,
 								result.iterfind('entity'))
+		elif result.find('include') or result.find('exclude') or result.find('enabled') is not None:
+			exclude = map_(self.dictify_entity,
+								result.iterfind('exclude/entities/entity'))
+			include = map_(self.dictify_entity,
+								result.iterfind('include/entities/entity'))
+			self.entity_count = 1
+			self.entities = [{
+				'_type': 'target_dimension',
+				'exclude': exclude,
+				'include': include,
+				'rels': {}
+			}]
 		elif result.find('log_entries') is not None:
 			self.entity_count = 1
 			self.entities = map_(self.dictify_history_entry,

@@ -6,7 +6,7 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
-from functools import partial
+# from functools import partial
 from .t1connection import T1Connection
 from .t1error import T1ClientError
 from .t1adserver import T1AdServer
@@ -15,9 +15,12 @@ from .t1agency import T1Agency
 from .t1atomiccreative import T1AtomicCreative
 from .t1campaign import T1Campaign
 from .t1concept import T1Concept
+#from .t1dma import T1DMA
 from .t1organization import T1Organization
 from .t1pixelbundle import T1PixelBundle
 from .t1strategy import T1Strategy
+from .t1targetdimension import T1TargetDimension
+from .t1targetvalue import T1TargetValue
 from .t1user import T1User
 
 CLASSES = {
@@ -32,7 +35,8 @@ CLASSES = {
 	'pixel_bundles': T1PixelBundle,
 	'strategies': T1Strategy,
 	'users': T1User,
-
+	'target_dimensions': T1TargetDimension,
+	'target_values': T1TargetValue,
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -46,55 +50,98 @@ SINGULAR = {
 	'pixel_bundle': T1PixelBundle,
 	'strategy': T1Strategy,
 	'user': T1User,
+	'target_dimension': T1TargetDimension,
+	'target_value': T1TargetValue,
+}
+CHILD_PATHS = {
+	'dma': 'target_dimensions/1',
+	'connection speed': 'target_dimensions/2',
+	'isp': 'target_dimensions/3',
+	'browser': 'target_dimensions/4',
+	'os': 'target_dimensions/5',
+	'region': 'target_dimensions/7',
+	'mathselect250': 'target_dimensions/8',
+	'country': 'target_dimensions/14',
+	'safety': 'target_dimensions/15',
+	'channels': 'target_dimensions/16',
+	'fold position': 'target_dimensions/19',
+	'linear format': 'target_dimensions/20',
+	'content initiation': 'target_dimensions/21',
+	'audio': 'target_dimensions/22',
+	'player size': 'target_dimensions/23',
+	'device': 'target_dimensions/24',
 }
 
 class T1Service(T1Connection):
 	"""Service class for ALL other T1 entities, e.g.: t1 = T1Service(auth)
 
-	Accepts authentication parameters.Supports get methods to get
+	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, apikey=None,
+	def __init__(self, username, password, api_key, auth_method=None,
 					environment='production'):
-		self.environment = environment
+		self.username = username
 		self.password = password
-		if apikey is not None:
-			self.username = '{}|{}'.format(username, apikey)
-		else:
-			self.username = username
-		auth = (self.username, self.password)
-		super(T1Service, self).__init__(auth, environment)
-		self._check_session()
-		# self.adama.auth = (self.username, self.password)
-	def __getattr__(self, attr):
-		"""Provides further active-record-like support.
-		Proper method is:
-		ac = t1.new('atomic_creatives') but this also supports
-		ac = t1.new_atomic_creatives() OR
-		ac = t1.new_atomic_creative() (because of the `new` behavior)
-		"""
-		if 'new_' in attr:
-			return partial(self.new, attr[4:])
-		else:
-			raise AttributeError(attr)
+		self.api_key = api_key
+		self._authenticated = False
+		self.auth = (self.username, self.password, self.api_key)
+		self.environment = environment
+		super(T1Service, self).__init__(environment)
+		if auth_method is not None:
+			self.authenticate(auth_method)
+
+	# def __getattr__(self, attr):
+	# 	"""Provides further active-record-like support.
+	# 	Proper method is:
+	# 	ac = t1.new('atomic_creatives') but this also supports
+	# 	ac = t1.new_atomic_creatives() OR
+	# 	ac = t1.new_atomic_creative() (because of the `self.new` behavior)
+	# 	"""
+	# 	if 'new_' in attr:
+	# 		return partial(self.new, attr[4:])
+	# 	else:
+	# 		raise AttributeError(attr)
 
 	def _check_session(self):
 		self._get(self.api_base + '/session')
 
-	# @classmethod # Because we need auth here, can't be class method
-	# def new(cls, collection):
+	def _auth_cookie(self, *args, **kwargs):
+		payload = {
+			'user': self.username,
+			'password': self.password,
+			'api_key': self.api_key
+		}
+		self._post(self.api_base + '/login', data=payload)
+		self._authenticated = True
+
+	def _auth_basic(self, *args, **kwargs):
+		self.session.auth = ('{}|{}'.format(self.username, self.api_key),
+							self.password)
+		self._check_session()
+		self._authenticated = True
+
+	def authenticate(self, auth_method, *args, **kwargs):
+		if auth_method == 'cookie':
+			return self._auth_cookie(*args, **kwargs)
+		elif auth_method == 'basic':
+			return self._auth_basic(*args, **kwargs)
+		else:
+			raise AttributeError('No authentication method for ' + auth_method)
+
+
 	def new(self, collection):
 		"""Returns a fresh class instance for a new entity.
-		t1 = T1Service(auth)
-		ac = t1.new('atomic_creatives') OR
-		ac = t1.new('atomic_creative')
+		t1 = T1Service(username, password, api_key, method="cookie")
+		ac = t1.new('atomic_creative') OR
+		ac = t1.new('atomic_creatives')
 		"""
 		try:
-			return CLASSES[collection](self.adama.auth)
+			ret = SINGULAR[collection]
 		except KeyError:
-			return SINGULAR[collection](self.adama.auth)
+			ret = CLASSES[collection]
+		return ret(self.session, environment=self.environment)
 
-	def return_class(self, ent_dict):
+	def return_class(self, ent_dict, child=None):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
@@ -102,13 +149,22 @@ class T1Service(T1Connection):
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
 		try:
-			return SINGULAR[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
+			ret = SINGULAR[ent_type]
 		except KeyError:
-			return CLASSES[ent_type](self.adama.auth, properties=ent_dict, environment=self.environment)
+			ret = CLASSES[ent_type]
+		return ret(self.session, properties=ent_dict,
+					environment=self.environment)
 
-	def get(self, collection, entity=None, limit=None,
-			include=None, full=None, sort_by='id',
-			page_offset=0, page_limit=100, count=False):
+	def get(self, collection,
+			entity=None,
+			child=None,
+			limit=None,
+			include=None,
+			full=None,
+			page_limit=100,
+			page_offset=0,
+			sort_by='id',
+			count=False):
 		url = [self.api_base, collection]
 		if entity is not None:
 			url.append(str(entity)) # str so that we can use join
@@ -116,6 +172,13 @@ class T1Service(T1Connection):
 		else:
 			params = {'page_limit': page_limit, 'page_offset': page_offset,
 						'sort_by': sort_by}
+		if child is not None:
+			try:
+				url.append(CHILD_PATHS[child.lower()])
+			except AttributeError:
+				raise T1ClientError("child must be a string corresponding to the entity retrieved")
+			except KeyError:
+				raise T1ClientError("Attempted to retrieve an entity not in T1")
 		if isinstance(limit, dict):
 			if len(limit) != 1:
 				raise T1ClientError('Limit must consist of one parent collection'
@@ -132,7 +195,12 @@ class T1Service(T1Connection):
 			params['full'] = full
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
-		if entity:
+		if entity is not None:
+			if child is not None:
+				entities[0]['id'] = url.split('/')[-1]
+				entities[0]['parent_id'] = entity
+				entities[0]['parent'] = collection
+				return self.return_class(entities[0], child=child)
 			return self.return_class(entities[0])
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
@@ -140,6 +208,9 @@ class T1Service(T1Connection):
 			return entities, ent_count
 		else:
 			return entities
+	def get_all(*args, **kwargs):
+		first_pg, count = self.get(*args, **kwargs)
+		pass # TODO finish implementing iterating over pages
 
 	def __get_all(self, collection, limit=None,
 				include=None, full=None, sort_by='id', count=False):
@@ -187,3 +258,5 @@ class T1Service(T1Connection):
 			return entities, ent_count
 		else:
 			return entities
+
+T1 = T1Service

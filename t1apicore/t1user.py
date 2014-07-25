@@ -26,26 +26,26 @@ class T1User(T1Object):
 		'creator_id': int,
 		'edit_campaigns': T1Object._int_to_bool,
 		'edit_margins_and_performance': T1Object._int_to_bool,
-		'fax': str,
-		'first_name': str,
+		'fax': None,
+		'first_name': None,
 		'id': int,
 		'labs_enable_rmx': T1Object._int_to_bool,
 		'last_login_on': T1Object._strpt,
-		'last_name': str,
+		'last_name': None,
 		'link_ldap': T1Object._int_to_bool,
-		'mobile': str,
-		'password': str,
+		'mobile': None,
+		'password': None,
 		'password_reset_sent': T1Object._strpt,
-		'password_reset_token': str,
-		'phone': str,
-		'role': str,
-		'scope': str,
+		'password_reset_token': None,
+		'phone': None,
+		'role': None,
+		'scope': None,
 		'sso_auth_sent': T1Object._strpt,
-		'sso_auth_token': str,
-		'title': str,
-		'type': str,
+		'sso_auth_token': None,
+		'title': None,
+		'type': None,
 		'updated_on': T1Object._strpt,
-		'username': str,
+		'username': None,
 		'version': int,
 		'view_organizations': T1Object._int_to_bool,
 	}
@@ -63,5 +63,5 @@ class T1User(T1Object):
 		'view_organizations': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1User, self).__init__(auth, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1User, self).__init__(session, properties, **kwargs)

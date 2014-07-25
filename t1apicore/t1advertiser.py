@@ -18,16 +18,16 @@ class T1Advertiser(T1Object):
 	_pull = {
 		'ad_server_fee': float,
 		'ad_server_id': int,
-		'ad_server_password': unicode,
-		'ad_server_username': unicode,
+		'ad_server_password': None,
+		'ad_server_username': None,
 		'agency_id': int,
 		'allow_x_strat_optimization': T1Object._int_to_bool,
 		'billing_contact_id': int,
 		'created_on': T1Object._strpt,
-		'domain': unicode,
+		'domain': None,
 		'id': int,
 		'minimize_multi_ads': T1Object._int_to_bool,
-		'name': unicode,
+		'name': None,
 		'sales_contact_id': int,
 		'status': T1Object._int_to_bool,
 		'updated_on': T1Object._strpt,
@@ -41,5 +41,5 @@ class T1Advertiser(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Advertiser, self).__init__(auth, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1Advertiser, self).__init__(session, properties, **kwargs)

@@ -33,21 +33,19 @@ class T1Connection(object):
 	API_BASES = {'production': 'https://api.mediamath.com/api/v1',
 				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
 				'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'}
-	def __init__(self, auth, environment='production', base=None):
+	def __init__(self, environment='production', base=None, create_session=True):
 		if base is None:
 			T1Connection.__setattr__(self, 'api_base',
 						T1Connection.API_BASES[environment])
-			# self.api_base = self.API_BASES[environment]
 		else:
 			T1Connection.__setattr__(self, 'api_base', base)
-			# self.api_base = base
-		T1Connection.__setattr__(self, 'adama', requests.Session())
-		self.adama.__setattr__('auth', auth)
+		if create_session:
+			T1Connection.__setattr__(self, 'session', requests.Session())
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""
 		try:
-			response = self.adama.get(url, params=params, stream=True)
+			response = self.session.get(url, params=params, stream=True)
 			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
@@ -59,7 +57,7 @@ class T1Connection(object):
 		if not data:
 			raise T1ClientError('No POST data.')
 		try:
-			response = self.adama.post(url, data=data, stream=True)
+			response = self.session.post(url, data=data, stream=True)
 			result = T1XMLParser(response)
 		except T1AuthRequiredError:
 			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'

@@ -18,11 +18,11 @@ class T1SiteList(T1Object):
 	_restrictions = T1Object._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
 	_pull = {
 		'created_on': T1Object._strpt,
-		'filename': str,
+		'filename': None,
 		'id': int,
-		'name': str,
+		'name': None,
 		'organization_id': int,
-		'restriction': str,
+		'restriction': None,
 		'status': T1Object._int_to_bool,
 		'updated_on': T1Object._strpt,
 		'version': int,
@@ -33,5 +33,5 @@ class T1SiteList(T1Object):
 		'status': int,
 	})
 	_readonly = T1Object._readonly.copy()
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1SiteList, self).__init__(auth, properties, **kwargs)
+	def __init__(self, session, properties=None, **kwargs):
+		super(T1SiteList, self).__init__(session, properties, **kwargs)

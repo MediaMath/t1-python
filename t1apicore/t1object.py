@@ -8,27 +8,27 @@ to parse it.
 
 from __future__ import division#, absolute_import
 from datetime import datetime
-from math import ceil
 from .t1connection import T1Connection
 
 
 class T1Object(T1Connection):
 	"""Superclass for all the various T1 Objects. Implements methods for """
-	_readonly = {'id', 'build_date', 'created_on', '_type', # _type is used because "type" is taken by T1User.
-						'updated_on', 'last_modified'}
-	def __init__(self, auth, properties=None, **kwargs):
-		super(T1Object, self).__init__(auth, **kwargs)
-
+	_readonly = {'id', 'build_date', 'created_on',
+					'_type', # _type is used because "type" is taken by T1User.
+					'updated_on', 'last_modified'}
+	def __init__(self, session, properties=None, *args, **kwargs):
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
-		super(T1Object, self).__setattr__('properties', {})
-		if isinstance(properties, dict):
-			for attr, val in properties.iteritems():
-				try:
-					self.properties[attr] = self._pull[attr](val)
-				except KeyError:
-					self.properties[attr] = val
-				# setattr(self, attr, val)
+		super(T1Object, self).__init__(create_session=False, **kwargs)
+		super(T1Object, self).__setattr__('session', session)
+		if properties is None:
+			super(T1Object, self).__setattr__('properties', {})
+			return
+		# This block will only execute if properties is given
+		for attr, val in properties.iteritems():
+			if self._pull.get(attr) is not None:
+				properties[attr] = self._pull[attr](val)
+		super(T1Object, self).__setattr__('properties', properties)
 
 	def __getitem__(self, attribute):
 		if attribute in self.properties:
@@ -52,6 +52,7 @@ class T1Object(T1Connection):
 	@staticmethod
 	def _int_to_bool(value):
 		return bool(int(value))
+
 	@staticmethod
 	def _enum(all_vars, default):
 		def get_value(test_value):
@@ -60,12 +61,15 @@ class T1Object(T1Connection):
 			else:
 				return default
 		return get_value
+
 	@staticmethod
 	def _strpt(ti):
 		return datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
+
 	@staticmethod
 	def _strft(ti):
 		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
+
 	@staticmethod
 	def _valid_id(id_):
 		try:
@@ -75,6 +79,7 @@ class T1Object(T1Connection):
 		if myid < 1:
 			return False
 		return True
+
 	def _validate_read(self, data):
 		for key, value in data.iteritems():
 			if key in self._pull:
@@ -114,9 +119,28 @@ class T1Object(T1Connection):
 	def history(self):
 		if not self.properties.get('id'):
 			raise T1ClientError('Valid entity ID not given')
-		url  = '/'.join([self.api_base, collection, str(self.id), 'history'])
+		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
-		return history
+		return history[0]
 
-# class T1Objects(object):
-# 	pass
+class T1SubObject(T1Object):
+	def __init__(self, session, properties=None, *args, **kwargs):
+		self.parent = properties['parent']
+		self.parent_id = properties['parent_id']
+		del properties['parent'], properties['parent_id']
+		super(T1SubObject, self).__init__(session, properties, *args, **kwargs)
+
+	def save(self, data=None):
+		if self.properties.get('id'):
+			url = '/'.join([self.api_base, self.parent, self.parent_id,
+							self.collection, self.id])
+		else:
+			url = '/'.join([self.api_base, self.parent,
+							self.parent_id, self.collection])
+		if data is not None:
+			data = self._validate_write(data)
+		else:
+			data = self._validate_write(self.properties)
+		entity = self._post(url, data=data)[0][0]
+		self._update_self(entity)
+
