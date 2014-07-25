@@ -18,29 +18,11 @@ from .t1concept import T1Concept
 #from .t1dma import T1DMA
 from .t1organization import T1Organization
 from .t1pixelbundle import T1PixelBundle
-from .t1region import T1Region
 from .t1strategy import T1Strategy
 from .t1targetdimension import T1TargetDimension
+from .t1targetvalue import T1TargetValue
 from .t1user import T1User
 
-TARGET_DIMENSIONS = {
-	#'dma': T1DMA,
-	'connection speed': None,
-	'isp': None,
-	'browser': None,
-	'os': None,
-	'region': T1Region,
-	'mathselect250': None,
-	'country': None,
-	'safety': None,
-	'channels': None,
-	'fold position': None,
-	'linear format': None,
-	'content initiation': None,
-	'audio': None,
-	'player size': None,
-	'device': None,
-}
 CLASSES = {
 	'ad_servers': T1AdServer,
 	'advertisers': T1Advertiser,
@@ -54,6 +36,7 @@ CLASSES = {
 	'strategies': T1Strategy,
 	'users': T1User,
 	'target_dimensions': T1TargetDimension,
+	'target_values': T1TargetValue,
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -68,6 +51,7 @@ SINGULAR = {
 	'strategy': T1Strategy,
 	'user': T1User,
 	'target_dimension': T1TargetDimension,
+	'target_value': T1TargetValue,
 }
 SUBOB_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -168,11 +152,6 @@ class T1Service(T1Connection):
 			ret = SINGULAR[ent_type]
 		except KeyError:
 			ret = CLASSES[ent_type]
-		
-		if ent_type == 'target_dimension' or ent_type == 'target_dimensions':
-			return ret(self.session, subob_class=TARGET_DIMENSIONS[subob],
-				properties=ent_dict, environment=self.environment)
-
 		return ret(self.session, properties=ent_dict,
 					environment=self.environment)
 

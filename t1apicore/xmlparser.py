@@ -47,7 +47,7 @@ class T1XMLParser(object):
 			self.entity_count = 1
 			self.entities = map_(self.dictify_entity,
 								result.iterfind('entity'))
-		elif result.find('include') or result.find('exclude'):
+		elif result.find('include') or result.find('exclude') or result.find('enabled') is not None:
 			exclude = map_(self.dictify_entity,
 								result.iterfind('exclude/entities/entity'))
 			include = map_(self.dictify_entity,

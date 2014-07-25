@@ -8,10 +8,10 @@ to parse it.
 
 from .t1object import T1Object
 
-class T1Region(T1Object):
-	"""docstring for T1Region."""
-	collection = 'regions'
-	type = 'region'
+class T1TargetValue(T1Object):
+	"""docstring for T1TargetValue."""
+	collection = 'target_values'
+	type = 'target_value'
 	_relations = {
 		'target_dimension',
 	}
@@ -39,13 +39,9 @@ class T1Region(T1Object):
 		'target_dimension_id': int,
 		'value': int,
 	}
-	_push = _pull.copy()
-	_push.update({
-		'is_targetable': int,
-	})
 	_readonly = T1Object._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1Region, self).__init__(session, properties, **kwargs)
+		super(T1TargetValue, self).__init__(session, properties, **kwargs)
 
 	def save(self):
-		raise T1ClientError('T1Regions are not editable.')
+		raise T1ClientError('T1TargetValues are not editable.')
