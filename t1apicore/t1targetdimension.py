@@ -53,8 +53,8 @@ class T1TargetDimension(T1SubObject):
 	def add_to(self, group, target):
 		url = self.api_base + '/target_values/'
 		if isinstance(target, list):
-			for subob_id in target:
-				entities, ent_count = self._get(url+str(subob_id))
+			for child_id in target:
+				entities, ent_count = self._get(url+str(child_id))
 				group.append(T1TargetValue(self.session, properties=entities[0], environment=self.environment))
 		elif isinstance(target, int):
 			entities, ent_count = self._get(url+str(target))
@@ -64,11 +64,11 @@ class T1TargetDimension(T1SubObject):
 		target_values = dict((target_value.id, target_value) 
 								for target_value in group)
 		if isinstance(target, list):
-			for subob_id in target:
+			for child_id in target:
 				try:
-					group.remove(target_values[subob_id])
+					group.remove(target_values[child_id])
 				except ValueError:
-					print 'Target value with ID {0} not in given group.'.format(subob_id)
+					print 'Target value with ID {0} not in given group.'.format(child_id)
 		if isinstance(target, int):
 			try:
 				group.remove(target_values[target])

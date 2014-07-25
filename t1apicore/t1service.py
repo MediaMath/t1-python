@@ -141,7 +141,7 @@ class T1Service(T1Connection):
 			ret = CLASSES[collection]
 		return ret(self.session, environment=self.environment)
 
-	def return_class(self, ent_dict, subob=None):
+	def return_class(self, ent_dict, child=None):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
@@ -157,7 +157,7 @@ class T1Service(T1Connection):
 
 	def get(self, collection,
 			entity=None,
-			subob=None,
+			child=None,
 			limit=None,
 			include=None,
 			full=None,
@@ -172,9 +172,9 @@ class T1Service(T1Connection):
 		else:
 			params = {'page_limit': page_limit, 'page_offset': page_offset,
 						'sort_by': sort_by}
-		if isinstance(subob, str):
+		if isinstance(child, str):
 			try:
-				url.append(SUBOB_PATHS[subob.lower()])
+				url.append(SUBOB_PATHS[child.lower()])
 			except KeyError:
 				raise T1ClientError('Attempted to retreive a sub-object not in T1.')
 		if isinstance(limit, dict):
@@ -194,11 +194,11 @@ class T1Service(T1Connection):
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
 		if entity:
-			if subob:
+			if child:
 				entities[0]['id'] = url.split('/')[-1]
 				entities[0]['pid'] = entity
 				entities[0]['parent'] = collection
-				return self.return_class(entities[0], subob=subob)
+				return self.return_class(entities[0], child=child)
 			return self.return_class(entities[0])
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
