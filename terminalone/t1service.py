@@ -72,8 +72,8 @@ CHILD_PATHS = {
 	'device': 'target_dimensions/24',
 }
 
-class T1Service(T1Connection):
-	"""Service class for ALL other T1 entities, e.g.: t1 = T1Service(auth)
+class T1(T1Connection):
+	"""Service class for ALL other T1 entities, e.g.: t1 = T1(auth)
 
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
@@ -86,7 +86,7 @@ class T1Service(T1Connection):
 		self._authenticated = False
 		self.auth = (self.username, self.password, self.api_key)
 		self.environment = environment
-		super(T1Service, self).__init__(environment)
+		super(T1, self).__init__(environment)
 		if auth_method is not None:
 			self.authenticate(auth_method)
 
@@ -131,7 +131,7 @@ class T1Service(T1Connection):
 
 	def new(self, collection):
 		"""Returns a fresh class instance for a new entity.
-		t1 = T1Service(username, password, api_key, method="cookie")
+		t1 = T1(username, password, api_key, method="cookie")
 		ac = t1.new('atomic_creative') OR
 		ac = t1.new('atomic_creatives')
 		"""
@@ -259,4 +259,4 @@ class T1Service(T1Connection):
 		else:
 			return entities
 
-T1 = T1Service
+T1Service = T1
