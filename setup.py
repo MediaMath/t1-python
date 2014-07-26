@@ -16,7 +16,7 @@ setup(
 	author_email='pswaminathan@mediamath.com',
 	url='http://www.mediamath.com',
 	description="A package for interacting with MediaMath's TerminalOne API.",
-	long_description=open('README.md').read(),
+	long_description=open('README.rst').read(),
 	packages=packages,
 	install_requires=requirements,
 	platforms=['any'],
