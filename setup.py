@@ -10,7 +10,7 @@ packages = ['terminalone']
 requirements = ['requests>=2.3.0']
 
 setup(
-	name='terminalone',
+	name='TerminalOne',
 	version='0.3.0',
 	author='Prasanna Swaminathan',
 	author_email='pswaminathan@mediamath.com',

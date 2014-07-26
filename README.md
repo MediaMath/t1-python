@@ -1,5 +1,5 @@
-T1 Client Library - Python
-================
+T1 Client Library
+=================
 
 **WIP** Python implementation of a T1 API Library. This library consists of Python classes for working with T1 entities. This library is written for Python 2.7. I have tried to ensure compatibility with 3.x, but this is not guaranteed and should be used at your own risk.
 
