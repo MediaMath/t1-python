@@ -32,7 +32,7 @@ class T1Campaign(T1Object):
 		'ad_server_username': None,
 		'advertiser_id': int,
 		'agency_fee_pct': float,
-		'conversion_type': unicode, # COME BACK HERE
+		'conversion_type': None, # COME BACK HERE
 		'conversion_variable_minutes': int,
 		'created_on': T1Object._strpt,
 		'currency_code': None,

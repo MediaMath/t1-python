@@ -3,26 +3,26 @@ T1 Client Library - Python
 
 **WIP** Python implementation of a T1 API Library. This library consists of Python classes for working with T1 entities. This library is written for Python 2.7. I have tried to ensure compatibility with 3.x, but this is not guaranteed and should be used at your own risk.
 
-The best way to use this package is to initiate the `T1Service` class, and do everything through there. That way, the only thing you have to import is T1Service (`import t1api` or `from t1api import T1Service`), then instantiate the class (`t1 = t1api.T1Service(username, password, api_key, [auth_method], [environment])`).
+The best way to use this package is to instantiate the `T1` class, and do everything through there. That way, the only thing you have to import is T1 (`import terminalone` or `from terminalone import T1`), then instantiate the class (`t1 = terminalone.T1(username, password, api_key, [auth_method], [environment])`).
 ```python
->>> from t1api import T1Service
->>> t1 = T1Service('myusername', 'mypassword', 'my_api_key')
+>>> from terminalone import T1
+>>> t1 = T1('myusername', 'mypassword', 'my_api_key')
 >>> t1.authenticate('cookie') # 'cookie' and 'basic' currently supported
 ```
 
 Authenticating upon instantiation is done by using the auth_method keyword:
 ```python
->>> t1 = T1Service('myusername', 'mypassword', 'my_api_key', auth_method='basic')
+>>> t1 = T1('myusername', 'mypassword', 'my_api_key', auth_method='basic')
 ```
 
 Environment can be "production" or "sandbox", defaulting to production:
 ```python
->>> t1 = T1Service('myusername', 'mypassword', 'my_api_key', environment='sandbox')
+>>> t1 = T1('myusername', 'mypassword', 'my_api_key', environment='sandbox')
 ```
 
-Please note that until your API key is approved to be used in production, you should use environment='sandbox' when instantiating T1Service.
+Please note that until your API key is approved to be used in production, you should use environment='sandbox' when instantiating T1.
 
-A specific entity can be retrieved by using the `get` method from `T1Service`:
+A specific entity can be retrieved by using the `get` method from `T1`:
 ```python
 >>> my_advertiser = t1.get('advertisers', 111111)
 ```
@@ -42,7 +42,7 @@ Once you have your instance, you can modify its values, and then save it back:
 ok
 ```
 
-Create new entities my calling the `new` method on your T1Service instance:
+Create new entities my calling the `new` method on your T1 instance:
 ```python
 >>> new_creative = t1.new('campaign')
 >>> # OR
@@ -51,12 +51,12 @@ Create new entities my calling the `new` method on your T1Service instance:
 
 Why don't we import the object classes directly? For instance, why doesn't this work?
 ```python
->>> from t1api import T1Campaign
+>>> from terminalone import T1Campaign
 ```
 
 The answer here is that we need to keep a common session so that we can share session information across requests. This allows you to work with many objects, only passing in authentication information once.
 ```python
->>> t1 = T1Service('myusername', 'mypassword', 'my_api_key')
+>>> t1 = T1('myusername', 'mypassword', 'my_api_key')
 >>> t1.authenticate('cookie')
 >>> c = t1.new('campaign')
 >>> c.session is t1.session

@@ -22,10 +22,11 @@ to parse it.
 # }
 # ]
 
-from itertools import imap
 try:
+	from itertools import imap
 	import xml.etree.cElementTree as ET
-except ImportError:
+except ImportError: # Python 3
+	imap = map
 	import xml.etree.ElementTree as ET
 from .t1error import *
 
