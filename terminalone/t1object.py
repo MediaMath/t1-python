@@ -44,10 +44,10 @@ class T1Object(T1Connection):
 		else:
 			raise AttributeError(attribute)
 	def __setattr__(self, attribute, value):
-		try:
+		if self._pull.get(attribute) is not None:
 			self.properties[attribute] = self._pull[attribute](value)
-		except KeyError:
-			super(T1Object, self).__setattr__(attribute, value)
+		else:
+			self.properties[attribute] = value
 
 	@staticmethod
 	def _int_to_bool(value):
@@ -93,8 +93,10 @@ class T1Object(T1Connection):
 			if key in self._readonly or key in self._relations:
 				del data[key]
 			else:
-				if key in self._push:
+				if self._push.get(key) is not None:
 					data[key] = self._push[key](value)
+				else:
+					data[key] = value
 		return data
 
 	def _update_self(self, entity):
