@@ -45,7 +45,10 @@ class T1Object(T1Connection):
 			raise AttributeError(attribute)
 	def __setattr__(self, attribute, value):
 		try:
-			self.properties[attribute] = self._pull[attribute](value)
+			if self._pull.get(attribute) is not None:
+				self.properties[attribute] = self._pull[attribute](value)
+			else:
+				self.properties[attribute] = value
 		except KeyError:
 			super(T1Object, self).__setattr__(attribute, value)
 
@@ -94,7 +97,10 @@ class T1Object(T1Connection):
 				del data[key]
 			else:
 				if key in self._push:
-					data[key] = self._push[key](value)
+					if self._push.get(key) is not None:
+						data[key] = self._push[key](value)
+					else:
+						data[key] = value
 		return data
 
 	def _update_self(self, entity):
