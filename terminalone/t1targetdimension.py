@@ -34,8 +34,16 @@ class T1TargetDimension(T1SubObject):
 		for index, ent_dict in enumerate(self.include):
 			self.include[index] = T1TargetValue(self.session,
 				properties=ent_dict, environment=self.environment)
-
-	def save(self, data=None):
+	
+	def save(self, data=None, obj=False):
+		"""Saves the TargetDimension object.
+		
+		The data keyword expects dictionary of properties to POST to T1.
+		The obj keyword is a flag for passing T1TargetValue objects in the
+		include/exclude field, instead of TargetValue IDs.
+		
+		Arguments are optional.
+		"""
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, str(self.parent_id),
 							self.collection, str(self.id)])
@@ -45,10 +53,16 @@ class T1TargetDimension(T1SubObject):
 		if data is not None:
 			data = self._validate_write(data)
 		else:
-			data = {
-				'exclude': [target_value.id for target_value in self.exclude],
-				'include': [target_value.id for target_value in self.include]
-			}
+			if obj:
+				data = {
+					'exclude': [target_value.id for target_value in self.exclude],
+					'include': [target_value.id for target_value in self.include]
+				}
+			else:
+				data = {
+					'exclude': self.exclude,
+					'include': self.include
+				}
 		entity = self._post(url, data=data)[0][0]
 
 	def add_to(self, group, target):
