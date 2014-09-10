@@ -35,7 +35,7 @@ class T1TargetDimension(T1SubObject):
 			self.include[index] = T1TargetValue(self.session,
 				properties=ent_dict, environment=self.environment)
 
-	def save(self, data=None):
+	def save(self, data=None, obj_flag=False):
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, str(self.parent_id),
 							self.collection, str(self.id)])
@@ -45,10 +45,16 @@ class T1TargetDimension(T1SubObject):
 		if data is not None:
 			data = self._validate_write(data)
 		else:
-			data = {
-				'exclude': [target_value.id for target_value in self.exclude],
-				'include': [target_value.id for target_value in self.include]
-			}
+			if obj_flag:
+				data = {
+					'exclude': [target_value.id for target_value in self.exclude],
+					'include': [target_value.id for target_value in self.include]
+				}
+			else:
+				data = {
+					'exclude': self.exclude,
+					'include': self.include
+				}
 		entity = self._post(url, data=data)[0][0]
 
 	def add_to(self, group, target):
