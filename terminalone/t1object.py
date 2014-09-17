@@ -126,12 +126,6 @@ class T1Object(T1Connection):
 		return history[0]
 
 class T1SubObject(T1Object):
-	def __init__(self, session, properties=None, *args, **kwargs):
-		self.parent = properties['parent']
-		self.parent_id = properties['parent_id']
-		del properties['parent'], properties['parent_id']
-		super(T1SubObject, self).__init__(session, properties, *args, **kwargs)
-
 	def save(self, data=None):
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, self.parent_id,
