@@ -129,7 +129,7 @@ class T1(T1Connection):
 			raise AttributeError('No authentication method for ' + auth_method)
 
 
-	def new(self, collection):
+	def new(self, collection, *args, **kwargs):
 		"""Returns a fresh class instance for a new entity.
 		t1 = T1(username, password, api_key, method="cookie")
 		ac = t1.new('atomic_creative') OR
@@ -139,7 +139,7 @@ class T1(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			ret = CLASSES[collection]
-		return ret(self.session, environment=self.environment)
+		return ret(self.session, environment=self.environment, *args, **kwargs)
 
 	def return_class(self, ent_dict, child=None):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
