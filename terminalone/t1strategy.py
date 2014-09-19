@@ -6,7 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+import re
 from .t1object import T1Object
+
+PIXEL_PATTERN = re.compile(r'\[(\d+)\]')
+OPERATOR_PATTERN = re.compile(r'(AND|OR)')
 
 class T1Strategy(T1Object):
 	"""docstring for T1Strategy."""
@@ -104,3 +108,59 @@ class T1Strategy(T1Object):
 	_readonly = T1Object._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(T1Strategy, self).__init__(session, properties, **kwargs)
+		try:
+			self.pixel_target_expr
+		except AttributeError:
+			self.pixel_target_expr = ''
+		self._deserialize_target_expr()
+
+	def _deserialize_target_expr(self):
+		if 'AND NOT' in self.pixel_target_expr:
+			include_string, exclude_string = self.pixel_target_expr.split('AND NOT')
+		elif 'NOT' in self.pixel_target_expr:
+			include_string, exclude_string = self.pixel_target_expr.split('NOT')
+		elif self.pixel_target_expr:
+			include_string = self.pixel_target_expr
+			exclude_string = ''
+		else:
+			include_string = ''
+			exclude_string = ''
+		include_operator = OPERATOR_PATTERN.search(include_string)
+		exclude_operator = OPERATOR_PATTERN.search(exclude_string)
+		if include_operator:
+			include_operator = include_operator.group(0)
+		if exclude_operator:
+			exclude_operator = exclude_operator.group(0)
+		self.pixel_target_expr = {
+			'include': {
+				'pixels': [int(pix) for pix in PIXEL_PATTERN.findall(include_string)],
+				'operator': include_operator,
+			},
+			'exclude': {
+				'pixels': [int(pix) for pix in PIXEL_PATTERN.findall(exclude_string)],
+				'operator': exclude_operator,
+			},
+		}
+
+	def _serialize_target_expr(self):
+		include_bool = '] {} ['.format(self.pixel_target_expr['include']['operator'] or 'OR')
+		include_pixels = self.pixel_target_expr['include']['pixels']
+		exclude_bool = '] {} ['.format(self.pixel_target_expr['exclude']['operator'] or 'OR')
+		exclude_pixels = self.pixel_target_expr['exclude']['pixels']
+		include_string = '( [{}] )'.format(include_bool.join(
+			str(pix) for pix in include_pixels)) if include_pixels else ''
+		exclude_string = 'NOT ( [{}] )'.format(exclude_bool.join(
+			str(pix) for pix in exclude_pixels)) if exclude_pixels else ''
+		if include_string and exclude_string:
+			return '{} AND {}'.format(include_string, exclude_string)
+		else:
+			return include_string + exclude_string
+
+	def save(self, **kwargs):
+		self.pixel_target_expr = self._serialize_target_expr()
+		super(T1Strategy, self).save(**kwargs)
+		self._deserialize_target_expr()
+
+	@property
+	def pixel_target_expr_string(self):
+		return self._serialize_target_expr()
