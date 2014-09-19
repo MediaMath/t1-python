@@ -11,9 +11,9 @@ requirements = ['requests>=2.3.0']
 
 setup(
 	name='TerminalOne',
-	version='0.3.3',
+	version='0.3.4',
 	author='Prasanna Swaminathan',
-	author_email='pswaminathan@mediamath.com',
+	author_email='prasanna@mediamath.com',
 	url='http://www.mediamath.com',
 	description="A package for interacting with MediaMath's TerminalOne API.",
 	long_description=open('README.rst').read(),
