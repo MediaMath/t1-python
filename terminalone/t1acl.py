@@ -19,10 +19,9 @@ class T1ACL(T1SubObject):
 
 	_pull = {
 		'type': None,
-		'editable': None,
-		'strategy_id': None,
+		'editable': int,
+		'strategy_id': int,
 	}
-	_push = _pull.copy()
 	_readonly = T1SubObject._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(T1ACL, self).__init__(session, properties, **kwargs)

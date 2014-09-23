@@ -80,8 +80,8 @@ class T1(T1Connection):
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, api_key, auth_method=None,
-					environment='production'):
+	def __init__(self, username=None, password=None, api_key=None, auth_method=None,
+					environment='production', **kwargs):
 		self.username = username
 		self.password = password
 		self.api_key = api_key
@@ -90,7 +90,7 @@ class T1(T1Connection):
 		self.environment = environment
 		super(T1, self).__init__(environment)
 		if auth_method is not None:
-			self.authenticate(auth_method)
+			self.authenticate(auth_method, **kwargs)
 
 	# def __getattr__(self, attr):
 	# 	"""Provides further active-record-like support.
@@ -108,12 +108,20 @@ class T1(T1Connection):
 		self._get(self.api_base + '/session')
 
 	def _auth_cookie(self, *args, **kwargs):
-		payload = {
-			'user': self.username,
-			'password': self.password,
-			'api_key': self.api_key
-		}
-		self._post(self.api_base + '/login', data=payload)
+		if kwargs.get('session_id'):
+			from cookielib import Cookie
+			from time import time
+			c = Cookie(0, 'adama_session', kwargs['session_id'], None, False,
+						'api.mediamath.com', None, None, '/', True, False, 
+							int(time()+172800), False, None, None, {'HttpOnly':None})
+			self.session.cookies.set_cookie(c)
+		else:
+			payload = {
+				'user': self.username,
+				'password': self.password,
+				'api_key': self.api_key
+			}
+			self._post(self.api_base + '/login', data=payload)
 		self._authenticated = True
 
 	def _auth_basic(self, *args, **kwargs):
