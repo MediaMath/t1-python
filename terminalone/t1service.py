@@ -9,6 +9,7 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 # from functools import partial
 from .t1connection import T1Connection
 from .t1error import T1ClientError
+from .t1acl import T1ACL
 from .t1adserver import T1AdServer
 from .t1advertiser import T1Advertiser
 from .t1agency import T1Agency
@@ -70,6 +71,7 @@ CHILD_PATHS = {
 	'audio': 'target_dimensions/22',
 	'player size': 'target_dimensions/23',
 	'device': 'target_dimensions/24',
+	'acl': 'acl'
 }
 
 class T1(T1Connection):
@@ -148,6 +150,9 @@ class T1(T1Connection):
 			for rel_name, data in rels.iteritems():
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
+		if '_acl' in ent_type:
+			return T1ACL(self.session, properties=ent_dict,
+							environment=self.environment)
 		try:
 			ret = SINGULAR[ent_type]
 		except KeyError:
