@@ -58,8 +58,25 @@ class T1XMLParser(object):
 				'_type': 'target_dimension',
 				'exclude': exclude,
 				'include': include,
-				'rels': {}
+				'rels': {},
 			}]
+		elif result.find('permissions') is not None:
+			self.advertiser = self.dictify_permission_entity(
+				next(result.iterfind('permissions/entities/advertiser'), None))
+			self.agency = self.dictify_permission_entity(
+				next(result.iterfind('permissions/entities/agency'), None))
+			self.organization = self.dictify_permission_entity(
+				next(result.iterfind('permissions/entities/organization'), None))
+			self.entities = map_(self.dictify_permission_entity,
+								result.iterfind('permissions/flags'))
+			self.entity_count = 1
+			self.entities[0].update({
+				'_type': 'permission',
+				'advertiser': self.advertiser,
+				'agency': self.agency,
+				'organization': self.organization,
+				'rels': {},
+			})
 		elif result.find('log_entries') is not None:
 			self.entity_count = 1
 			self.entities = map_(self.dictify_history_entry,
@@ -107,6 +124,17 @@ class T1XMLParser(object):
 				output[prop.attrib['name']] = prop.attrib['value']
 		return output
 	
+	def dictify_permission_entity(self, entity):
+		if entity:
+			output = {}
+			if entity.tag == 'flags':
+				for prop in entity:
+					output[prop.attrib['type']] = prop.attrib['value']
+			else:
+				for prop in entity:
+					output[prop.attrib['id']] = prop.attrib['name']
+			return output
+
 	def dictify_history_entry(self, entry):
 		output = entry.attrib
 		fields = {}

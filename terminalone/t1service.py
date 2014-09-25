@@ -18,6 +18,7 @@ from .t1campaign import T1Campaign
 from .t1concept import T1Concept
 #from .t1dma import T1DMA
 from .t1organization import T1Organization
+from .t1permission import T1Permission
 from .t1pixelbundle import T1PixelBundle
 from .t1strategy import T1Strategy
 from .t1targetdimension import T1TargetDimension
@@ -38,6 +39,7 @@ CLASSES = {
 	'users': T1User,
 	'target_dimensions': T1TargetDimension,
 	'target_values': T1TargetValue,
+	'permissions': T1Permission,
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -53,6 +55,7 @@ SINGULAR = {
 	'user': T1User,
 	'target_dimension': T1TargetDimension,
 	'target_value': T1TargetValue,
+	'permission': T1Permission,
 }
 CHILD_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -71,7 +74,9 @@ CHILD_PATHS = {
 	'audio': 'target_dimensions/22',
 	'player size': 'target_dimensions/23',
 	'device': 'target_dimensions/24',
-	'acl': 'acl'
+	'acl': 'acl',
+	'permission': 'permissions',
+	'permissions': 'permissions',
 }
 
 class T1(T1Connection):
@@ -110,10 +115,12 @@ class T1(T1Connection):
 	def _auth_cookie(self, *args, **kwargs):
 		if kwargs.get('session_id'):
 			from cookielib import Cookie
+			from urlparse import urlparse
 			from time import time
+			domain = urlparse(self.api_base).netloc
 			c = Cookie(0, 'adama_session', kwargs['session_id'], None, False,
-						'api.mediamath.com', None, None, '/', True, False, 
-							int(time()+172800), False, None, None, {'HttpOnly':None})
+					domain, None, None, '/', True, False, int(time()+86400),
+					False, None, None, {'HttpOnly':None})
 			self.session.cookies.set_cookie(c)
 		else:
 			payload = {
@@ -151,7 +158,7 @@ class T1(T1Connection):
 			ret = CLASSES[collection]
 		return ret(self.session, environment=self.environment, *args, **kwargs)
 
-	def return_class(self, ent_dict, child=None):
+	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
@@ -213,7 +220,6 @@ class T1(T1Connection):
 				entities[0]['id'] = url.split('/')[-1]
 				entities[0]['parent_id'] = entity
 				entities[0]['parent'] = collection
-				return self.return_class(entities[0], child=child)
 			return self.return_class(entities[0])
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
