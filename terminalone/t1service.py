@@ -9,6 +9,7 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 # from functools import partial
 from .t1connection import T1Connection
 from .t1error import T1ClientError
+from .t1acl import T1ACL
 from .t1adserver import T1AdServer
 from .t1advertiser import T1Advertiser
 from .t1agency import T1Agency
@@ -17,6 +18,7 @@ from .t1campaign import T1Campaign
 from .t1concept import T1Concept
 #from .t1dma import T1DMA
 from .t1organization import T1Organization
+from .t1permission import T1Permission
 from .t1pixelbundle import T1PixelBundle
 from .t1strategy import T1Strategy
 from .t1targetdimension import T1TargetDimension
@@ -37,6 +39,7 @@ CLASSES = {
 	'users': T1User,
 	'target_dimensions': T1TargetDimension,
 	'target_values': T1TargetValue,
+	'permissions': T1Permission,
 }
 SINGULAR = {
 	'ad_server': T1AdServer,
@@ -52,6 +55,7 @@ SINGULAR = {
 	'user': T1User,
 	'target_dimension': T1TargetDimension,
 	'target_value': T1TargetValue,
+	'permission': T1Permission,
 }
 CHILD_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -70,6 +74,9 @@ CHILD_PATHS = {
 	'audio': 'target_dimensions/22',
 	'player size': 'target_dimensions/23',
 	'device': 'target_dimensions/24',
+	'acl': 'acl',
+	'permission': 'permissions',
+	'permissions': 'permissions',
 }
 
 class T1(T1Connection):
@@ -78,8 +85,8 @@ class T1(T1Connection):
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, api_key, auth_method=None,
-					environment='production'):
+	def __init__(self, username=None, password=None, api_key=None, auth_method=None,
+					environment='production', **kwargs):
 		self.username = username
 		self.password = password
 		self.api_key = api_key
@@ -88,7 +95,7 @@ class T1(T1Connection):
 		self.environment = environment
 		super(T1, self).__init__(environment)
 		if auth_method is not None:
-			self.authenticate(auth_method)
+			self.authenticate(auth_method, **kwargs)
 
 	# def __getattr__(self, attr):
 	# 	"""Provides further active-record-like support.
@@ -106,12 +113,22 @@ class T1(T1Connection):
 		self._get(self.api_base + '/session')
 
 	def _auth_cookie(self, *args, **kwargs):
-		payload = {
-			'user': self.username,
-			'password': self.password,
-			'api_key': self.api_key
-		}
-		self._post(self.api_base + '/login', data=payload)
+		if kwargs.get('session_id'):
+			from cookielib import Cookie
+			from urlparse import urlparse
+			from time import time
+			domain = urlparse(self.api_base).netloc
+			c = Cookie(0, 'adama_session', kwargs['session_id'], None, False,
+					domain, None, None, '/', True, False, int(time()+86400),
+					False, None, None, {'HttpOnly':None})
+			self.session.cookies.set_cookie(c)
+		else:
+			payload = {
+				'user': self.username,
+				'password': self.password,
+				'api_key': self.api_key
+			}
+			self._post(self.api_base + '/login', data=payload)
 		self._authenticated = True
 
 	def _auth_basic(self, *args, **kwargs):
@@ -141,13 +158,16 @@ class T1(T1Connection):
 			ret = CLASSES[collection]
 		return ret(self.session, environment=self.environment, *args, **kwargs)
 
-	def return_class(self, ent_dict, child=None):
+	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
 			for rel_name, data in rels.iteritems():
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
+		if '_acl' in ent_type:
+			return T1ACL(self.session, properties=ent_dict,
+							environment=self.environment)
 		try:
 			ret = SINGULAR[ent_type]
 		except KeyError:
@@ -200,7 +220,6 @@ class T1(T1Connection):
 				entities[0]['id'] = url.split('/')[-1]
 				entities[0]['parent_id'] = entity
 				entities[0]['parent'] = collection
-				return self.return_class(entities[0], child=child)
 			return self.return_class(entities[0])
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
