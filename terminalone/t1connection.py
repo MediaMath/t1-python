@@ -47,9 +47,6 @@ class T1Connection(object):
 		try:
 			response = self.session.get(url, params=params, stream=True)
 			result = T1XMLParser(response)
-		except T1AuthRequiredError:
-			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
-					' Please check your configuration')
 		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
@@ -59,8 +56,5 @@ class T1Connection(object):
 		try:
 			response = self.session.post(url, data=data, stream=True)
 			result = T1XMLParser(response)
-		except T1AuthRequiredError:
-			raise T1AuthRequiredError('Your T1 credentials appear to be incorrect.'
-					' Please check your configuration')
 		return result.entities, result.entity_count
 	pass
