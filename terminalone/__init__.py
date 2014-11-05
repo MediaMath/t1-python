@@ -7,7 +7,7 @@ to parse it.
 
 __author__ = 'Prasanna Swaminathan'
 __copyright__ = 'Copyright 2014, Prasanna Swaminathan'
-__version__ = '0.3.5'
+__version__ = '0.3.6'
 __maintainer__ = 'Prasanna Swaminathan'
 __email__ = 'prasanna@mediamath.com'
 __status__ = 'Development'
