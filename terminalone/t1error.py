@@ -38,7 +38,7 @@ class T1APIError(T1BaseException):
 class T1Error(T1APIError):
 	"""docstring for T1Error"""
 	def __str__(self):
-		return repr('Uknown error: {}: {}'.format(self.code, self.message))
+		return repr('Unknown error: {}: {}'.format(self.code, self.message))
 
 class T1AuthRequiredError(T1APIError):
 	"""docstring for T1AuthenticationRequired"""
