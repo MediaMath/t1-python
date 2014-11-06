@@ -6,26 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
-# import contextlib
-# import json
 from os.path import getsize, isfile, realpath, dirname
 from time import time
 import requests
-from .xmlparser import T1XMLParser
-from .t1error import T1AuthRequiredError
-
-CURRENT_DIR = dirname(realpath(__file__))
-# T1_API_ENV = 'production'
-
-
-# def _load_config(configfile):
-# 	required_config_fields = frozenset(['username', 'password', 'base_uri'])
-# 	with open(configfile) as f:
-# 		config = json.load(f)
-# 	for field in required_config_fields:
-# 		if field not in config:
-# 			raise T1LoginException('Invalid config')
-# 	return config
+from .xmlparser import T1XMLParser, ParseError
+from .t1error import T1ClientError
 
 class T1Connection(object):
 	"""docstring for T1Connection"""
@@ -44,17 +29,30 @@ class T1Connection(object):
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""
+		response = self.session.get(url, params=params, stream=True)
+		if not response.ok:
+			self.response = response
+			raise T1ClientError('Status code: {}, content: '
+				'{}'.format(reponse.status_code, response.content))
 		try:
-			response = self.session.get(url, params=params, stream=True)
 			result = T1XMLParser(response)
+		except ParseError:
+			self.response = response
+			raise T1ClientError('Could not parse XML response')
 		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
 		"""Base method for subclasses to call."""
 		if not data:
 			raise T1ClientError('No POST data.')
+		response = self.session.post(url, data=data, stream=True)
+		if not response.ok:
+			self.response = response
+			raise T1ClientError('Status code: {}, content: '
+				'{}'.format(reponse.status_code, response.content))
 		try:
-			response = self.session.post(url, data=data, stream=True)
 			result = T1XMLParser(response)
+		except ParseError:
+			self.response = response
+			raise T1ClientError('Could not parse XML response')
 		return result.entities, result.entity_count
-	pass

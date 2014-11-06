@@ -64,6 +64,8 @@ class T1Object(T1Connection):
 
 	@staticmethod
 	def _strpt(ti):
+		if isinstance(ti, datetime):
+			return ti
 		return datetime.strptime(ti, "%Y-%m-%dT%H:%M:%S")
 
 	@staticmethod

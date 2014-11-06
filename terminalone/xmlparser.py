@@ -30,6 +30,8 @@ except ImportError: # Python 3
 	import xml.etree.ElementTree as ET
 from .t1error import *
 
+ParseError = ET.ParseError
+
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
 	def __init__(self, response, iter_=False):
@@ -107,7 +109,9 @@ class T1XMLParser(object):
 		elif status_code == 'auth_required':
 			self.status_code = False
 			raise T1AuthRequiredError(status_code, message)
-		pass
+		elif status_code == 'auth_error':
+			self.status_code = False
+			raise T1AuthRequiredError(status_code, message)
 	
 	def dictify_entity(self, entity):
 		output = entity.attrib
