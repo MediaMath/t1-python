@@ -93,7 +93,7 @@ class T1(T1Connection):
 		self._authenticated = False
 		self.auth = (self.username, self.password, self.api_key)
 		self.environment = environment
-		super(T1, self).__init__(environment)
+		super(T1, self).__init__(environment, **kwargs)
 		if auth_method is not None:
 			self.authenticate(auth_method, **kwargs)
 

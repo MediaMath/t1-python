@@ -18,7 +18,8 @@ class T1Connection(object):
 	API_BASES = {'production': 'https://api.mediamath.com/api/v1',
 				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
 				'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'}
-	def __init__(self, environment='production', base=None, create_session=True):
+	def __init__(self, environment='production', base=None,
+				create_session=True, **kwargs):
 		if base is None:
 			T1Connection.__setattr__(self, 'api_base',
 						T1Connection.API_BASES[environment])
@@ -33,7 +34,7 @@ class T1Connection(object):
 		if not response.ok:
 			self.response = response
 			raise T1ClientError('Status code: {}, content: '
-				'{}'.format(reponse.status_code, response.content))
+				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
 		except ParseError:
@@ -49,7 +50,7 @@ class T1Connection(object):
 		if not response.ok:
 			self.response = response
 			raise T1ClientError('Status code: {}, content: '
-				'{}'.format(reponse.status_code, response.content))
+				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
 		except ParseError:
