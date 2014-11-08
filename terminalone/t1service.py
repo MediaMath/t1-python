@@ -122,6 +122,7 @@ class T1(T1Connection):
 					domain, None, None, '/', True, False, int(time()+86400),
 					False, None, None, {'HttpOnly':None})
 			self.session.cookies.set_cookie(c)
+			self._check_session()
 		else:
 			payload = {
 				'user': self.username,
@@ -156,7 +157,8 @@ class T1(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			ret = CLASSES[collection]
-		return ret(self.session, environment=self.environment, *args, **kwargs)
+		return ret(self.session, environment=self.environment,
+					base=self.api_base, *args, **kwargs)
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
