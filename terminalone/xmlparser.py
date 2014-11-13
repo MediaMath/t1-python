@@ -129,15 +129,16 @@ class T1XMLParser(object):
 		return output
 	
 	def dictify_permission_entity(self, entity):
-		if entity:
-			output = {}
-			if entity.tag == 'flags':
-				for prop in entity:
-					output[prop.attrib['type']] = prop.attrib['value']
-			else:
-				for prop in entity:
-					output[prop.attrib['id']] = prop.attrib['name']
-			return output
+		if not entity:
+			return
+		output = {}
+		if entity.tag == 'flags':
+			for prop in entity:
+				output[prop.attrib['type']] = prop.attrib['value']
+		else:
+			for prop in entity:
+				output[int(prop.attrib['id'])] = prop.attrib['name']
+		return output
 
 	def dictify_history_entry(self, entry):
 		output = entry.attrib
