@@ -157,8 +157,10 @@ class T1(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			ret = CLASSES[collection]
-		return ret(self.session, environment=self.environment,
-					base=self.api_base, *args, **kwargs)
+		return ret(self.session,
+					environment=self.environment,
+					base=self.api_base,
+					*args, **kwargs)
 
 	def return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -168,14 +170,11 @@ class T1(T1Connection):
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
 		if '_acl' in ent_type:
-			return T1ACL(self.session, properties=ent_dict,
-							environment=self.environment)
-		try:
-			ret = SINGULAR[ent_type]
-		except KeyError:
-			ret = CLASSES[ent_type]
-		return ret(self.session, properties=ent_dict,
-					environment=self.environment)
+			return T1ACL(self.session,
+							properties=ent_dict,
+							environment=self.environment,
+							base=self.api_base)
+		return self.new(ent_type, properties=ent_dict)
 
 	def get(self, collection,
 			entity=None,
@@ -229,8 +228,10 @@ class T1(T1Connection):
 			return entities, ent_count
 		else:
 			return entities
-	def get_all(*args, **kwargs):
-		first_pg, count = self.get(*args, **kwargs)
+
+	def get_all(self, *args, **kwargs):
+		"""Retrieves all entities in a collection. Has same signature as .get."""
+		_, count = self.get(*args, **kwargs)
 		pass # TODO finish implementing iterating over pages
 
 	def __get_all(self, collection, limit=None,
