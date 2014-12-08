@@ -133,11 +133,11 @@ class T1Strategy(T1Object):
 			exclude_operator = exclude_operator.group(0)
 		self.pixel_target_expr = {
 			'include': {
-				'pixels': set([int(pix) for pix in PIXEL_PATTERN.findall(include_string)]),
+				'pixels': [int(pix) for pix in PIXEL_PATTERN.findall(include_string)],
 				'operator': include_operator,
 			},
 			'exclude': {
-				'pixels': set([int(pix) for pix in PIXEL_PATTERN.findall(exclude_string)]),
+				'pixels': [int(pix) for pix in PIXEL_PATTERN.findall(exclude_string)],
 				'operator': exclude_operator,
 			},
 		}
