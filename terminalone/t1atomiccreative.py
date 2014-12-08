@@ -25,7 +25,7 @@ class T1AtomicCreative(T1Object):
 	_expand_dir = T1Object._enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU',
 									'RU', 'NONRESTRICTED'}, 'NONRESTRICTED')
 	_expand_trig = T1Object._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'},'CLICK')
-	_file_types = T1Object._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unkown')
+	_file_types = T1Object._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unknown')
 	_tag_types = T1Object._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
 	_pull = {
 		'advertiser_id': int,
