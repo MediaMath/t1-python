@@ -31,6 +31,7 @@ class T1PixelBundle(T1Object):
 		'eligible': T1Object._int_to_bool,
 		'external_identifier': None,
 		'id': int,
+		'keywords': None,
 		'name': None,
 		'pixel_type': None,
 		'pricing': None,
