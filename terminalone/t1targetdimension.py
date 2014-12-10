@@ -35,12 +35,10 @@ class T1TargetDimension(T1SubObject):
 			self.include[index] = T1TargetValue(self.session,
 				properties=ent_dict, environment=self.environment)
 	
-	def save(self, data=None, obj=False):
+	def save(self, data=None, **kwargs):
 		"""Saves the TargetDimension object.
 		
 		The data keyword expects dictionary of properties to POST to T1.
-		The obj keyword is a flag for passing T1TargetValue objects in the
-		include/exclude field, instead of TargetValue IDs.
 		
 		Arguments are optional.
 		"""
@@ -53,18 +51,16 @@ class T1TargetDimension(T1SubObject):
 		if data is not None:
 			data = self._validate_write(data)
 		else:
-			if obj:
-				data = {
-					'exclude': [target_value.id for target_value in self.exclude],
-					'include': [target_value.id for target_value in self.include]
-				}
-			else:
-				data = {
-					'exclude': [location.id if isinstance(location, T1TargetValue) 
-									else location for location in self.exclude],
-					'include': [location.id if isinstance(location, T1TargetValue)
-									else location for location in self.include]
-				}
+			if 'obj' in kwargs:
+				import warnings
+				warnings.warn('The obj flag is deprecated - please discontinue use.',
+								DeprecationWarning, stacklevel=2)
+			data = {
+				'exclude': [location.id if isinstance(location, T1TargetValue) 
+								else location for location in self.exclude],
+				'include': [location.id if isinstance(location, T1TargetValue)
+								else location for location in self.include]
+			}
 		entity = self._post(url, data=data)[0][0]
 		self._update_self(entity)
 
