@@ -60,10 +60,13 @@ class T1TargetDimension(T1SubObject):
 				}
 			else:
 				data = {
-					'exclude': self.exclude,
-					'include': self.include
+					'exclude': [location.id if isinstance(location, T1TargetValue) 
+									else location for location in self.exclude],
+					'include': [location.id if isinstance(location, T1TargetValue)
+									else location for location in self.include]
 				}
 		entity = self._post(url, data=data)[0][0]
+		self._update_self(entity)
 
 	def add_to(self, group, target):
 		url = self.api_base + '/target_values/'
