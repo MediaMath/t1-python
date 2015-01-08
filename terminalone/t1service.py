@@ -24,6 +24,7 @@ from .t1strategy import T1Strategy
 from .t1targetdimension import T1TargetDimension
 from .t1targetvalue import T1TargetValue
 from .t1user import T1User
+from .vendor.six import six
 
 CLASSES = {
 	'ad_servers': T1AdServer,
@@ -205,7 +206,7 @@ class T1(T1Connection):
 				raise T1ClientError('Limit must consist of one parent collection'
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
-			url.extend(['limit', '{0!s}={1:d}'.format(*limit.items()[0])])
+			url.extend(['limit', '{0!s}={1:d}'.format(*six.advance_iterator(six.iteritems(limit)))])
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
@@ -217,11 +218,12 @@ class T1(T1Connection):
 		url = '/'.join(url)
 		entities, ent_count = self._get(url, params=params)
 		if entity is not None:
+			entities = six.advance_iterator(entities)
 			if child is not None:
-				entities[0]['id'] = url.split('/')[-1]
-				entities[0]['parent_id'] = entity
-				entities[0]['parent'] = collection
-			return self.return_class(entities[0])
+				entities['id'] = url.split('/')[-1]
+				entities['parent_id'] = entity
+				entities['parent'] = collection
+			return self.return_class(entities)
 		for index, entity in enumerate(entities):
 			entities[index] = self.return_class(entity)
 		if count:

@@ -37,9 +37,9 @@ class T1Connection(object):
 				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
-		except ParseError:
+		except ParseError as e:
 			self.response = response
-			raise T1ClientError('Could not parse XML response')
+			raise T1ClientError('Could not parse XML response: {}'.format(e))
 		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
@@ -53,7 +53,7 @@ class T1Connection(object):
 				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
-		except ParseError:
+		except ParseError as e:
 			self.response = response
-			raise T1ClientError('Could not parse XML response')
+			raise T1ClientError('Could not parse XML response: {}'.format(e))
 		return result.entities, result.entity_count

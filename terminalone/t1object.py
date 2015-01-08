@@ -8,7 +8,9 @@ to parse it.
 
 from __future__ import division#, absolute_import
 from datetime import datetime
+import warnings
 from .t1connection import T1Connection
+from .vendor.six import six
 
 
 class T1Object(T1Connection):
@@ -25,17 +27,23 @@ class T1Object(T1Connection):
 			super(T1Object, self).__setattr__('properties', {})
 			return
 		# This block will only execute if properties is given
-		for attr, val in properties.iteritems():
+		for attr, val in six.iteritems(properties):
 			if self._pull.get(attr) is not None:
 				properties[attr] = self._pull[attr](val)
 		super(T1Object, self).__setattr__('properties', properties)
 
 	def __getitem__(self, attribute):
+		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
+							'please discontinue use.'),
+						DeprecationWarning, stacklevel=2)
 		if attribute in self.properties:
 			return self.properties[attribute]
 		else:
 			raise AttributeError(attribute)
 	def __setitem__(self, attribute, value):
+		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
+							'please discontinue use.'),
+						DeprecationWarning, stacklevel=2)
 		self.properties[attribute] = self._pull[attribute](value)
 
 	def __getattr__(self, attribute):

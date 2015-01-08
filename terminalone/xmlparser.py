@@ -6,22 +6,6 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-# myobject = {
-# 	'entity_count': 594,
-# 	'entities': self.entities,
-# 	'status_code': self.status_code
-# }
-# history:
-# entities = [
-# {
-# 	'action': 'add', 'date': '2013-02-21T14:58:28', 'user_id': '2178', 'user_name': 'dblacklock@mediamath.com', 'fields':
-# 	{
-# 		'concept_id': {'old_value': 21, 'new_value': 31},
-# 		'click_url': {'old_value': 'http://google.com', 'new_value': 'www.mediamath.com'}
-# 	}
-# }
-# ]
-
 try:
 	from itertools import imap
 	import xml.etree.cElementTree as ET
