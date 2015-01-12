@@ -6,7 +6,8 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1error import T1ClientError
+from __future__ import absolute_import
+from .t1error import ClientError
 from .t1object import T1SubObject
 from .t1targetvalue import T1TargetValue
 
@@ -82,9 +83,9 @@ class T1TargetDimension(T1SubObject):
 				try:
 					group.remove(target_values[child_id])
 				except ValueError:
-					raise T1ClientError('Target value with ID {0} not in given group.'.format(child_id))
+					raise ClientError('Target value with ID {0} not in given group.'.format(child_id))
 		if isinstance(target, int):
 			try:
 				group.remove(target_values[target])
 			except ValueError:
-				raise T1ClientError('Target value with ID {0} not in given group.'.format(target))
+				raise ClientError('Target value with ID {0} not in given group.'.format(target))

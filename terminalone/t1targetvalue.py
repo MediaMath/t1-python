@@ -6,6 +6,8 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+from __future__ import absolute_import
+from .t1error import ClientError
 from .t1object import T1Object
 
 class T1TargetValue(T1Object):
@@ -44,4 +46,4 @@ class T1TargetValue(T1Object):
 		super(T1TargetValue, self).__init__(session, properties, **kwargs)
 
 	def save(self):
-		raise T1ClientError('T1TargetValues are not editable.')
+		raise ClientError(None, 'T1TargetValues are not editable.')

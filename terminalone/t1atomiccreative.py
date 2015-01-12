@@ -6,8 +6,8 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+from __future__ import absolute_import
 from .t1object import T1Object
-# IMPORT
 
 class T1AtomicCreative(T1Object):
 	"""docstring for T1AtomicCreative"""

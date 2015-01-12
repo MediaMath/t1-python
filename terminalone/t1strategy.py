@@ -6,6 +6,7 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+from __future__ import absolute_import
 import re
 from .t1object import T1Object
 

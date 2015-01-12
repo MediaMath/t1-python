@@ -6,7 +6,8 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1error import T1ClientError
+from __future__ import absolute_import
+from .t1error import ClientError
 from .t1object import T1SubObject
 
 class T1ACL(T1SubObject):
@@ -25,4 +26,4 @@ class T1ACL(T1SubObject):
 		super(T1ACL, self).__init__(session, properties, **kwargs)
 	
 	def save(self):
-		raise T1ClientError('This object is not editable.')
+		raise ClientError('This object is not editable.')

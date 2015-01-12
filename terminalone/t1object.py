@@ -6,19 +6,30 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from __future__ import division#, absolute_import
+from __future__ import absolute_import, division
 from datetime import datetime
 import warnings
 from .t1connection import T1Connection
+from .t1error import ClientError
 from .vendor.six import six
 
 
 class T1Object(T1Connection):
-	"""Superclass for all the various T1 Objects. Implements methods for """
+	"""Superclass for all the various T1 entities.
+
+	Implements methods for data validation and saving to T1.
+	"""
 	_readonly = {'id', 'build_date', 'created_on',
 					'_type', # _type is used because "type" is taken by T1User.
 					'updated_on', 'last_modified'}
 	def __init__(self, session, properties=None, *args, **kwargs):
+		"""Passes session information to underlying connection and validates properties passed in.
+		
+		T1Object, or any entity deriving from it, should never be instantiated directly.
+		`T1` class should, with session information, instantiate the relelvant
+		subclass.
+		"""
+
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
 		super(T1Object, self).__init__(create_session=False, **kwargs)
@@ -33,6 +44,7 @@ class T1Object(T1Connection):
 		super(T1Object, self).__setattr__('properties', properties)
 
 	def __getitem__(self, attribute):
+		"""DEPRECATED way of retrieving properties like with dictionary"""
 		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
 							'please discontinue use.'),
 						DeprecationWarning, stacklevel=2)
@@ -40,7 +52,9 @@ class T1Object(T1Connection):
 			return self.properties[attribute]
 		else:
 			raise AttributeError(attribute)
+
 	def __setitem__(self, attribute, value):
+		"""DEPRECATED way of setting properties like with dictionary"""
 		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
 							'please discontinue use.'),
 						DeprecationWarning, stacklevel=2)
@@ -56,6 +70,13 @@ class T1Object(T1Connection):
 			self.properties[attribute] = self._pull[attribute](value)
 		else:
 			self.properties[attribute] = value
+
+	def __getstate__(self):
+		"""Custom pickling. TODO"""
+		return super(T1Object, self).__getstate__()
+	def __setstate__(self, state):
+		"""Custom depickling. TODO"""
+		return super(T1Object, self).__setstate__(state)
 
 	@staticmethod
 	def _int_to_bool(value):
@@ -91,7 +112,7 @@ class T1Object(T1Connection):
 		return True
 
 	def _validate_read(self, data):
-		for key, value in data.iteritems():
+		for key, value in six.iteritems(data):
 			if key in self._pull:
 				data[key] = self._pull[key](value)
 		return data
@@ -99,7 +120,7 @@ class T1Object(T1Connection):
 	def _validate_write(self, data):
 		if 'version' not in data and 'id' in self.properties:
 			data['version'] = self.version
-		for key, value in data.copy().iteritems():
+		for key, value in six.iteritems(data.copy()):
 			if key in self._readonly or key in self._relations:
 				del data[key]
 			else:
@@ -110,7 +131,7 @@ class T1Object(T1Connection):
 		return data
 
 	def _update_self(self, entity):
-		for key, value in entity.iteritems():
+		for key, value in six.iteritems(entity):
 			setattr(self, key, value)
 
 	def save(self, data=None):
@@ -130,7 +151,7 @@ class T1Object(T1Connection):
 
 	def history(self):
 		if not self.properties.get('id'):
-			raise T1ClientError('Valid entity ID not given')
+			raise ClientError('Entity ID not given')
 		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
 		return history[0]

@@ -6,24 +6,34 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
+from __future__ import absolute_import
 from os.path import getsize, isfile, realpath, dirname
 from time import time
+import warnings
 import requests
 from .xmlparser import T1XMLParser, ParseError
-from .t1error import T1ClientError
+from .t1error import ClientError
 
 class T1Connection(object):
 	"""docstring for T1Connection"""
 	VALID_ENVS = frozenset(['production', 'sandbox', 'demo'])
-	API_BASES = {'production': 'https://api.mediamath.com/api/v1',
+	API_BASES = {'production': 'https://api.mediamath.com/api/v2.0',
 				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
+				'qa': 'https://t1qa2.mediamath.com/api/v2.0',
 				'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'}
-	def __init__(self, environment='production', base=None,
-				create_session=True, **kwargs):
-		if base is None:
+	def __init__(self,
+				environment='production',
+				base=None, api_base=None,
+				create_session=True,
+				**kwargs):
+		if base is None and api_base is None:
 			T1Connection.__setattr__(self, 'api_base',
 						T1Connection.API_BASES[environment])
+		elif api_base is not None:
+			T1Connection.__setattr__(self, 'api_base', api_base)
 		else:
+			warnings.warn(('`base` parameter is deprecated; use `api_base` insead.'),
+						DeprecationWarning, stacklevel=2)
 			T1Connection.__setattr__(self, 'api_base', base)
 		if create_session:
 			T1Connection.__setattr__(self, 'session', requests.Session())
@@ -33,27 +43,27 @@ class T1Connection(object):
 		response = self.session.get(url, params=params, stream=True)
 		if not response.ok:
 			self.response = response
-			raise T1ClientError('Status code: {}, content: '
+			raise ClientError('Status code: {}, content: '
 				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
 		except ParseError as e:
 			self.response = response
-			raise T1ClientError('Could not parse XML response: {}'.format(e))
+			raise ClientError('Could not parse XML response: {}'.format(e))
 		return result.entities, result.entity_count
 	
 	def _post(self, url, data):
 		"""Base method for subclasses to call."""
 		if not data:
-			raise T1ClientError('No POST data.')
+			raise ClientError('No POST data.')
 		response = self.session.post(url, data=data, stream=True)
 		if not response.ok:
 			self.response = response
-			raise T1ClientError('Status code: {}, content: '
+			raise ClientError('Status code: {}, content: '
 				'{}'.format(response.status_code, response.content))
 		try:
 			result = T1XMLParser(response)
 		except ParseError as e:
 			self.response = response
-			raise T1ClientError('Could not parse XML response: {}'.format(e))
+			raise ClientError('Could not parse XML response: {}'.format(e))
 		return result.entities, result.entity_count

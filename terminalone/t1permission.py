@@ -6,7 +6,8 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1error import T1ClientError
+from __future__ import absolute_import
+from .t1error import ClientError
 from .t1object import T1SubObject
 
 class T1Permission(T1SubObject):
@@ -37,4 +38,4 @@ class T1Permission(T1SubObject):
 		super(T1Permission, self).__init__(session, properties, **kwargs)
 
 	def save(self):
-		raise T1ClientError('Temporarily not editable - update coming soon!')
+		raise ClientError('Temporarily not editable - update coming soon!')

@@ -1,7 +1,7 @@
 TerminalOne API Library
 =======================
 
-**WIP** Python implementation of a T1 API Library. This library consists of Python classes for working with T1 entities. This library is written for Python 2.7. I have tried to ensure compatibility with 3.x, but this is not guaranteed and should be used at your own risk.
+**WIP** Python implementation of a T1 API Library. This library consists of Python classes for working with T1 entities. This library is written for Python 2.7. I have tried to ensure compatibility with 3.x, but this is not guaranteed and should be used at your own risk. A more guaranteed compatibility with Python 3 is in progress, made possible by bundling the module [six](https://pypi.python.org/pypi/six).
 
 The best way to use this package is to instantiate the `T1` class, and do everything through there. That way, the only thing you have to import is T1 (`import terminalone` or `from terminalone import T1`), then instantiate the class (`t1 = terminalone.T1(username, password, api_key, [auth_method], [environment])`).
 ```python
@@ -12,7 +12,7 @@ The best way to use this package is to instantiate the `T1` class, and do everyt
 
 Authenticating upon instantiation is done by using the auth_method keyword:
 ```python
->>> t1 = T1('myusername', 'mypassword', 'my_api_key', auth_method='basic')
+>>> t1 = T1('myusername', 'mypassword', 'my_api_key', auth_method='cookie')
 ```
 
 Environment can be "production" or "sandbox", defaulting to production:
@@ -27,7 +27,7 @@ A specific entity can be retrieved by using the `get` method from `T1`:
 >>> my_advertiser = t1.get('advertisers', 111111)
 ```
 
-You can then access that entity's properties using either instance attributes or the dict `properties`:
+You can then access that entity's properties using either instance attributes, or if you need to use a dictionary, the dict `properties`:
 ```python
 >>> my_advertiser.id
 111111

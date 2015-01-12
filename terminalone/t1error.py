@@ -6,46 +6,46 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-KNOWN_CODES = {'ok': None, 'auth_required': 'Authentication Required',
-				'invalid': set(['Validation Errors', 'Login Incorrect']),
-				'not_found': 'Entity Not Found'}
-# auth_required also has 'reason': 'not_logged_in'. Incorrect auths get 'invalid': 'Login Incorrect'
+from __future__ import absolute_import
 
-class T1BaseException(Exception):
-	"""Base Exception for the module"""
-	pass
+class T1Error(Exception):
+	"""Base exception class for the module. To catch all errors, catch this.
 
-class T1ClientError(T1BaseException):
-	"""Used for improper usages of the module.
-	
-	Improper usage includes attempting to retrieve a collection not in T1,
-	attempting to send data that doesn't match an API object, etc.
-	"""
-	pass
-
-class T1APIError(T1BaseException):
-	"""Base class that includes error code and message.
-	
-	Takes two arguments (minus self), the API error code and message. This allows
-	for the Exception to include both args.
+	T1Error encompasses errors that occur both from the client
+	(bad request, bad formation of properties, etc), to errors returned by the
+	server (validation errors, login errors, etc). Sets code and message attributes.
 	"""
 	def __init__(self, code, message):
 		self.code = code
 		self.message = message
 	def __str__(self):
-		return repr("{}: {}".format(self.code, self.message))
+		return repr('Error: {}: {}'.format(self.code, self.message))
 
-class T1Error(T1APIError):
-	"""docstring for T1Error"""
-	def __str__(self):
-		return repr('Unknown error: {}: {}'.format(self.code, self.message))
+class ClientError(T1Error):
+	"""Used for improper usages of the module.
 
-class T1AuthRequiredError(T1APIError):
-	"""docstring for T1AuthenticationRequired"""
+	Improper usage includes attempting to retrieve a collection not in T1,
+	attempting to send data that doesn't match an API object, etc.
+	"""
+	pass
+T1ClientError = ClientError
+
+class APIError(T1Error):
+	"""Base class that includes error code and message."""
+	pass
+T1APIError = APIError
+
+# class T1Error(T1APIError):
+# 	"""docstring for T1Error"""
+# 	def __str__(self):
+# 		return repr('Unknown error: {}: {}'.format(self.code, self.message))
+
+class AuthRequiredError(APIError):
+	"""docstring for AuthenticationRequired"""
 	pass
 
-class T1ValidationError(T1APIError):
-	"""docstring for T1ValidationError"""
+class ValidationError(APIError):
+	"""docstring for ValidationError"""
 	def __init__(self, code, errors):
 		msg_list = ['{} (code: {}): {}'.format(error, val['code'], val['error'])
 			for (error, val) in errors.iteritems()]
@@ -54,13 +54,13 @@ class T1ValidationError(T1APIError):
 	def __str__(self):
 		return self.message
 
-class T1NotFoundError(T1APIError):
-	"""docstring for T1NotFoundError"""
+class NotFoundError(APIError):
+	"""docstring for NotFoundError"""
 	pass
 
-class T1LoginError(T1BaseException):
+class LoginError(T1Error):
 	"""Exception class for invalid T1 Logins. Returns details of invalid login.
-	
+
 	If you encounter this class, it's because there's an issue with your T1 login.
 	Logins are defined in the config file, and need to be kept up-to-date.
 	"""

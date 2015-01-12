@@ -6,9 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
+from __future__ import absolute_import, division
 # from functools import partial
 from .t1connection import T1Connection
-from .t1error import T1ClientError
+from .constants import filters
+from .t1error import ClientError
 from .t1acl import T1ACL
 from .t1adserver import T1AdServer
 from .t1advertiser import T1Advertiser
@@ -157,7 +159,10 @@ class T1(T1Connection):
 		try:
 			ret = SINGULAR[collection]
 		except KeyError:
-			ret = CLASSES[collection]
+			if '_acl' in collection:
+				ret = T1ACL
+			else:
+				ret = CLASSES[collection]
 		return ret(self.session,
 					environment=self.environment,
 					base=self.api_base,
@@ -167,120 +172,154 @@ class T1(T1Connection):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
-			for rel_name, data in rels.iteritems():
+			for rel_name, data in six.iteritems(rels):
 				ent_dict[rel_name] = self.return_class(data)
 		del rels, ent_dict['rels']
-		if '_acl' in ent_type:
-			return T1ACL(self.session,
-							properties=ent_dict,
-							environment=self.environment,
-							base=self.api_base)
 		return self.new(ent_type, properties=ent_dict)
 
-	def get(self, collection,
-			entity=None,
-			child=None,
-			limit=None,
-			include=None,
-			full=None,
-			page_limit=100,
-			page_offset=0,
-			sort_by='id',
-			count=False):
-		url = [self.api_base, collection]
+	def _gen_classes(self, entities):
+		for entity in entities:
+			yield self.return_class(entity)
+
+	def _construct_params(self, entity, include, full, page_limit,
+						page_offset, sort_by, query):
 		if entity is not None:
-			url.append(str(entity)) # str so that we can use join
 			params = {}
 		else:
-			params = {'page_limit': page_limit, 'page_offset': page_offset,
-						'sort_by': sort_by}
-		if child is not None:
-			try:
-				url.append(CHILD_PATHS[child.lower()])
-			except AttributeError:
-				raise T1ClientError("child must be a string corresponding to the entity retrieved")
-			except KeyError:
-				raise T1ClientError("Attempted to retrieve an entity not in T1")
-		if isinstance(limit, dict):
-			if len(limit) != 1:
-				raise T1ClientError('Limit must consist of one parent collection'
-					' (or chained parent collection) and a single value for it'
-					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
-			url.extend(['limit', '{0!s}={1:d}'.format(*six.advance_iterator(six.iteritems(limit)))])
+			params = {'page_limit': page_limit,
+						'page_offset': page_offset,
+						'sort_by': sort_by,
+						'q': query,}
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
 			params['with'] = include
 		if isinstance(full, list):
 			params['full'] = ','.join(full)
+		elif full is True:
+			params['full'] = '*'
 		elif full is not None:
 			params['full'] = full
-		url = '/'.join(url)
-		entities, ent_count = self._get(url, params=params)
+		return params
+
+	def _construct_url(self, collection, entity, child, limit):
+		url = [self.api_base, collection]
 		if entity is not None:
-			entities = six.advance_iterator(entities)
+			url.append(str(entity)) # str so that we can use join
+
+		if child is not None:
+			try:
+				url.append(CHILD_PATHS[child.lower()])
+			except AttributeError:
+				raise ClientError("Child must be a string corresponding to the entity retrieved")
+			except KeyError:
+				raise ClientError("Attempted to retrieve an entity not in T1")
+
+		if isinstance(limit, dict):
+			if len(limit) != 1:
+				raise ClientError('Limit must consist of one parent collection'
+					' (or chained parent collection) and a single value for it'
+					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
+			url.extend(['limit',
+						'{0!s}={1:d}'.format(*six.advance_iterator(six.iteritems(limit)))])
+
+		return '/'.join(url)
+
+	def get(
+		self,
+		collection,
+		entity=None,
+		child=None,
+		limit=None,
+		include=None,
+		full=None,
+		page_limit=100,
+		page_offset=0,
+		sort_by='id',
+		get_all=False,
+		query=None,
+		count=False,
+		_url=None,
+		_params=None
+	):
+		if page_limit > 100:
+			raise ClientError('page_limit parameter must not exceed 100')
+
+		if _url is None:
+			_url = self._construct_url(collection, entity, child, limit)
+
+		if get_all:
+			gen = self._get_all(collection,
+						entity=entity,
+						child=child,
+						include=include,
+						full=full,
+						sort_by=sort_by,
+						query=query,
+						count=count,
+						_url=_url)
+			if count:
+				ent_count = next(gen)
+				return gen, ent_count
+			else:
+				return gen
+
+		if _params is None:
+			_params = self._construct_params(entity, include, full, page_limit,
+										page_offset, sort_by, query)
+
+		entities, ent_count = self._get(_url, params=_params)
+		if entity is not None:
+			entities = six.advance_iterator(iter(entities))
 			if child is not None:
 				entities['id'] = url.split('/')[-1]
 				entities['parent_id'] = entity
 				entities['parent'] = collection
 			return self.return_class(entities)
-		for index, entity in enumerate(entities):
-			entities[index] = self.return_class(entity)
-		if count:
-			return entities, ent_count
-		else:
-			return entities
 
-	def get_all(self, *args, **kwargs):
+		ent_gen = self._gen_classes(entities)
+		if count:
+			return ent_gen, ent_count
+		else:
+			return ent_gen
+
+	def get_all(self, collection, **kwargs):
 		"""Retrieves all entities in a collection. Has same signature as .get."""
-		_, count = self.get(*args, **kwargs)
-		pass # TODO finish implementing iterating over pages
+		if 'get_all' in kwargs:
+			del kwargs['get_all']
+		return self.get(collection, get_all=True, **kwargs)
 
-	def __get_all(self, collection, limit=None,
-				include=None, full=None, sort_by='id', count=False):
-		"""Retrieves all records for a collection or limited collection.
+	def _get_all(self, collection, **kwargs):
+		_, num_recs = self._get(kwargs['_url'], params={
+			'page_limit': 1,
+			'q': kwargs.get('query'),
+		})
 
-		ONLY INCLUDED FOR COMPLETENESS. Normally self.get should be used, as
-		T1 will soon reject queries without a page_limit parameter.
-		"""
-		url = [self.api_base, collection]
-		params = {'sort_by': sort_by}
-		if isinstance(limit, dict):
-			if len(limit) != 1:
-				raise T1ClientError('Limit must consist of one parent collection'
-					' (or chained parent collection) and a single value for it'
-					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
-			url.extend(['limit', '{0!s}={1:d}'.format(*limit.items()[0])])
-		if isinstance(include, list): # Can't use "with" here because keyword
-			params['with'] = ','.join(include)
-		elif include is not None:
-			params['with'] = include
-		if isinstance(full, list):
-			params['full'] = ','.join(full)
-		elif full is not None:
-			params['full'] = full
-		url = '/'.join(url)
-		entities = self._get(url, params=params)
-		for index, entity in enumerate(entities):
-			entities[index] = self.return_class(entity)
-		return entities
+		if kwargs.get('count'):
+			yield num_recs
 
-	def get_sub(self, collection, entity, sub, *args):
-		pass
+		for page_offset in six.moves.range(0, num_recs, 100):
+			gen = self.get(collection,
+							_url=kwargs['_url'],
+							entity=kwargs.get('entity'),
+							include=kwargs.get('include'),
+							full=kwargs.get('full'),
+							page_offset=page_offset,
+							sort_by=kwargs.get('sort_by'),
+							query=kwargs.get('query'))
+			for item in gen:
+				yield item
 
-	def find(self, collection, key, query, full=None, count=False):
-		url = '/'.join([self.api_base, collection])
-		params = {'q': '{}=:{}'.format(key, query)}
-		if isinstance(full, list):
-			params['full'] = ','.join(full)
-		elif full is not None:
-			params['full'] = full
-		entities, ent_count = self._get(url, params=params)
-		for index, entity in enumerate(entities):
-			entities[index] = self.return_class(entity)
-		if count:
-			return entities, ent_count
+	# def get_sub(self, collection, entity, sub, *args):
+	# 	pass
+
+	def find(self, collection, variable, operator, candidates, **kwargs):
+		if operator == filters.IN:
+			if not isinstance(candidates, list):
+				raise ClientError('candidates must be list of entities for operator IN')
+			q = '(' + ','.join(str(c) for c in candidates) + ')'
 		else:
-			return entities
+			q = operator.join([variable, str(candidates or 'null')])
+		return self.get(collection, query=q, **kwargs)
 
 T1Service = T1
