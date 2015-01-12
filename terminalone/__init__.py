@@ -7,12 +7,13 @@ to parse it.
 
 from __future__ import absolute_import
 from .constants import filters
-from .t1service import T1, T1Service
+from .service import T1, T1Service
+from . import errors
 
 __author__ = 'Prasanna Swaminathan'
 __copyright__ = 'Copyright 2014, Prasanna Swaminathan'
-__version__ = '0.4.0a1'
+__version__ = '0.4.0a2'
 __maintainer__ = 'Prasanna Swaminathan'
 __email__ = 'prasanna@mediamath.com'
 __status__ = 'Development'
-__all__ = ['T1', 'T1Service']
+__all__ = ['T1', 'T1Service', 'filters', 'errors']

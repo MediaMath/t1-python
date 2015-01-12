@@ -7,48 +7,48 @@ to parse it.
 """
 
 from __future__ import absolute_import
-from .t1object import T1Object
+from ..entity import Entity
 
-class T1User(T1Object):
-	"""docstring for T1User."""
+class User(Entity):
+	"""docstring for User."""
 	collection = 'users'
 	type = 'user'
 	_relations = {
 		'creator',
 	}
-	_role = T1Object._enum({'ADMIN', 'MANAGER', 'REPORTER'}, 'REPORTER')
-	_scope = T1Object._enum({'GLOBAL', 'SELECT'}, 'SELECT')
-	_type = T1Object._enum({'INTERNAL', 'AGENCY', 'VPAN', 'ADVERTISER'},
+	_role = Entity._enum({'ADMIN', 'MANAGER', 'REPORTER'}, 'REPORTER')
+	_scope = Entity._enum({'GLOBAL', 'SELECT'}, 'SELECT')
+	_type = Entity._enum({'INTERNAL', 'AGENCY', 'VPAN', 'ADVERTISER'},
 							'ADVERTISER')
 	_pull = {
-		'access_internal_fees': T1Object._int_to_bool,
-		'active': T1Object._int_to_bool,
-		'created_on': T1Object._strpt,
+		'access_internal_fees': Entity._int_to_bool,
+		'active': Entity._int_to_bool,
+		'created_on': Entity._strpt,
 		'creator_id': int,
-		'edit_campaigns': T1Object._int_to_bool,
-		'edit_margins_and_performance': T1Object._int_to_bool,
+		'edit_campaigns': Entity._int_to_bool,
+		'edit_margins_and_performance': Entity._int_to_bool,
 		'fax': None,
 		'first_name': None,
 		'id': int,
-		'labs_enable_rmx': T1Object._int_to_bool,
-		'last_login_on': T1Object._strpt,
+		'labs_enable_rmx': Entity._int_to_bool,
+		'last_login_on': Entity._strpt,
 		'last_name': None,
-		'link_ldap': T1Object._int_to_bool,
+		'link_ldap': Entity._int_to_bool,
 		'mobile': None,
 		'password': None,
-		'password_reset_sent': T1Object._strpt,
+		'password_reset_sent': Entity._strpt,
 		'password_reset_token': None,
 		'phone': None,
 		'role': None,
 		'scope': None,
-		'sso_auth_sent': T1Object._strpt,
+		'sso_auth_sent': Entity._strpt,
 		'sso_auth_token': None,
 		'title': None,
 		'type': None,
-		'updated_on': T1Object._strpt,
+		'updated_on': Entity._strpt,
 		'username': None,
 		'version': int,
-		'view_organizations': T1Object._int_to_bool,
+		'view_organizations': Entity._int_to_bool,
 	}
 	_push = _pull.copy()
 	_push.update({
@@ -63,6 +63,6 @@ class T1User(T1Object):
 		'type': _type,
 		'view_organizations': int,
 	})
-	_readonly = T1Object._readonly.copy()
+	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1User, self).__init__(session, properties, **kwargs)
+		super(User, self).__init__(session, properties, **kwargs)

@@ -7,11 +7,11 @@ to parse it.
 """
 
 from __future__ import absolute_import
-from .t1error import ClientError
-from .t1object import T1SubObject
+from ..errors import ClientError
+from ..entity import SubEntity
 
-class T1ACL(T1SubObject):
-	"""docstring for T1ACL."""
+class ACL(SubEntity):
+	"""docstring for ACL."""
 	collection = 'acl'
 	type = 'acl'
 	_pull = {
@@ -23,7 +23,7 @@ class T1ACL(T1SubObject):
 		for key,value in properties.iteritems():
 			if '_id' in key:
 				self._pull[key] = int
-		super(T1ACL, self).__init__(session, properties, **kwargs)
+		super(ACL, self).__init__(session, properties, **kwargs)
 	
 	def save(self):
 		raise ClientError('This object is not editable.')

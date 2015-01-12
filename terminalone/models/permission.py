@@ -7,11 +7,11 @@ to parse it.
 """
 
 from __future__ import absolute_import
-from .t1error import ClientError
-from .t1object import T1SubObject
+from ..errors import ClientError
+from ..entity import SubEntity
 
-class T1Permission(T1SubObject):
-	"""docstring for T1Permission."""
+class Permission(SubEntity):
+	"""docstring for Permission."""
 	collection = 'permissions'
 	type = 'permission'
 	
@@ -35,7 +35,7 @@ class T1Permission(T1SubObject):
 	}
 
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1Permission, self).__init__(session, properties, **kwargs)
+		super(Permission, self).__init__(session, properties, **kwargs)
 
 	def save(self):
 		raise ClientError('Temporarily not editable - update coming soon!')

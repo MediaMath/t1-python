@@ -9,12 +9,12 @@ to parse it.
 from __future__ import absolute_import, division
 from datetime import datetime
 import warnings
-from .t1connection import T1Connection
-from .t1error import ClientError
+from .connection import Connection
+from .errors import ClientError
 from .vendor.six import six
 
 
-class T1Object(T1Connection):
+class Entity(Connection):
 	"""Superclass for all the various T1 entities.
 
 	Implements methods for data validation and saving to T1.
@@ -25,23 +25,23 @@ class T1Object(T1Connection):
 	def __init__(self, session, properties=None, *args, **kwargs):
 		"""Passes session information to underlying connection and validates properties passed in.
 		
-		T1Object, or any entity deriving from it, should never be instantiated directly.
+		Entity, or any entity deriving from it, should never be instantiated directly.
 		`T1` class should, with session information, instantiate the relelvant
 		subclass.
 		"""
 
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
-		super(T1Object, self).__init__(create_session=False, **kwargs)
-		super(T1Object, self).__setattr__('session', session)
+		super(Entity, self).__init__(create_session=False, **kwargs)
+		super(Entity, self).__setattr__('session', session)
 		if properties is None:
-			super(T1Object, self).__setattr__('properties', {})
+			super(Entity, self).__setattr__('properties', {})
 			return
 		# This block will only execute if properties is given
 		for attr, val in six.iteritems(properties):
 			if self._pull.get(attr) is not None:
 				properties[attr] = self._pull[attr](val)
-		super(T1Object, self).__setattr__('properties', properties)
+		super(Entity, self).__setattr__('properties', properties)
 
 	def __getitem__(self, attribute):
 		"""DEPRECATED way of retrieving properties like with dictionary"""
@@ -73,10 +73,10 @@ class T1Object(T1Connection):
 
 	def __getstate__(self):
 		"""Custom pickling. TODO"""
-		return super(T1Object, self).__getstate__()
+		return super(Entity, self).__getstate__()
 	def __setstate__(self, state):
 		"""Custom depickling. TODO"""
-		return super(T1Object, self).__setstate__(state)
+		return super(Entity, self).__setstate__(state)
 
 	@staticmethod
 	def _int_to_bool(value):
@@ -156,7 +156,7 @@ class T1Object(T1Connection):
 		history = self._get(url)
 		return history[0]
 
-class T1SubObject(T1Object):
+class SubEntity(Entity):
 	def save(self, data=None):
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, self.parent_id,

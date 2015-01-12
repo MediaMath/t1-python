@@ -7,15 +7,13 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 """
 
 from __future__ import absolute_import
-from os.path import getsize, isfile, realpath, dirname
-from time import time
 import warnings
-import requests
+from requests import Session
 from .xmlparser import T1XMLParser, ParseError
-from .t1error import ClientError
+from .errors import ClientError
 
-class T1Connection(object):
-	"""docstring for T1Connection"""
+class Connection(object):
+	"""docstring for Connection"""
 	VALID_ENVS = frozenset(['production', 'sandbox', 'demo'])
 	API_BASES = {'production': 'https://api.mediamath.com/api/v2.0',
 				'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
@@ -27,16 +25,16 @@ class T1Connection(object):
 				create_session=True,
 				**kwargs):
 		if base is None and api_base is None:
-			T1Connection.__setattr__(self, 'api_base',
-						T1Connection.API_BASES[environment])
+			Connection.__setattr__(self, 'api_base',
+						Connection.API_BASES[environment])
 		elif api_base is not None:
-			T1Connection.__setattr__(self, 'api_base', api_base)
+			Connection.__setattr__(self, 'api_base', api_base)
 		else:
 			warnings.warn(('`base` parameter is deprecated; use `api_base` insead.'),
 						DeprecationWarning, stacklevel=2)
-			T1Connection.__setattr__(self, 'api_base', base)
+			Connection.__setattr__(self, 'api_base', base)
 		if create_session:
-			T1Connection.__setattr__(self, 'session', requests.Session())
+			Connection.__setattr__(self, 'session', Session())
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call."""

@@ -8,57 +8,56 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 
 from __future__ import absolute_import, division
 # from functools import partial
-from .t1connection import T1Connection
+from .connection import Connection
 from .constants import filters
-from .t1error import ClientError
-from .t1acl import T1ACL
-from .t1adserver import T1AdServer
-from .t1advertiser import T1Advertiser
-from .t1agency import T1Agency
-from .t1atomiccreative import T1AtomicCreative
-from .t1campaign import T1Campaign
-from .t1concept import T1Concept
-#from .t1dma import T1DMA
-from .t1organization import T1Organization
-from .t1permission import T1Permission
-from .t1pixelbundle import T1PixelBundle
-from .t1strategy import T1Strategy
-from .t1targetdimension import T1TargetDimension
-from .t1targetvalue import T1TargetValue
-from .t1user import T1User
+from .errors import ClientError
+from .models.acl import ACL
+from .models.adserver import AdServer
+from .models.advertiser import Advertiser
+from .models.agency import Agency
+from .models.atomiccreative import AtomicCreative
+from .models.campaign import Campaign
+from .models.concept import Concept
+from .models.organization import Organization
+from .models.permission import Permission
+from .models.pixelbundle import PixelBundle
+from .models.strategy import Strategy
+from .models.targetdimension import TargetDimension
+from .models.targetvalue import TargetValue
+from .models.user import User
 from .vendor.six import six
 
 CLASSES = {
-	'ad_servers': T1AdServer,
-	'advertisers': T1Advertiser,
-	'agencies': T1Agency,
-	'atomic_creatives': T1AtomicCreative,
-	'campaigns': T1Campaign,
-	'concepts': T1Concept,
-	'organizations': T1Organization,
-	# 'pixels': T1Pixel,
-	'pixel_bundles': T1PixelBundle,
-	'strategies': T1Strategy,
-	'users': T1User,
-	'target_dimensions': T1TargetDimension,
-	'target_values': T1TargetValue,
-	'permissions': T1Permission,
+	'ad_servers': AdServer,
+	'advertisers': Advertiser,
+	'agencies': Agency,
+	'atomic_creatives': AtomicCreative,
+	'campaigns': Campaign,
+	'concepts': Concept,
+	'organizations': Organization,
+	# 'pixels': Pixel,
+	'pixel_bundles': PixelBundle,
+	'strategies': Strategy,
+	'users': User,
+	'target_dimensions': TargetDimension,
+	'target_values': TargetValue,
+	'permissions': Permission,
 }
 SINGULAR = {
-	'ad_server': T1AdServer,
-	'advertiser': T1Advertiser,
-	'agency': T1Agency,
-	'atomic_creative': T1AtomicCreative,
-	'campaign': T1Campaign,
-	'concept': T1Concept,
-	'organization': T1Organization,
-	# 'pixel': T1Pixel,
-	'pixel_bundle': T1PixelBundle,
-	'strategy': T1Strategy,
-	'user': T1User,
-	'target_dimension': T1TargetDimension,
-	'target_value': T1TargetValue,
-	'permission': T1Permission,
+	'ad_server': AdServer,
+	'advertiser': Advertiser,
+	'agency': Agency,
+	'atomic_creative': AtomicCreative,
+	'campaign': Campaign,
+	'concept': Concept,
+	'organization': Organization,
+	# 'pixel': Pixel,
+	'pixel_bundle': PixelBundle,
+	'strategy': Strategy,
+	'user': User,
+	'target_dimension': TargetDimension,
+	'target_value': TargetValue,
+	'permission': Permission,
 }
 CHILD_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -82,7 +81,7 @@ CHILD_PATHS = {
 	'permissions': 'permissions',
 }
 
-class T1(T1Connection):
+class T1(Connection):
 	"""Service class for ALL other T1 entities, e.g.: t1 = T1(auth)
 
 	Accepts authentication parameters. Supports get methods to get
@@ -99,18 +98,6 @@ class T1(T1Connection):
 		super(T1, self).__init__(environment, **kwargs)
 		if auth_method is not None:
 			self.authenticate(auth_method, **kwargs)
-
-	# def __getattr__(self, attr):
-	# 	"""Provides further active-record-like support.
-	# 	Proper method is:
-	# 	ac = t1.new('atomic_creatives') but this also supports
-	# 	ac = t1.new_atomic_creatives() OR
-	# 	ac = t1.new_atomic_creative() (because of the `self.new` behavior)
-	# 	"""
-	# 	if 'new_' in attr:
-	# 		return partial(self.new, attr[4:])
-	# 	else:
-	# 		raise AttributeError(attr)
 
 	def _check_session(self):
 		self._get(self.api_base + '/session')
@@ -160,7 +147,7 @@ class T1(T1Connection):
 			ret = SINGULAR[collection]
 		except KeyError:
 			if '_acl' in collection:
-				ret = T1ACL
+				ret = ACL
 			else:
 				ret = CLASSES[collection]
 		return ret(self.session,

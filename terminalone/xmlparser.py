@@ -13,7 +13,7 @@ try:
 except ImportError: # Python 3
 	imap = map
 	import xml.etree.ElementTree as ET
-from .t1error import (T1Error, APIError, ClientError, ValidationError,
+from .errors import (T1Error, APIError, ClientError, ValidationError,
 						AuthRequiredError, NotFoundError)
 
 ParseError = ET.ParseError
