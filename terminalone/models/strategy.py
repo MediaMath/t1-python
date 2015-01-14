@@ -34,7 +34,7 @@ class Strategy(Entity):
 								'REDUCED'}, 'REDUCED')
 	_supply_type = Entity._enum({'RTB', 'RMX_API', 'T1_RMX'}, 'RTB')
 	_type = Entity._enum({'REM', 'GBO', 'AUD'}, 'GBO')
-	
+
 	_pull = {
 		'audience_segment_exclude_op': None,
 		'audience_segment_include_op': None,

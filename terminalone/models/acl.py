@@ -24,6 +24,6 @@ class ACL(SubEntity):
 			if '_id' in key:
 				self._pull[key] = int
 		super(ACL, self).__init__(session, properties, **kwargs)
-	
+
 	def save(self):
 		raise ClientError('This object is not editable.')

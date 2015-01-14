@@ -14,7 +14,7 @@ class Permission(SubEntity):
 	"""docstring for Permission."""
 	collection = 'permissions'
 	type = 'permission'
-	
+
 	_pull = {
 		'_type': None,
 		'advertiser': None,

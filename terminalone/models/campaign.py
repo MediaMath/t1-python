@@ -11,7 +11,7 @@ from ..entity import Entity
 
 class Campaign(Entity):
 	"""docstring for Campaign.
-	
+
 	When creating a new campaign, "zone_name" must be """
 	collection = 'campaigns'
 	type = 'campaign'

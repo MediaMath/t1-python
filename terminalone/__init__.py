@@ -11,8 +11,8 @@ from .service import T1, T1Service
 from . import errors
 
 __author__ = 'Prasanna Swaminathan'
-__copyright__ = 'Copyright 2014, Prasanna Swaminathan'
-__version__ = '0.4.0a2'
+__copyright__ = 'Copyright 2015, MediaMath'
+__version__ = '0.4.0a3'
 __maintainer__ = 'Prasanna Swaminathan'
 __email__ = 'prasanna@mediamath.com'
 __status__ = 'Development'

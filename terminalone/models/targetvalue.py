@@ -19,7 +19,7 @@ class TargetValue(Entity):
 	}
 
 	# TODO attributes
-	
+
 	_pull = {
 		'_type': None,
 		'code': None,

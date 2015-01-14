@@ -17,17 +17,22 @@ from .vendor.six import six
 class Entity(Connection):
 	"""Superclass for all the various T1 entities.
 
-	Implements methods for data validation and saving to T1.
+	Implements methods for data validation and saving to T1. Entity and its
+	subclasses should not be instantiated directly; instead, an instance of
+	T1 should instantiate these classes, passing in the proper session, etc.
 	"""
 	_readonly = {'id', 'build_date', 'created_on',
 					'_type', # _type is used because "type" is taken by T1User.
 					'updated_on', 'last_modified'}
-	def __init__(self, session, properties=None, *args, **kwargs):
-		"""Passes session information to underlying connection and validates properties passed in.
-		
-		Entity, or any entity deriving from it, should never be instantiated directly.
-		`T1` class should, with session information, instantiate the relelvant
+	def __init__(self, session, properties=None, **kwargs):
+		"""Passes session to underlying connection and validates properties passed in.
+
+		Entity, or any class deriving from it, should never be instantiated directly.
+		`T1` class should, with session information, instantiate the relevant
 		subclass.
+		:param session: requests.Session to be used
+		:param properties: dict of entity properties
+		:param kwargs: additional kwargs to pass to Connection
 		"""
 
 		# __setattr__ is overridden below. So, to set self.properties as an empty
@@ -99,7 +104,7 @@ class Entity(Connection):
 
 	@staticmethod
 	def _strft(ti):
-		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
+		return ti.strftime("%Y-%m-%dT%H:%M:%S")
 
 	@staticmethod
 	def _valid_id(id_):
@@ -151,7 +156,7 @@ class Entity(Connection):
 
 	def history(self):
 		if not self.properties.get('id'):
-			raise ClientError('Entity ID not given')
+			raise ClientError(None, 'Entity ID not given')
 		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
 		return history[0]

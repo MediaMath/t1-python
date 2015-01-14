@@ -87,23 +87,41 @@ class T1(Connection):
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username=None, password=None, api_key=None, auth_method=None,
-					environment='production', **kwargs):
+	def __init__(self, username, password, api_key,
+				 auth_method=None,
+				 session_id=None,
+				 environment='production',
+				 api_base=None,
+				 **kwargs):
+		"""Set up session for main service object.
+
+		:param username: str T1 Username
+		:param password: str T1 Password
+		:param api_key: str API Key approved in Developer Portal
+		:param session_id: str API-provided prior session cookie.
+		For instance, if you have a session ID provided by browser cookie,
+		you can use that to authenticate a server-side connection.
+		:param auth_method: enum('cookie', 'basic') Method for authentication.
+		:param environment: str to look up API Base to use. e.g. 'production'
+		for https://api.mediamath.com/api/v2.0
+		:param api_base: str API base. should be in format https://[url] without
+		trailing slash, and including version.
+		"""
 		self.username = username
 		self.password = password
 		self.api_key = api_key
 		self._authenticated = False
 		self.auth = (self.username, self.password, self.api_key)
 		self.environment = environment
-		super(T1, self).__init__(environment, **kwargs)
+		super(T1, self).__init__(environment, api_base=api_base, **kwargs)
 		if auth_method is not None:
-			self.authenticate(auth_method, **kwargs)
+			self.authenticate(auth_method, session_id=session_id, **kwargs)
 
 	def _check_session(self):
 		self._get(self.api_base + '/session')
 
-	def _auth_cookie(self, *args, **kwargs):
-		if kwargs.get('session_id'):
+	def _auth_cookie(self, session_id=None, **kwargs):
+		if session_id is not None:
 			from cookielib import Cookie
 			from urlparse import urlparse
 			from time import time
@@ -122,17 +140,17 @@ class T1(Connection):
 			self._post(self.api_base + '/login', data=payload)
 		self._authenticated = True
 
-	def _auth_basic(self, *args, **kwargs):
+	def _auth_basic(self):
 		self.session.auth = ('{}|{}'.format(self.username, self.api_key),
 							self.password)
 		self._check_session()
 		self._authenticated = True
 
-	def authenticate(self, auth_method, *args, **kwargs):
+	def authenticate(self, auth_method, **kwargs):
 		if auth_method == 'cookie':
-			return self._auth_cookie(*args, **kwargs)
+			return self._auth_cookie(**kwargs)
 		elif auth_method == 'basic':
-			return self._auth_basic(*args, **kwargs)
+			return self._auth_basic()
 		else:
 			raise AttributeError('No authentication method for ' + auth_method)
 
@@ -168,7 +186,8 @@ class T1(Connection):
 		for entity in entities:
 			yield self.return_class(entity)
 
-	def _construct_params(self, entity, include, full, page_limit,
+	@staticmethod
+	def _construct_params(entity, include, full, page_limit,
 						page_offset, sort_by, query):
 		if entity is not None:
 			params = {}
@@ -198,13 +217,15 @@ class T1(Connection):
 			try:
 				url.append(CHILD_PATHS[child.lower()])
 			except AttributeError:
-				raise ClientError("Child must be a string corresponding to the entity retrieved")
+				raise ClientError(None,
+								  "`child` must be a string of the entity to retrieve")
 			except KeyError:
-				raise ClientError("Attempted to retrieve an entity not in T1")
+				raise ClientError(None,
+								  "`child` must correspond to an entity not in T1")
 
 		if isinstance(limit, dict):
 			if len(limit) != 1:
-				raise ClientError('Limit must consist of one parent collection'
+				raise ClientError(None, 'Limit must consist of one parent collection'
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
 			url.extend(['limit',
@@ -229,8 +250,27 @@ class T1(Connection):
 		_url=None,
 		_params=None
 	):
+		"""Main retrieval method for T1 Entities.
+
+		:param collection: str T1 collection, e.g. "advertisers", "organizations"
+		:param entity: int ID of entity being retrieved from T1
+		:param child: str child, e.g. "dma", "acl"
+		:param limit: dict[str]int query for relation entity, e.g. {"advertiser": 123456}
+		:param include: str/list of relations to include, e.g. "advertiser", ["campaign", "advertiser"]
+		:param full: str/bool which entities to return
+		:param page_limit: int number of entities to return per query, 100 max
+		:param page_offset: int offset for results returned.
+		:param sort_by: str sort order. Default "id". e.g. "-id", "name"
+		:param get_all: bool whether to retrieve all results for a query or just a single page
+		:param query: str search parameter. Invoked by `find`
+		:param count: bool return the number of entities as a second parameter
+		:param _url: str shortcut to bypass URL determination.
+		:param _params: dict query string parameters to bypass query determination
+		:return: :raise ClientError:
+		"""
 		if page_limit > 100:
-			raise ClientError('page_limit parameter must not exceed 100')
+			raise ClientError(None,
+							  'page_limit parameter must not exceed 100')
 
 		if _url is None:
 			_url = self._construct_url(collection, entity, child, limit)
@@ -259,7 +299,7 @@ class T1(Connection):
 		if entity is not None:
 			entities = six.advance_iterator(iter(entities))
 			if child is not None:
-				entities['id'] = url.split('/')[-1]
+				entities['id'] = _url.split('/')[-1]
 				entities['parent_id'] = entity
 				entities['parent'] = collection
 			return self.return_class(entities)
@@ -303,7 +343,8 @@ class T1(Connection):
 	def find(self, collection, variable, operator, candidates, **kwargs):
 		if operator == filters.IN:
 			if not isinstance(candidates, list):
-				raise ClientError('candidates must be list of entities for operator IN')
+				raise ClientError(None,
+								  '`candidates` must be list of entities for `IN`')
 			q = '(' + ','.join(str(c) for c in candidates) + ')'
 		else:
 			q = operator.join([variable, str(candidates or 'null')])

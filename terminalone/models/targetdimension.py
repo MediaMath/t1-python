@@ -35,12 +35,12 @@ class TargetDimension(SubEntity):
 		for index, ent_dict in enumerate(self.include):
 			self.include[index] = TargetValue(self.session,
 				properties=ent_dict, environment=self.environment)
-	
+
 	def save(self, data=None, **kwargs):
 		"""Saves the TargetDimension object.
-		
+
 		The data keyword expects dictionary of properties to POST to T1.
-		
+
 		Arguments are optional.
 		"""
 		if self.properties.get('id'):
