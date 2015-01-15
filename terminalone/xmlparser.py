@@ -6,31 +6,26 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-# myobject = {
-# 	'entity_count': 594,
-# 	'entities': self.entities,
-# 	'status_code': self.status_code
-# }
-# history:
-# entities = [
-# {
-# 	'action': 'add', 'date': '2013-02-21T14:58:28', 'user_id': '2178', 'user_name': 'dblacklock@mediamath.com', 'fields':
-# 	{
-# 		'concept_id': {'old_value': 21, 'new_value': 31},
-# 		'click_url': {'old_value': 'http://google.com', 'new_value': 'www.mediamath.com'}
-# 	}
-# }
-# ]
-
+from __future__ import absolute_import
 try:
 	from itertools import imap
 	import xml.etree.cElementTree as ET
 except ImportError: # Python 3
 	imap = map
 	import xml.etree.ElementTree as ET
-from .t1error import *
+from .errors import (T1Error, APIError, ClientError, ValidationError,
+						AuthRequiredError, NotFoundError)
 
 ParseError = ET.ParseError
+
+STATUS_CODES = {
+	'ok': None,
+	'invalid': True,
+	'not_found': NotFoundError,
+	'auth_required': AuthRequiredError,
+	'auth_error': AuthRequiredError,
+	'error': APIError,
+}
 
 class T1XMLParser(object):
 	"""docstring for T1XMLParser"""
@@ -85,34 +80,38 @@ class T1XMLParser(object):
 								result.iterfind('log_entries/entry'))
 		# self.attribs = {'entity_count': self.entity_count,
 		# 				'entities': self.entities,}
-	
+
 	def get_status(self, xmlresult, error=False):
-		"""Uses a simple ET method to get the status code of T1 XML response.
-		
-		If code is valid, returns True; otherwise raises the appropriate T1 Error.
+		"""Gets the status code of T1 XML response.
+
+		If code is valid, returns None; otherwise raises the appropriate Error.
 		"""
 		status_code = xmlresult.find('status').attrib['code']
 		message = xmlresult.find('status').text
-		if status_code == 'ok':
+
+		try:
+			e = STATUS_CODES[status_code]
+		except KeyError:
+			raise T1Error(status_code, message)
+
+		if e is None:
 			return
-		elif status_code == 'invalid':
-			errors = {}
-			for error in xmlresult.iter('field-error'):
-				attribs = error.attrib
-				errors[attribs['name']] = {'code': attribs['code'],
-											'error': attribs['error']}
-			self.status_code = False
-			raise T1ValidationError(status_code, errors)
-		elif status_code == 'not_found':
-			self.status_code = False
-			raise T1NotFoundError(status_code, message)
-		elif status_code == 'auth_required':
-			self.status_code = False
-			raise T1AuthRequiredError(status_code, message)
-		elif status_code == 'auth_error':
-			self.status_code = False
-			raise T1AuthRequiredError(status_code, message)
-	
+
+		self.status_code = False
+		if e is True:
+			message = self._parse_field_error(xml)
+			e = ValidationError
+
+		raise e(status_code, message)
+
+	def _parse_field_error(self, xml):
+		errors = {}
+		for error in xml.iter('field-error'):
+			attribs = erorr.attrib
+			errors[attribs['name']] = {'code': attribs['code'],
+										'error': attribs['error']}
+		return errors
+
 	def dictify_entity(self, entity):
 		output = entity.attrib
 		# Hold relation objects in specific dict. T1Service instantiates the
@@ -127,7 +126,7 @@ class T1XMLParser(object):
 			else:
 				output[prop.attrib['name']] = prop.attrib['value']
 		return output
-	
+
 	def dictify_permission_entity(self, entity):
 		if not entity:
 			return
@@ -154,11 +153,11 @@ class T1XMLParser(object):
 
 def T1RawParse(raw_response):
 	"""Raw access to ET parsing.
-	
+
 	Argument should be a raw HTTP Response object -- from requests, this means
 	if resp = requests.get(something, stream=True),
 	argument should be resp.raw
-	
+
 	Mainly used for T1 Connection objects to access cElementTree without directly
 	importing it. This lets all the XML parsing happen here, while the rest of
 	the library can use it freely.

@@ -6,10 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object
+from __future__ import absolute_import
+from ..entity import Entity
 
-class T1Organization(T1Object):
-	"""docstring for T1Organization"""
+class Organization(Entity):
+	"""docstring for Organization"""
 	collection = 'organizations'
 	type = 'organization'
 	_relations = {
@@ -19,22 +20,22 @@ class T1Organization(T1Object):
 		'address_1': None,
 		'address_2': None,
 		'adx_seat_account_id': int,
-		'allow_byo_price': T1Object._int_to_bool,
-		'allow_x_agency_pixels': T1Object._int_to_bool,
+		'allow_byo_price': Entity._int_to_bool,
+		'allow_x_agency_pixels': Entity._int_to_bool,
 		'city': None,
 		'contact_name': None,
 		'country': None,
-		'created_on': T1Object._strpt,
+		'created_on': Entity._strpt,
 		'curency_code': None,
 		'id': int,
 		'mm_contact_name': None,
 		'name': None,
 		'phone': None,
 		'state': None,
-		'status': T1Object._int_to_bool,
+		'status': Entity._int_to_bool,
 		'tag_ruleset': None,
-		'updated_on': T1Object._strpt,
-		'use_evidon_optout': T1Object._int_to_bool,
+		'updated_on': Entity._strpt,
+		'use_evidon_optout': Entity._int_to_bool,
 		'version': int,
 		'zip': None,
 	}
@@ -45,6 +46,6 @@ class T1Organization(T1Object):
 		'status': int,
 		'use_evidon_optout': int,
 	})
-	_readonly = T1Object._readonly.copy()
+	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1Organization, self).__init__(session, properties, **kwargs)
+		super(Organization, self).__init__(session, properties, **kwargs)

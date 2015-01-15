@@ -6,25 +6,26 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object
+from __future__ import absolute_import
+from ..entity import Entity
 
-class T1SiteList(T1Object):
-	"""docstring for T1SiteList."""
+class SiteList(Entity):
+	"""docstring for SiteList."""
 	collection = 'site_lists'
 	type = 'site_list'
 	_relations = {
 		'organization',
 	}
-	_restrictions = T1Object._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
+	_restrictions = Entity._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
 	_pull = {
-		'created_on': T1Object._strpt,
+		'created_on': Entity._strpt,
 		'filename': None,
 		'id': int,
 		'name': None,
 		'organization_id': int,
 		'restriction': None,
-		'status': T1Object._int_to_bool,
-		'updated_on': T1Object._strpt,
+		'status': Entity._int_to_bool,
+		'updated_on': Entity._strpt,
 		'version': int,
 	}
 	_push = _pull.copy()
@@ -32,6 +33,6 @@ class T1SiteList(T1Object):
 		'restriction': _restrictions,
 		'status': int,
 	})
-	_readonly = T1Object._readonly.copy()
+	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1SiteList, self).__init__(session, properties, **kwargs)
+		super(SiteList, self).__init__(session, properties, **kwargs)

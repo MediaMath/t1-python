@@ -6,10 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object
+from __future__ import absolute_import
+from ..entity import Entity
 
-class T1AdServer(T1Object):
-	"""docstring for T1AdServer."""
+class AdServer(Entity):
+	"""docstring for AdServer."""
 	collection = 'ad_servers'
 	type = 'ad_server'
 	_relations = set()
@@ -19,6 +20,6 @@ class T1AdServer(T1Object):
 		'version': int,
 	}
 	_push = _pull.copy()
-	_readonly = T1Object._readonly.copy()
+	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1AdServer, self).__init__(session, properties, **kwargs)
+		super(AdServer, self).__init__(session, properties, **kwargs)

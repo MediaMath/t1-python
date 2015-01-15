@@ -6,36 +6,63 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from __future__ import division#, absolute_import
+from __future__ import absolute_import, division
 from datetime import datetime
-from .t1connection import T1Connection
+import warnings
+from .connection import Connection
+from .errors import ClientError
+from .vendor.six import six
 
 
-class T1Object(T1Connection):
-	"""Superclass for all the various T1 Objects. Implements methods for """
+class Entity(Connection):
+	"""Superclass for all the various T1 entities.
+
+	Implements methods for data validation and saving to T1. Entity and its
+	subclasses should not be instantiated directly; instead, an instance of
+	T1 should instantiate these classes, passing in the proper session, etc.
+	"""
 	_readonly = {'id', 'build_date', 'created_on',
 					'_type', # _type is used because "type" is taken by T1User.
 					'updated_on', 'last_modified'}
-	def __init__(self, session, properties=None, *args, **kwargs):
+	def __init__(self, session, properties=None, **kwargs):
+		"""Passes session to underlying connection and validates properties passed in.
+
+		Entity, or any class deriving from it, should never be instantiated directly.
+		`T1` class should, with session information, instantiate the relevant
+		subclass.
+		:param session: requests.Session to be used
+		:param properties: dict of entity properties
+		:param kwargs: additional kwargs to pass to Connection
+		"""
+
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
-		super(T1Object, self).__init__(create_session=False, **kwargs)
-		super(T1Object, self).__setattr__('session', session)
+		super(Entity, self).__init__(create_session=False, **kwargs)
+		super(Entity, self).__setattr__('session', session)
 		if properties is None:
-			super(T1Object, self).__setattr__('properties', {})
+			super(Entity, self).__setattr__('properties', {})
 			return
 		# This block will only execute if properties is given
-		for attr, val in properties.iteritems():
+		for attr, val in six.iteritems(properties):
 			if self._pull.get(attr) is not None:
 				properties[attr] = self._pull[attr](val)
-		super(T1Object, self).__setattr__('properties', properties)
+		super(Entity, self).__setattr__('properties', properties)
 
 	def __getitem__(self, attribute):
+		"""DEPRECATED way of retrieving properties like with dictionary"""
+		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
+							'please discontinue use.'),
+						DeprecationWarning, stacklevel=2)
 		if attribute in self.properties:
 			return self.properties[attribute]
 		else:
 			raise AttributeError(attribute)
+
 	def __setitem__(self, attribute, value):
+		"""DEPRECATED way of setting properties like with dictionary"""
+		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
+							'please discontinue use.'),
+						DeprecationWarning, stacklevel=2)
 		self.properties[attribute] = self._pull[attribute](value)
 
 	def __getattr__(self, attribute):
@@ -48,6 +75,13 @@ class T1Object(T1Connection):
 			self.properties[attribute] = self._pull[attribute](value)
 		else:
 			self.properties[attribute] = value
+
+	def __getstate__(self):
+		"""Custom pickling. TODO"""
+		return super(Entity, self).__getstate__()
+	def __setstate__(self, state):
+		"""Custom depickling. TODO"""
+		return super(Entity, self).__setstate__(state)
 
 	@staticmethod
 	def _int_to_bool(value):
@@ -70,7 +104,7 @@ class T1Object(T1Connection):
 
 	@staticmethod
 	def _strft(ti):
-		return datetime.strftime(ti, "%Y-%m-%dT%H:%M:%S")
+		return ti.strftime("%Y-%m-%dT%H:%M:%S")
 
 	@staticmethod
 	def _valid_id(id_):
@@ -83,7 +117,7 @@ class T1Object(T1Connection):
 		return True
 
 	def _validate_read(self, data):
-		for key, value in data.iteritems():
+		for key, value in six.iteritems(data):
 			if key in self._pull:
 				data[key] = self._pull[key](value)
 		return data
@@ -91,7 +125,7 @@ class T1Object(T1Connection):
 	def _validate_write(self, data):
 		if 'version' not in data and 'id' in self.properties:
 			data['version'] = self.version
-		for key, value in data.copy().iteritems():
+		for key, value in six.iteritems(data.copy()):
 			if key in self._readonly or key in self._relations:
 				del data[key]
 			else:
@@ -102,7 +136,7 @@ class T1Object(T1Connection):
 		return data
 
 	def _update_self(self, entity):
-		for key, value in entity.iteritems():
+		for key, value in six.iteritems(entity):
 			setattr(self, key, value)
 
 	def save(self, data=None):
@@ -122,12 +156,12 @@ class T1Object(T1Connection):
 
 	def history(self):
 		if not self.properties.get('id'):
-			raise T1ClientError('Valid entity ID not given')
+			raise ClientError('Entity ID not given')
 		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
 		return history[0]
 
-class T1SubObject(T1Object):
+class SubEntity(Entity):
 	def save(self, data=None):
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, self.parent_id,

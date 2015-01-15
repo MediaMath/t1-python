@@ -6,14 +6,15 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1error import T1ClientError
-from .t1object import T1SubObject
+from __future__ import absolute_import
+from ..errors import ClientError
+from ..entity import SubEntity
 
-class T1Permission(T1SubObject):
-	"""docstring for T1Permission."""
+class Permission(SubEntity):
+	"""docstring for Permission."""
 	collection = 'permissions'
 	type = 'permission'
-	
+
 	_pull = {
 		'_type': None,
 		'advertiser': None,
@@ -34,7 +35,7 @@ class T1Permission(T1SubObject):
 	}
 
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1Permission, self).__init__(session, properties, **kwargs)
+		super(Permission, self).__init__(session, properties, **kwargs)
 
 	def save(self):
-		raise T1ClientError('Temporarily not editable - update coming soon!')
+		raise ClientError('Temporarily not editable - update coming soon!')

@@ -6,10 +6,11 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
-from .t1object import T1Object
+from __future__ import absolute_import
+from ..entity import Entity
 
-class T1Agency(T1Object):
-	"""docstring for T1Agency"""
+class Agency(Entity):
+	"""docstring for Agency"""
 	collection = 'agencies'
 	type = 'agency'
 	_relations = {
@@ -17,17 +18,17 @@ class T1Agency(T1Object):
 		'traffic_contact',
 	}
 	_pull = {
-		'allow_x_adv_optimization': T1Object._int_to_bool,
-		'allow_x_adv_pixels': T1Object._int_to_bool,
+		'allow_x_adv_optimization': Entity._int_to_bool,
+		'allow_x_adv_pixels': Entity._int_to_bool,
 		'billing_contact_id': int,
-		'created_on': T1Object._strpt,
+		'created_on': Entity._strpt,
 		'id': int,
 		'logo': None,
 		'name': None,
 		'organization_id': int,
 		'sales_contact_id': int,
-		'status': T1Object._int_to_bool,
-		'updated_on': T1Object._strpt,
+		'status': Entity._int_to_bool,
+		'updated_on': Entity._strpt,
 		'version': int,
 	}
 	_push = _pull.copy()
@@ -36,6 +37,6 @@ class T1Agency(T1Object):
 		'allow_x_adv_pixels': int,
 		'status': int,
 	})
-	_readonly = T1Object._readonly.copy()
+	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
-		super(T1Agency, self).__init__(session, properties, **kwargs)
+		super(Agency, self).__init__(session, properties, **kwargs)
