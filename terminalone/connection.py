@@ -40,8 +40,7 @@ class Connection(object):
 				Connection.__setattr__(self, 'api_base',
 						Connection.API_BASES[environment])
 			except KeyError:
-				raise ClientError(None,
-								  "Environment: {!r}, does not exist.".format(environment))
+				raise ClientError("Environment: {!r}, does not exist.".format(environment))
 		elif api_base is not None:
 			Connection.__setattr__(self, 'api_base', api_base)
 		else:
@@ -53,38 +52,42 @@ class Connection(object):
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call.
-		:param url:
-		:param params:
+		:param url: str API URL
+		:param params: dict query string params
 		"""
 		response = self.session.get(url, params=params, stream=True)
-		if not response.ok:
-			self.response = response
-			raise ClientError(None,
-							  'Status code: {!r}, content: {!r}'.format(
-								  response.status_code, response.content))
+
+		# With API v2.0, we shouldn't have things blowing up
+		# if not response.ok:
+		# 	self.response = response
+		# 	raise ClientError('Status code: {!r}, content: {!r}'.format(
+		# 						  response.status_code, response.content))
+
 		try:
 			result = T1XMLParser(response)
 		except ParseError as e:
 			self.response = response
-			raise ClientError(None, 'Could not parse XML response: {!r}'.format(e))
+			raise ClientError('Could not parse XML response: {!r}'.format(e))
 		return result.entities, result.entity_count
 
 	def _post(self, url, data):
 		"""Base method for subclasses to call.
-		:param url:
-		:param data:
+		:param url: str API URL
+		:param data: dict POST data
 		"""
 		if not data:
-			raise ClientError(None, 'No POST data.')
+			raise ClientError('No POST data.')
 		response = self.session.post(url, data=data, stream=True)
-		if not response.ok:
-			self.response = response
-			raise ClientError(None,
-							  'Status code: {!r}, content: {!r}'.format(
-								  response.status_code, response.content))
+
+		# With API v2.0, we shouldn't have things blowing up
+		# if not response.ok:
+		# 	self.response = response
+		# 	raise ClientError('Status code: {!r}, content: {!r}'.format(
+		# 						  response.status_code, response.content))
+
 		try:
 			result = T1XMLParser(response)
 		except ParseError as e:
 			self.response = response
-			raise ClientError(None, 'Could not parse XML response: {!r}'.format(e))
+			raise ClientError('Could not parse XML response: {!r}'.format(e))
 		return result.entities, result.entity_count

@@ -24,7 +24,7 @@ STATUS_CODES = {
 	'not_found': NotFoundError,
 	'auth_required': AuthRequiredError,
 	'auth_error': AuthRequiredError,
-	'error': ClientError,
+	'error': APIError,
 }
 
 class T1XMLParser(object):

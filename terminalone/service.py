@@ -217,15 +217,13 @@ class T1(Connection):
 			try:
 				url.append(CHILD_PATHS[child.lower()])
 			except AttributeError:
-				raise ClientError(None,
-								  "`child` must be a string of the entity to retrieve")
+				raise ClientError("`child` must be a string of the entity to retrieve")
 			except KeyError:
-				raise ClientError(None,
-								  "`child` must correspond to an entity not in T1")
+				raise ClientError("`child` must correspond to an entity not in T1")
 
 		if isinstance(limit, dict):
 			if len(limit) != 1:
-				raise ClientError(None, 'Limit must consist of one parent collection'
+				raise ClientError('Limit must consist of one parent collection'
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
 			url.extend(['limit',
@@ -269,8 +267,7 @@ class T1(Connection):
 		:return: :raise ClientError:
 		"""
 		if page_limit > 100:
-			raise ClientError(None,
-							  'page_limit parameter must not exceed 100')
+			raise ClientError('page_limit parameter must not exceed 100')
 
 		if _url is None:
 			_url = self._construct_url(collection, entity, child, limit)
@@ -343,8 +340,7 @@ class T1(Connection):
 	def find(self, collection, variable, operator, candidates, **kwargs):
 		if operator == filters.IN:
 			if not isinstance(candidates, list):
-				raise ClientError(None,
-								  '`candidates` must be list of entities for `IN`')
+				raise ClientError('`candidates` must be list of entities for `IN`')
 			q = '(' + ','.join(str(c) for c in candidates) + ')'
 		else:
 			q = operator.join([variable, str(candidates or 'null')])

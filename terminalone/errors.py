@@ -19,7 +19,7 @@ class T1Error(Exception):
 		self.code = code
 		self.message = message
 	def __str__(self):
-		return repr('Error: {}: {}'.format(self.code, self.message))
+		return repr('Unknown Error: {code}: {msg}'.format(code=self.code, msg=self.message))
 
 class ClientError(T1Error):
 	"""Used for improper usages of the module.
@@ -27,12 +27,18 @@ class ClientError(T1Error):
 	Improper usage includes attempting to retrieve a collection not in T1,
 	attempting to send data that doesn't match an API object, etc.
 	"""
-	pass
+	def __init__(self, message):
+		self.message = message
+	def __str__(self):
+		return repr(self.message)
+
 T1ClientError = ClientError
 
 class APIError(T1Error):
 	"""Base class that includes error code and message."""
-	pass
+	def __str__(self):
+		return repr('{code}: {msg}'.format(code=self.code, msg=self.message))
+
 T1APIError = APIError
 
 # class T1Error(T1APIError):

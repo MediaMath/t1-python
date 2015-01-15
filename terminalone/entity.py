@@ -156,7 +156,7 @@ class Entity(Connection):
 
 	def history(self):
 		if not self.properties.get('id'):
-			raise ClientError(None, 'Entity ID not given')
+			raise ClientError('Entity ID not given')
 		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
 		history = self._get(url)
 		return history[0]

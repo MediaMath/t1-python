@@ -34,4 +34,4 @@ class TargetValue(Entity):
 		super(TargetValue, self).__init__(session, properties, **kwargs)
 
 	def save(self):
-		raise ClientError(None, 'TargetValues are not editable.')
+		raise ClientError('TargetValues are not editable.')
