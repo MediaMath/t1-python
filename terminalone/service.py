@@ -87,7 +87,10 @@ class T1(Connection):
 	Accepts authentication parameters. Supports get methods to get
 	collections or an entity, find method to user inner-join-like queries.
 	"""
-	def __init__(self, username, password, api_key,
+	def __init__(self,
+				 username=None,
+				 password=None,
+				 api_key=None,
 				 auth_method=None,
 				 session_id=None,
 				 environment='production',
@@ -122,14 +125,15 @@ class T1(Connection):
 
 	def _auth_cookie(self, session_id=None, **kwargs):
 		if session_id is not None:
-			from cookielib import Cookie
 			from urlparse import urlparse
 			from time import time
 			domain = urlparse(self.api_base).netloc
-			c = Cookie(0, 'adama_session', kwargs['session_id'], None, False,
-					domain, None, None, '/', True, False, int(time()+86400),
-					False, None, None, {'HttpOnly':None})
-			self.session.cookies.set_cookie(c)
+			self.session.cookies.set(
+				name='adama_session',
+				value=session_id,
+				domain=domain,
+				expires=kwargs.get('expires', int(time()+86400)),
+			)
 			self._check_session()
 		else:
 			payload = {
