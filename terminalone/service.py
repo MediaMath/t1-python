@@ -125,14 +125,15 @@ class T1(Connection):
 
 	def _auth_cookie(self, session_id=None, **kwargs):
 		if session_id is not None:
-			from cookielib import Cookie
 			from urlparse import urlparse
 			from time import time
 			domain = urlparse(self.api_base).netloc
-			c = Cookie(0, 'adama_session', session_id, None, False,
-					domain, None, None, '/', True, False, int(time()+86400),
-					False, None, None, {'HttpOnly':None})
-			self.session.cookies.set_cookie(c)
+			self.session.cookies.set(
+				name='adama_session',
+				value=session_id,
+				domain=domain,
+				expires=kwargs.get('expires', int(time()+86400)),
+			)
 			self._check_session()
 		else:
 			payload = {
