@@ -48,6 +48,15 @@ class Entity(Connection):
 				properties[attr] = self._pull[attr](val)
 		super(Entity, self).__setattr__('properties', properties)
 
+	def __repr__(self):
+		return '{cname}({props})'.format(
+			cname=type(self).__name__,
+			props=', '.join(
+				'{key}={value!r}'.format(key=key, value=value)
+				for key, value in six.iteritems(self.properties)
+			)
+		)
+
 	def __getitem__(self, attribute):
 		"""DEPRECATED way of retrieving properties like with dictionary"""
 		warnings.warn(('Accessing entity like a dictionary will be deprecated; '
@@ -80,7 +89,7 @@ class Entity(Connection):
 		"""Custom pickling. TODO"""
 		return super(Entity, self).__getstate__()
 	def __setstate__(self, state):
-		"""Custom depickling. TODO"""
+		"""Custom unpickling. TODO"""
 		return super(Entity, self).__setstate__(state)
 
 	@staticmethod
@@ -148,8 +157,8 @@ class Entity(Connection):
 			data = self._validate_write(data)
 		else:
 			data = self._validate_write(self.properties)
-		entity = self._post(url, data=data)[0][0]
-		self._update_self(entity)
+		entity, __ = self._post(url, data=data)
+		self._update_self(six.advance_iterator(entity))
 
 	def update(self, *args, **kwargs):
 		return self.save(*args, **kwargs)
@@ -158,8 +167,8 @@ class Entity(Connection):
 		if not self.properties.get('id'):
 			raise ClientError('Entity ID not given')
 		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
-		history = self._get(url)
-		return history[0]
+		history, __ = self._get(url)
+		return history
 
 class SubEntity(Entity):
 	def save(self, data=None):

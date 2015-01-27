@@ -24,7 +24,8 @@ class Connection(object):
 	def __init__(self,
 				environment='production',
 				base=None, api_base=None,
-				create_session=True):
+				create_session=True,
+				auth=None):
 		"""Sets up Requests Session to be used for all connections to T1.
 
 		:param environment: str to look up API Base to use. e.g. 'production'
@@ -49,6 +50,9 @@ class Connection(object):
 			Connection.__setattr__(self, 'api_base', base)
 		if create_session:
 			Connection.__setattr__(self, 'session', Session())
+
+	def _check_session(self):
+		self._get(self.api_base + '/session')
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call.

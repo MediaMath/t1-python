@@ -10,6 +10,7 @@ from __future__ import absolute_import, division
 # from functools import partial
 from .connection import Connection
 from .constants import filters
+from .entity import Entity
 from .errors import ClientError
 from .models.acl import ACL
 from .models.adserver import AdServer
@@ -114,24 +115,19 @@ class T1(Connection):
 		self.password = password
 		self.api_key = api_key
 		self._authenticated = False
-		self.auth = (self.username, self.password, self.api_key)
+		self._auth = (self.username, self.password, self.api_key)
 		self.environment = environment
 		super(T1, self).__init__(environment, api_base=api_base, **kwargs)
 		if auth_method is not None:
 			self.authenticate(auth_method, session_id=session_id, **kwargs)
 
-	def _check_session(self):
-		self._get(self.api_base + '/session')
-
 	def _auth_cookie(self, session_id=None, **kwargs):
 		if session_id is not None:
-			from urlparse import urlparse
 			from time import time
-			domain = urlparse(self.api_base).netloc
 			self.session.cookies.set(
 				name='adama_session',
 				value=session_id,
-				domain=domain,
+				domain=six.moves.urllib.parse.urlparse(self.api_base).netloc,
 				expires=kwargs.get('expires', int(time()+86400)),
 			)
 			self._check_session()
@@ -161,20 +157,23 @@ class T1(Connection):
 
 	def new(self, collection, *args, **kwargs):
 		"""Returns a fresh class instance for a new entity.
-		t1 = T1(username, password, api_key, method="cookie")
+
 		ac = t1.new('atomic_creative') OR
 		ac = t1.new('atomic_creatives')
 		"""
-		try:
-			ret = SINGULAR[collection]
-		except KeyError:
-			if '_acl' in collection:
-				ret = ACL
-			else:
+		if isinstance(collection, Entity):
+			ret = collection
+		elif '_acl' in collection:
+			ret = ACL
+		else:
+			try:
+				ret = SINGULAR[collection]
+			except KeyError:
 				ret = CLASSES[collection]
 		return ret(self.session,
 					environment=self.environment,
 					base=self.api_base,
+					auth=self._auth,
 					*args, **kwargs)
 
 	def return_class(self, ent_dict):
@@ -268,7 +267,11 @@ class T1(Connection):
 		:param count: bool return the number of entities as a second parameter
 		:param _url: str shortcut to bypass URL determination.
 		:param _params: dict query string parameters to bypass query determination
-		:return: :raise ClientError:
+		:return: If:
+			Collection is requested => generator over collection of entity objects
+			Entity ID is provided => Entity object
+			`count` is True => number of entities as second return val
+		:raise ClientError: if page_limit > 100
 		"""
 		if page_limit > 100:
 			raise ClientError('page_limit parameter must not exceed 100')
@@ -313,8 +316,7 @@ class T1(Connection):
 
 	def get_all(self, collection, **kwargs):
 		"""Retrieves all entities in a collection. Has same signature as .get."""
-		if 'get_all' in kwargs:
-			del kwargs['get_all']
+		kwargs.pop('get_all', None)
 		return self.get(collection, get_all=True, **kwargs)
 
 	def _get_all(self, collection, **kwargs):

@@ -81,7 +81,7 @@ class T1XMLParser(object):
 		# self.attribs = {'entity_count': self.entity_count,
 		# 				'entities': self.entities,}
 
-	def get_status(self, xmlresult, error=False):
+	def get_status(self, xmlresult):
 		"""Gets the status code of T1 XML response.
 
 		If code is valid, returns None; otherwise raises the appropriate Error.
@@ -92,14 +92,16 @@ class T1XMLParser(object):
 		try:
 			e = STATUS_CODES[status_code]
 		except KeyError:
+			self.status_code = False
 			raise T1Error(status_code, message)
 
 		if e is None:
+			self.status_code = True
 			return
 
 		self.status_code = False
 		if e is True:
-			message = self._parse_field_error(xml)
+			message = self._parse_field_error(xmlresult)
 			e = ValidationError
 
 		raise e(status_code, message)
@@ -107,7 +109,7 @@ class T1XMLParser(object):
 	def _parse_field_error(self, xml):
 		errors = {}
 		for error in xml.iter('field-error'):
-			attribs = erorr.attrib
+			attribs = error.attrib
 			errors[attribs['name']] = {'code': attribs['code'],
 										'error': attribs['error']}
 		return errors
