@@ -23,6 +23,7 @@ from .models.organization import Organization
 from .models.permission import Permission
 from .models.pixelbundle import PixelBundle
 from .models.strategy import Strategy
+from .models.strategysupplysource import StrategySupplySource
 from .models.targetdimension import TargetDimension
 from .models.targetvalue import TargetValue
 from .models.user import User
@@ -39,6 +40,7 @@ CLASSES = {
 	# 'pixels': Pixel,
 	'pixel_bundles': PixelBundle,
 	'strategies': Strategy,
+	'strategy_supply_sources': StrategySupplySource,
 	'users': User,
 	'target_dimensions': TargetDimension,
 	'target_values': TargetValue,
@@ -55,6 +57,7 @@ SINGULAR = {
 	# 'pixel': Pixel,
 	'pixel_bundle': PixelBundle,
 	'strategy': Strategy,
+	'strategy_supply_source': StrategySupplySource,
 	'user': User,
 	'target_dimension': TargetDimension,
 	'target_value': TargetValue,
