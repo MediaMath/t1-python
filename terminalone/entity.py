@@ -106,6 +106,15 @@ class Entity(Connection):
 		return get_value
 
 	@staticmethod
+	def _default_empty(default):
+		def get_value(test_value):
+			if test_value:
+				return test_value
+			else:
+				return default
+		return get_value
+
+	@staticmethod
 	def _strpt(ti):
 		if isinstance(ti, datetime):
 			return ti

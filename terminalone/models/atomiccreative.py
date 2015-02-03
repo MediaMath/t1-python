@@ -22,8 +22,7 @@ class AtomicCreative(Entity):
 								'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
 								'TERMINALONE', 'MEDIAFORGE', 'OTHER'}, 'OTHER')
 	_approved = Entity._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
-	_expand_dir = Entity._enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU',
-									'RU', 'NONRESTRICTED'}, 'NONRESTRICTED')
+	_expand_dir = Entity._default_empty('NONRESTRICTED')
 	_expand_trig = Entity._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'},'CLICK')
 	_file_types = Entity._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unknown')
 	_tag_types = Entity._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
