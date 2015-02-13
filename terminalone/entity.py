@@ -97,6 +97,12 @@ class Entity(Connection):
 		return bool(int(value))
 
 	@staticmethod
+	def _none_to_empty(val):
+		if val is None:
+			return ""
+		return val
+
+	@staticmethod
 	def _enum(all_vars, default):
 		def get_value(test_value):
 			if test_value in all_vars:
@@ -167,7 +173,7 @@ class Entity(Connection):
 		else:
 			data = self._validate_write(self.properties)
 		entity, __ = self._post(url, data=data)
-		self._update_self(six.advance_iterator(entity))
+		self._update_self(six.advance_iterator(iter(entity)))
 
 	def update(self, *args, **kwargs):
 		return self.save(*args, **kwargs)

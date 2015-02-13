@@ -20,6 +20,5 @@ class AdServer(Entity):
 		'version': int,
 	}
 	_push = _pull.copy()
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(AdServer, self).__init__(session, properties, **kwargs)

@@ -51,8 +51,11 @@ class PixelBundle(Entity):
 		'updated_on': Entity._strpt,
 		'version': int,
 	}
+
 	_push = _pull.copy()
 	_push.update({
+		'cost_cpm': Entity._none_to_empty,
+		'cost_pct_cpm': Entity._none_to_empty,
 		'eligible': int,
 		'pixel_type': _pixel_types,
 		'pricing': _pricing,
@@ -75,18 +78,18 @@ class PixelBundle(Entity):
 		:return: None. Object is updated or error is raised
 		"""
 		if self.pixel_type != 'data':
-			return super(PixelBundle, self).save(data)
+			return super(PixelBundle, self).save(data=data)
 
 		if data is None:
 			data = self.properties.copy()
-		if self.pricing != 'CPM':
-			del data['cost_cpts']
-			if not self.cost_pct_cpm:
-				del data['cost_pct_cpm']
-			elif not self.cost_cpm:
-				del data['cost_cpm']
+		if self.pricing == 'CPM':
+			data.pop('cost_cpts', None)
+			if not getattr(self, 'cost_pct_cpm', None):
+				data.pop('cost_pct_cpm', None)
+			elif not getattr(self, 'cost_cpm', None):
+				data.pop('cost_cpm', None)
 		else:
-			del data['cost_cpm']
-			del data['cost_pct_cpm']
+			data.pop('cost_cpm', None)
+			data.pop('cost_pct_cpm', None)
 
 		return super(PixelBundle, self).save(data=data)
