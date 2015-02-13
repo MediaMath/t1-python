@@ -10,7 +10,8 @@ class filters(object):
 	IN = '()'
 	NULL = ':'
 	NOT_NULL = ':!'
-	EQUALS = '='
+	# Equals operator is *different* between M&E (==) and Picard (=)
+	EQUALS = '=='
 	NOT_EQUAL = '!='
 	GREATER = '>'
 	GREATER_OR_EQUAL = '>='
