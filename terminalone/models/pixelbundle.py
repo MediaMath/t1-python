@@ -65,9 +65,9 @@ class PixelBundle(Entity):
 		'status': int,
 		'tag_type': _tag_types,
 	})
-	_readonly = Entity._readonly.copy()
-	_readonly.update({'advertiser_id', 'agency_id', 'external_identifier',
-					  'pixel_type', 'provider_id', 'tag_type', 'tags',})
+	_readonly = Entity._readonly | {'external_identifier', 'tags',}
+	_readonly_update = {'advertiser_id', 'agency_id', 'pixel_type',
+						'provider_id', 'tag_type'}
 	def __init__(self, session, properties=None, **kwargs):
 		super(PixelBundle, self).__init__(session, properties, **kwargs)
 

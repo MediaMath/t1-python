@@ -19,6 +19,6 @@ class AdServer(Entity):
 		'name': None,
 		'version': int,
 	}
-	_push = _pull.copy()
+	_push = _pull
 	def __init__(self, session, properties=None, **kwargs):
 		super(AdServer, self).__init__(session, properties, **kwargs)

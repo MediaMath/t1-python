@@ -37,6 +37,5 @@ class Agency(Entity):
 		'allow_x_adv_pixels': int,
 		'status': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Agency, self).__init__(session, properties, **kwargs)

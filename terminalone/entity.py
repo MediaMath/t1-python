@@ -24,6 +24,7 @@ class Entity(Connection):
 	_readonly = {'id', 'build_date', 'created_on',
 					'_type', # _type is used because "type" is taken by T1User.
 					'updated_on', 'last_modified'}
+	_readonly_update = set()
 	def __init__(self, session, properties=None, **kwargs):
 		"""Passes session to underlying connection and validates properties passed in.
 
@@ -147,10 +148,13 @@ class Entity(Connection):
 		return data
 
 	def _validate_write(self, data):
-		if 'version' not in data and 'id' in self.properties:
+		update = 'id' in self.properties
+		if 'version' not in data and update:
 			data['version'] = self.version
 		for key, value in six.iteritems(data.copy()):
 			if key in self._readonly or key in self._relations:
+				del data[key]
+			elif update and key in self._readonly_update:
 				del data[key]
 			else:
 				if self._push.get(key) is not None:

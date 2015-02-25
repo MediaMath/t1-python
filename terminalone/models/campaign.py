@@ -86,6 +86,5 @@ class Campaign(Entity):
 		'use_default_ad_server': int,
 		'use_mm_freq': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Campaign, self).__init__(session, properties, **kwargs)

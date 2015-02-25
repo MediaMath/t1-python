@@ -24,8 +24,7 @@ class TargetDimension(SubEntity):
 		'exclude': None,
 		'include': None,
 	}
-	_push = _pull.copy()
-	_readonly = SubEntity._readonly.copy()
+	_push = _pull
 	def __init__(self, session, properties=None, **kwargs):
 		super(TargetDimension, self).__init__(session, properties, **kwargs)
 		self.environment = kwargs['environment']

@@ -106,7 +106,6 @@ class Strategy(Entity):
 		'use_mm_freq': int,
 		'use_optimization': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Strategy, self).__init__(session, properties, **kwargs)
 		try:

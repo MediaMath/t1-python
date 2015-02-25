@@ -19,6 +19,5 @@ class StrategySupplySource(Entity):
 		'version': int,
 	}
 	_push = _pull
-	_readonly = Entity._readonly
 	def __init__(self, session, properties=None, **kwargs):
 		super(StrategySupplySource, self).__init__(session, properties, **kwargs)

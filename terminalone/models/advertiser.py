@@ -41,6 +41,5 @@ class Advertiser(Entity):
 		'minimize_multi_ads': int,
 		'status': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Advertiser, self).__init__(session, properties, **kwargs)
