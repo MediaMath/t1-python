@@ -24,7 +24,9 @@ class AtomicCreative(Entity):
 	_approved = Entity._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
 	_expand_dir = Entity._default_empty('NONRESTRICTED')
 	_expand_trig = Entity._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'},'CLICK')
-	_file_types = Entity._enum({'gif', 'jpg', 'swf', 'unknown'}, 'unknown')
+	_file_types = Entity._enum({'swf', 'gif', 'html5', 'jpg', 'jpeg', 'tif',
+								'tiff', 'png', 'unknown', 'vast'}, 'unknown')
+	_media_types = Entity._enum({'display', 'video', 'mobile'}, 'display')
 	_tag_types = Entity._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
 	_pull = {
 		'advertiser_id': int,
@@ -52,6 +54,7 @@ class AtomicCreative(Entity):
 		'is_https': Entity._int_to_bool,
 		'is_multi_creative': Entity._int_to_bool,
 		'last_modified': Entity._strpt,
+		'media_type': None,
 		'name': None,
 		'rejected_reason': None,
 		'rich_media': Entity._int_to_bool,
@@ -80,13 +83,13 @@ class AtomicCreative(Entity):
 		'has_sound': int,
 		'is_https': int,
 		'is_multi_creative': int,
+		'media_type': _media_types,
 		'rich_media': int,
 		'start_date': Entity._strft,
 		'status': int,
 		't1as': int,
 		'tag_type': _tag_types,
 	})
-	_readonly = Entity._readonly.copy()
-	_readonly.update({'t1as', 'built, approval_status'})
+	_readonly = Entity._readonly | {'t1as', 'built', 'approval_status'}
 	def __init__(self, session, properties=None, **kwargs):
 		super(AtomicCreative, self).__init__(session, properties, **kwargs)

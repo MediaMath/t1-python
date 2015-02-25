@@ -29,6 +29,5 @@ class Concept(Entity):
 	_push.update({
 		'status': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Concept, self).__init__(session, properties, **kwargs)

@@ -46,6 +46,5 @@ class Organization(Entity):
 		'status': int,
 		'use_evidon_optout': int,
 	})
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(Organization, self).__init__(session, properties, **kwargs)

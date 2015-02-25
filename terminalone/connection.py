@@ -9,8 +9,9 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 from __future__ import absolute_import
 import warnings
 from requests import Session
-from .xmlparser import T1XMLParser, ParseError
+from .vendor.six import six
 from .errors import ClientError
+from .xmlparser import T1XMLParser, ParseError
 
 
 class Connection(object):
@@ -52,7 +53,11 @@ class Connection(object):
 			Connection.__setattr__(self, 'session', Session())
 
 	def _check_session(self):
-		self._get(self.api_base + '/session')
+		user, _ = self._get(self.api_base + '/session')
+		Connection.__setattr__(self, 'user_id',
+							   int(six.advance_iterator(iter(user))['id']))
+		Connection.__setattr__(self, 'session_id',
+							   self.session.cookies['adama_session'])
 
 	def _get(self, url, params=None):
 		"""Base method for subclasses to call.
@@ -60,12 +65,6 @@ class Connection(object):
 		:param params: dict query string params
 		"""
 		response = self.session.get(url, params=params, stream=True)
-
-		# With API v2.0, we shouldn't have things blowing up
-		# if not response.ok:
-		# 	self.response = response
-		# 	raise ClientError('Status code: {!r}, content: {!r}'.format(
-		# 						  response.status_code, response.content))
 
 		try:
 			result = T1XMLParser(response)
@@ -82,12 +81,6 @@ class Connection(object):
 		if not data:
 			raise ClientError('No POST data.')
 		response = self.session.post(url, data=data, stream=True)
-
-		# With API v2.0, we shouldn't have things blowing up
-		# if not response.ok:
-		# 	self.response = response
-		# 	raise ClientError('Status code: {!r}, content: {!r}'.format(
-		# 						  response.status_code, response.content))
 
 		try:
 			result = T1XMLParser(response)

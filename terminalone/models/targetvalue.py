@@ -29,7 +29,6 @@ class TargetValue(Entity):
 		'target_dimension_id': int,
 		'value': int,
 	}
-	_readonly = Entity._readonly.copy()
 	def __init__(self, session, properties=None, **kwargs):
 		super(TargetValue, self).__init__(session, properties, **kwargs)
 
