@@ -90,6 +90,7 @@ class AtomicCreative(Entity):
 		't1as': int,
 		'tag_type': _tag_types,
 	})
-	_readonly = Entity._readonly | {'t1as', 'built', 'approval_status'}
+	_readonly = Entity._readonly | {'t1as', 'built', 'approval_status',
+									'default_t1as_tag'}
 	def __init__(self, session, properties=None, **kwargs):
 		super(AtomicCreative, self).__init__(session, properties, **kwargs)
