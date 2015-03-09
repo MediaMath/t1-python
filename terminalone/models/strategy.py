@@ -44,6 +44,7 @@ class Strategy(Entity):
 		'campaign_id': int,
 		'created_on': Entity._strpt,
 		'description': None,
+		'effective_goal_value': float,
 		'end_date': Entity._strpt,
 		'feature_compatibility': None,
 		'frequency_amount': int,
@@ -106,6 +107,9 @@ class Strategy(Entity):
 		'use_mm_freq': int,
 		'use_optimization': int,
 	})
+
+	_readonly = Entity._readonly | {'effective_goal_value',}
+
 	def __init__(self, session, properties=None, **kwargs):
 		super(Strategy, self).__init__(session, properties, **kwargs)
 		try:
@@ -156,9 +160,19 @@ class Strategy(Entity):
 		else:
 			return include_string + exclude_string
 
-	def save(self, **kwargs):
+	def save(self, data=None):
 		self.pixel_target_expr = self._serialize_target_expr()
-		super(Strategy, self).save(**kwargs)
+
+		if data is None:
+			data = self.properties.copy()
+
+		if getattr(self, use_campaign_start, False):
+			data.pop('start_date', None)
+		if getattr(self, use_campaign_end, False):
+			data.pop('end_date', None)
+
+		super(Strategy, self).save(data=data)
+
 		self._deserialize_target_expr()
 
 	@property
