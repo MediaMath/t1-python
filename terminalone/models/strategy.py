@@ -166,9 +166,9 @@ class Strategy(Entity):
 		if data is None:
 			data = self.properties.copy()
 
-		if getattr(self, use_campaign_start, False):
+		if getattr(self, 'use_campaign_start', False):
 			data.pop('start_date', None)
-		if getattr(self, use_campaign_end, False):
+		if getattr(self, 'use_campaign_end', False):
 			data.pop('end_date', None)
 
 		super(Strategy, self).save(data=data)
