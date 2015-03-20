@@ -106,13 +106,13 @@ class T1(Connection):
 		:param password: str T1 Password
 		:param api_key: str API Key approved in Developer Portal
 		:param session_id: str API-provided prior session cookie.
-		For instance, if you have a session ID provided by browser cookie,
-		you can use that to authenticate a server-side connection.
+			For instance, if you have a session ID provided by browser cookie,
+			you can use that to authenticate a server-side connection.
 		:param auth_method: enum('cookie', 'basic') Method for authentication.
 		:param environment: str to look up API Base to use. e.g. 'production'
-		for https://api.mediamath.com/api/v2.0
+			for https://api.mediamath.com/api/v2.0
 		:param api_base: str API base. should be in format https://[url] without
-		trailing slash, and including version.
+			trailing slash, and including version.
 		"""
 		self.username = username
 		self.password = password
@@ -125,6 +125,7 @@ class T1(Connection):
 			self.authenticate(auth_method, session_id=session_id, **kwargs)
 
 	def _auth_cookie(self, session_id=None, **kwargs):
+		user = None
 		if session_id is not None:
 			from time import time
 			self.session.cookies.set(
@@ -133,14 +134,15 @@ class T1(Connection):
 				domain=six.moves.urllib.parse.urlparse(self.api_base).netloc,
 				expires=kwargs.get('expires', int(time()+86400)),
 			)
-			self._check_session()
 		else:
 			payload = {
 				'user': self.username,
 				'password': self.password,
 				'api_key': self.api_key
 			}
-			self._post(self.api_base + '/login', data=payload)
+			user, _ = self._post(self.api_base + '/login', data=payload)
+
+		self._check_session(user=user)
 		self._authenticated = True
 
 	def _auth_basic(self):
@@ -256,7 +258,7 @@ class T1(Connection):
 	):
 		"""Main retrieval method for T1 Entities.
 
-		:param collection: str T1 collection, e.g. "advertisers", "organizations"
+		:param collection: str T1 collection, e.g. "advertisers", "agencies"
 		:param entity: int ID of entity being retrieved from T1
 		:param child: str child, e.g. "dma", "acl"
 		:param limit: dict[str]int query for relation entity, e.g. {"advertiser": 123456}
@@ -346,13 +348,40 @@ class T1(Connection):
 	# def get_sub(self, collection, entity, sub, *args):
 	# 	pass
 
+	@staticmethod
+	def _parse_candidate(candidate):
+		val = candidate
+		if candidate is None:
+			val = "null"
+		elif candidate is True:
+			val = "1"
+		elif candidate is False:
+			val = "0"
+		return val
+
 	def find(self, collection, variable, operator, candidates, **kwargs):
+		"""Find objects based on query criteria. Helper method for T1.get,
+		with same return values.
+
+		:param collection: str T1 collection, e.g. "advertisers", "agencies"
+		:param variable: str Field to query for, e.g. "name". If operator is
+			terminalone.filters.IN, this is ignored and None can be provided
+		:param operator: str Arithmetic operator, e.g. "=:". Package provides
+			helper object filters to help, e.g. terminalone.filters.IN or
+			terminalone.filters.CASE_INS_STRING
+		:param candidates: str/int/list values to search for. list only if
+			operator is IN.
+		:param kwargs: additional keyword args to pass on to T1.get. See that
+			method's signature for details.
+		:return: generator over collection of objects matching query
+		:raise TypeError: if operator is IN and candidates not provided as list
+		"""
 		if operator == filters.IN:
 			if not isinstance(candidates, list):
-				raise ClientError('`candidates` must be list of entities for `IN`')
+				raise TypeError('`candidates` must be list of entities for `IN`')
 			q = '(' + ','.join(str(c) for c in candidates) + ')'
 		else:
-			q = operator.join([variable, str(candidates or 'null')])
+			q = operator.join([variable, self._parse_candidate(candidates)])
 		return self.get(collection, query=q, **kwargs)
 
 T1Service = T1

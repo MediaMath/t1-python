@@ -52,8 +52,9 @@ class Connection(object):
 		if create_session:
 			Connection.__setattr__(self, 'session', Session())
 
-	def _check_session(self):
-		user, _ = self._get(self.api_base + '/session')
+	def _check_session(self, user=None):
+		if user is None:
+			user, _ = self._get(self.api_base + '/session')
 		Connection.__setattr__(self, 'user_id',
 							   int(six.advance_iterator(iter(user))['id']))
 		Connection.__setattr__(self, 'session_id',
