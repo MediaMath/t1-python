@@ -167,6 +167,10 @@ class Entity(Connection):
 		for key, value in six.iteritems(entity):
 			setattr(self, key, value)
 
+	def set(self, properties):
+		for attr, value in six.iteritems(properties):
+			setattr(self, attr, value)
+
 	def save(self, data=None):
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.collection, str(self.id)])
@@ -177,7 +181,7 @@ class Entity(Connection):
 		else:
 			data = self._validate_write(self.properties)
 		entity, __ = self._post(url, data=data)
-		self._update_self(six.advance_iterator(iter(entity)))
+		self._update_self(next(iter(entity)))
 
 	def update(self, *args, **kwargs):
 		return self.save(*args, **kwargs)

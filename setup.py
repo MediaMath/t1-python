@@ -5,10 +5,12 @@ try:
 except ImportError:
 	from distutils.core import setup
 
-packages = ['terminalone',
-			'terminalone.models',
-			'terminalone.vendor',
-			'terminalone.vendor.six']
+packages = [
+	'terminalone',
+	'terminalone.models',
+	'terminalone.vendor',
+	'terminalone.vendor.six',
+]
 
 requirements = ['requests>=2.3.0']
 
