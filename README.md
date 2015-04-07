@@ -22,13 +22,13 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 
 Installation is simple with pip in a virtual environment:
 
-```
+```python
 $ pip install --extra-index-url=https://code.mediamath.com/pypi/simple/ TerminalOne
 ```
 
 The `--extra-index-url` flag specifies a package index URL; this is where the code is hosted. Alternatively, download the latest tag of the repository as a tarball or zip file and run:
 
-```
+```python
 $ python setup.py install
 ```
 
@@ -46,33 +46,33 @@ The `T1` class is the starting point for this package. This is where authenticat
 - *auth_method* is a string corresponding to which method of authentication the session to use. Currently only "cookie" has full support, while "basic" is supported with Execution and Management API.
 - Either *environment* or *api_base* should be provided to specify where the request goes.
 
-```
+```python
 >>> import terminalone
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie")
 ```
 
 Using `auth_method` authenticates upon instantiation. Authentication can also be done separately by calling the `authenticate` method with the same acceptable arguments as the keyword:
 
-```
+```python
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key")
 >>> t1.authenticate("cookie")
 ```
 
 Environment can be "production" or "qa", defaulting to production:
 
-```
+```python
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie", environment="qa")
 ```
 
 If you have a specific API base (for instance, if you are testing against a local deployment) you can use the `api_base` keyword:
 
-```
+```python
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", api_base="https://myqaserver.domain.com/api/v2.0", auth_method="cookie")
 ```
 
 If you are receiving a (cloned) session ID, for instance the norm for apps, you will not have user credentials to log in with. Instead, provide the session ID and API key:
 
-```
+```python
 >>> t1 = terminalone.T1(session_id="13ea5a26e77b64e7361c7ef84910c18a8d952cf0", api_key="my_api_key")
 ```
 
@@ -101,7 +101,7 @@ Use `get` for entity and collection retrieval:
 
 #### Collections
 
-```
+```python
 >>> advertisers = t1.get("advertisers")
 >>> for advertiser in advertisers:
 ...     print(advertiser)
@@ -112,7 +112,7 @@ Advertiser(id=1, name="My Brand Advertiser", _type="advertiser")
 
 Returns generator over the first 100 advertisers (or fewer if the user only has access to fewer), ordered ascending by ID. Each entity is the limited object, containing just `id`, `name`, and `_type` (`_type` just signifies the type returned by the API, in this case, "advertiser").
 
-```
+```python
 >>> ag_advertisers = t1.get("advertisers",
 ...                         limit={"agency": 123456},
 ...                         include="agency",
@@ -126,7 +126,7 @@ Advertiser(id=1, name="My Brand Advertiser", agency=Agency(id=123456, name="Oper
 
 Generator over up to 100 advertisers within agency ID 123456. Each advertiser includes its parent agency object as an attribute. The advertiser objects are the full entities, so all fields are returned. Agency objects are limited and have the same fields as advertisers in the previous example.
 
-```
+```python
 >>> campaigns, count = t1.get("campaigns",
 ...                           get_all=True,
 ...                           full=True,
@@ -142,7 +142,7 @@ Campaign(id=456, name="Spring Acquisition", updated_on=datetime.datetime(2015, 4
 
 Generator over every campaign accessible by the user, sorted in descending order of last update. Second argument is integer number of campaigns retrieved, as returned by the API. `get_all=True` removes the need to worry about pagination — it is handled by the SDK internally.
 
-```
+```python
 >>> _, count = t1.get("advertisers",
 ...                   page_limit=1,
 ...                   count=True)
@@ -156,7 +156,7 @@ Sole purpose is to get the count of advertisers accessible by the user. Use `pag
 
 A specific entity can be retrieved by using `get` with an entity ID as the second argument, or using the `entity` keyword. You can then access that entity's properties using instance attributes:
 
-```
+```python
 >>> my_advertiser = t1.get("advertisers", 111111)
 >>> my_advertiser.id
 111111
@@ -166,7 +166,7 @@ If for some reason you need to access the object like a dictionary (for instance
 
 Once you have your instance, you can modify its values, and then save it back. A return value of `None` indicates success. Otherwise, an error is raised.
 
-```
+```python
 >>> my_advertiser.name = "Updated name"
 >>> my_advertiser.save()
 >>>
@@ -174,7 +174,7 @@ Once you have your instance, you can modify its values, and then save it back. A
 
 Create new entities my calling `T1.new` on your instance:
 
-```
+```python
 >>> new_properties = {
 ...     "name": "Spring Green",
 ...     "status": True,
@@ -210,7 +210,7 @@ Limiting entities by relation ID is one way to limit entities, but we can also s
 - `LESS_OR_EQUAL`
 - `CASE_INS_STRING`
 
-```
+```python
 >>> greens = t1.find("atomic_creatives",
 ...                  "name",
 ...                  terminalone.filters.CASE_INS_STRING,
@@ -221,7 +221,7 @@ Limiting entities by relation ID is one way to limit entities, but we can also s
 
 Generator over all creatives with "Green" in the name. Include concept.
 
-```
+```python
 >>> my_campaigns = t1.find("campaigns",
 ...                       "id",
 ...                       terminalone.filers.IN,
@@ -231,7 +231,7 @@ Generator over all creatives with "Green" in the name. Include concept.
 
 Generator over campaign IDs 123, 234, and 345. Note that when using `terminalone.filers.IN`, *variable* is automatically ID, so that argument is effectively ignored. Further, *candidates* must be a list of integer IDs.
 
-```
+```python
 >>> pixels = t1.find("pixel_bundles",
 ...                  "keywords",
 ...                  terminalone.filters.NOT_NULL,
@@ -240,7 +240,7 @@ Generator over campaign IDs 123, 234, and 345. Note that when using `terminalone
 
 Generator over first 100 pixels with non-null keywords field.
 
-```
+```python
 >>> strats = t1.find("strategies",
 ...                  "status",
 ...                  terminalone.filters.EQUALS,
@@ -253,13 +253,13 @@ Active campaigns within campaign ID 123456.
 #### Addenda
 Why don't we import the object classes directly? For instance, why doesn't this work?
 
-```
+```python
 >>> from terminalone import Campaign
 ```
 
 The answer here is that we need to keep a common session so that we can share session information across requests. This allows you to work with many objects, only passing in authentication information once.
 
-```
+```python
 >>> t1 = T1("myusername", "mypassword", "my_api_key")
 >>> t1.authenticate("cookie")
 >>> c = t1.new("campaign")
