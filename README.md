@@ -22,13 +22,13 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 
 Installation is simple with pip in a virtual environment:
 
-```python
+```
 $ pip install --extra-index-url=https://code.mediamath.com/pypi/simple/ TerminalOne
 ```
 
 The `--extra-index-url` flag specifies a package index URL; this is where the code is hosted. Alternatively, download the latest tag of the repository as a tarball or zip file and run:
 
-```python
+```
 $ python setup.py install
 ```
 
