@@ -14,7 +14,6 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 		- [Entities](#entities)
 		- [Searching for entities](#searching-for-entities)
 		- [Addenda](#addenda)
-- [Authors](#authors)
 - [Copyright](#copyright)
 
 
