@@ -34,10 +34,10 @@ class Report(Connection):
 		super(Report, self).__init__(create_session=False,
 									 environment='reports', **kwargs)
 		self.session = session
+		self.params = {}
 
 		if report is not None:
 			self.report = report
-			self.params = {}
 
 		if kwargs:
 			self.set(kwargs)
