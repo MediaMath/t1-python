@@ -9,9 +9,10 @@ to parse it. Uses json and cPickle/pickle to serialize cookie objects.
 from __future__ import absolute_import, division
 # from functools import partial
 from .connection import Connection
-from .constants import filters
 from .entity import Entity
 from .errors import ClientError
+from .reports import Report
+from .utils import filters
 from .models.acl import ACL
 from .models.adserver import AdServer
 from .models.advertiser import Advertiser
@@ -45,6 +46,7 @@ CLASSES = {
 	'target_dimensions': TargetDimension,
 	'target_values': TargetValue,
 	'permissions': Permission,
+	'reports': Report,
 }
 SINGULAR = {
 	'ad_server': AdServer,
@@ -62,6 +64,7 @@ SINGULAR = {
 	'target_dimension': TargetDimension,
 	'target_value': TargetValue,
 	'permission': Permission,
+	'report': Report,
 }
 CHILD_PATHS = {
 	'dma': 'target_dimensions/1',
@@ -106,13 +109,13 @@ class T1(Connection):
 		:param password: str T1 Password
 		:param api_key: str API Key approved in Developer Portal
 		:param session_id: str API-provided prior session cookie.
-		For instance, if you have a session ID provided by browser cookie,
-		you can use that to authenticate a server-side connection.
+			For instance, if you have a session ID provided by browser cookie,
+			you can use that to authenticate a server-side connection.
 		:param auth_method: enum('cookie', 'basic') Method for authentication.
 		:param environment: str to look up API Base to use. e.g. 'production'
-		for https://api.mediamath.com/api/v2.0
+			for https://api.mediamath.com/api/v2.0
 		:param api_base: str API base. should be in format https://[url] without
-		trailing slash, and including version.
+			trailing slash, and including version.
 		"""
 		self.username = username
 		self.password = password
@@ -123,9 +126,13 @@ class T1(Connection):
 		super(T1, self).__init__(environment, api_base=api_base, **kwargs)
 		if auth_method is not None:
 			self.authenticate(auth_method, session_id=session_id, **kwargs)
+		elif session_id is not None:
+			self.authenticate('cookie', session_id=session_id, **kwargs)
 
 	def _auth_cookie(self, session_id=None, **kwargs):
+		user = None
 		if session_id is not None:
+			# Set adama_session cookie
 			from time import time
 			self.session.cookies.set(
 				name='adama_session',
@@ -133,14 +140,14 @@ class T1(Connection):
 				domain=six.moves.urllib.parse.urlparse(self.api_base).netloc,
 				expires=kwargs.get('expires', int(time()+86400)),
 			)
-			self._check_session()
 		else:
-			payload = {
+			user, _ = self._post(self.api_base + '/login', data={
 				'user': self.username,
 				'password': self.password,
-				'api_key': self.api_key
-			}
-			self._post(self.api_base + '/login', data=payload)
+				'api_key': self.api_key,
+			})
+
+		self._check_session(user=user)
 		self._authenticated = True
 
 	def _auth_basic(self):
@@ -173,24 +180,36 @@ class T1(Connection):
 				ret = SINGULAR[collection]
 			except KeyError:
 				ret = CLASSES[collection]
+
+		if ret == Report:
+			if args:
+				return ret(self.session,
+						   args[0],
+						   auth=self._auth,
+						   **kwargs)
+			else:
+				return ret(self.session,
+						   auth=self._auth,
+						   **kwargs)
+
 		return ret(self.session,
 					environment=self.environment,
 					base=self.api_base,
 					auth=self._auth,
 					*args, **kwargs)
 
-	def return_class(self, ent_dict):
+	def _return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
 		rels = ent_dict['rels']
 		if rels:
 			for rel_name, data in six.iteritems(rels):
-				ent_dict[rel_name] = self.return_class(data)
+				ent_dict[rel_name] = self._return_class(data)
 		del rels, ent_dict['rels']
 		return self.new(ent_type, properties=ent_dict)
 
 	def _gen_classes(self, entities):
 		for entity in entities:
-			yield self.return_class(entity)
+			yield self._return_class(entity)
 
 	@staticmethod
 	def _construct_params(entity, include, full, page_limit,
@@ -233,7 +252,7 @@ class T1(Connection):
 					' (or chained parent collection) and a single value for it'
 					' (e.g. {"advertiser": 1}, or {"advertiser.agency": 2)')
 			url.extend(['limit',
-						'{0!s}={1:d}'.format(*six.advance_iterator(six.iteritems(limit)))])
+						'{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
 
 		return '/'.join(url)
 
@@ -256,12 +275,12 @@ class T1(Connection):
 	):
 		"""Main retrieval method for T1 Entities.
 
-		:param collection: str T1 collection, e.g. "advertisers", "organizations"
+		:param collection: str T1 collection, e.g. "advertisers", "agencies"
 		:param entity: int ID of entity being retrieved from T1
 		:param child: str child, e.g. "dma", "acl"
 		:param limit: dict[str]int query for relation entity, e.g. {"advertiser": 123456}
 		:param include: str/list of relations to include, e.g. "advertiser", ["campaign", "advertiser"]
-		:param full: str/bool which entities to return
+		:param full: str/bool when retrieving multiple entities, specifies which types to return the full record for. e.g. "campaign", True, ["campaign", "advertiser"]
 		:param page_limit: int number of entities to return per query, 100 max
 		:param page_offset: int offset for results returned.
 		:param sort_by: str sort order. Default "id". e.g. "-id", "name"
@@ -304,12 +323,12 @@ class T1(Connection):
 
 		entities, ent_count = self._get(_url, params=_params)
 		if entity is not None:
-			entities = six.advance_iterator(iter(entities))
+			entities = next(iter(entities))
 			if child is not None:
 				entities['id'] = _url.split('/')[-1]
 				entities['parent_id'] = entity
 				entities['parent'] = collection
-			return self.return_class(entities)
+			return self._return_class(entities)
 
 		ent_gen = self._gen_classes(entities)
 		if count:
@@ -346,13 +365,40 @@ class T1(Connection):
 	# def get_sub(self, collection, entity, sub, *args):
 	# 	pass
 
+	@staticmethod
+	def _parse_candidate(candidate):
+		val = candidate
+		if candidate is None:
+			val = "null"
+		elif candidate is True:
+			val = "1"
+		elif candidate is False:
+			val = "0"
+		return val
+
 	def find(self, collection, variable, operator, candidates, **kwargs):
+		"""Find objects based on query criteria. Helper method for T1.get,
+		with same return values.
+
+		:param collection: str T1 collection, e.g. "advertisers", "agencies"
+		:param variable: str Field to query for, e.g. "name". If operator is
+			terminalone.filters.IN, this is ignored and None can be provided
+		:param operator: str Arithmetic operator, e.g. "=:". Package provides
+			helper object filters to help, e.g. terminalone.filters.IN or
+			terminalone.filters.CASE_INS_STRING
+		:param candidates: str/int/list values to search for. list only if
+			operator is IN.
+		:param kwargs: additional keyword args to pass on to T1.get. See that
+			method's signature for details.
+		:return: generator over collection of objects matching query
+		:raise TypeError: if operator is IN and candidates not provided as list
+		"""
 		if operator == filters.IN:
 			if not isinstance(candidates, list):
-				raise ClientError('`candidates` must be list of entities for `IN`')
+				raise TypeError('`candidates` must be list of entities for `IN`')
 			q = '(' + ','.join(str(c) for c in candidates) + ')'
 		else:
-			q = operator.join([variable, str(candidates or 'null')])
+			q = operator.join([variable, self._parse_candidate(candidates)])
 		return self.get(collection, query=q, **kwargs)
 
 T1Service = T1

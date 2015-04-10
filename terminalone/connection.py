@@ -11,16 +11,16 @@ import warnings
 from requests import Session
 from .vendor.six import six
 from .errors import ClientError
-from .xmlparser import T1XMLParser, ParseError
+from .xmlparser import XMLParser, ParseError
 
 
 class Connection(object):
 	VALID_ENVS = frozenset(['production', 'sandbox', 'qa', 'demo'])
 	API_BASES = {
 		'production': 'https://api.mediamath.com/api/v2.0',
-		'sandbox': 'https://t1sandbox.mediamath.com/api/v1',
+		'execmgmt': 'https://api.mediamath.com/api/v2.0',
+		'reports': 'https://api.mediamath.com/reporting/v1/std',
 		'qa': 'https://t1qa2.mediamath.com/api/v2.0',
-		'demo': 'https://ewr-t1demo-n3.mediamath.com/prod/api/v1'
 	}
 	def __init__(self,
 				environment='production',
@@ -52,10 +52,11 @@ class Connection(object):
 		if create_session:
 			Connection.__setattr__(self, 'session', Session())
 
-	def _check_session(self):
-		user, _ = self._get(self.api_base + '/session')
+	def _check_session(self, user=None):
+		if user is None:
+			user, _ = self._get(self.api_base + '/session')
 		Connection.__setattr__(self, 'user_id',
-							   int(six.advance_iterator(iter(user))['id']))
+							   int(next(iter(user))['id']))
 		Connection.__setattr__(self, 'session_id',
 							   self.session.cookies['adama_session'])
 
@@ -67,7 +68,7 @@ class Connection(object):
 		response = self.session.get(url, params=params, stream=True)
 
 		try:
-			result = T1XMLParser(response)
+			result = XMLParser(response)
 		except ParseError as e:
 			self.response = response
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
@@ -83,7 +84,7 @@ class Connection(object):
 		response = self.session.post(url, data=data, stream=True)
 
 		try:
-			result = T1XMLParser(response)
+			result = XMLParser(response)
 		except ParseError as e:
 			self.response = response
 			raise ClientError('Could not parse XML response: {!r}'.format(e))

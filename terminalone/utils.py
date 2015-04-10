@@ -6,13 +6,16 @@ Python library for interacting with the T1 API. Uses third-party module Requests
 to parse it.
 """
 
+import csv
+from functools import reduce
+
 class filters(object):
 	IN = '()'
 	NULL = ':'
 	NOT_NULL = ':!'
 	# Equals operator is *different* between M&E (==) and Picard (=)
 	EQUALS = '=='
-	NOT_EQUAL = '!='
+	NOT_EQUALS = '!='
 	GREATER = '>'
 	GREATER_OR_EQUAL = '>='
 	LESS = '<'
@@ -22,3 +25,6 @@ class filters(object):
 	# CASE_INS_NOT_STRING = '!:'
 	# CASE_SENS_STRING = '=~'
 	# CASE_SENS_NOT_STRING = '!~'
+
+def compose(*functions):
+	return reduce(lambda f, g: lambda x: f(g(x)), functions)

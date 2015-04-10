@@ -6,7 +6,7 @@ to parse it.
 """
 
 from __future__ import absolute_import
-from .constants import filters
+from .utils import filters
 from .service import T1, T1Service
 from . import errors
 

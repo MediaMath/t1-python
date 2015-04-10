@@ -25,9 +25,10 @@ STATUS_CODES = {
 	'auth_required': AuthRequiredError,
 	'auth_error': AuthRequiredError,
 	'error': APIError,
+	'bad_request': ClientError,
 }
 
-class T1XMLParser(object):
+class XMLParser(object):
 	"""docstring for T1XMLParser"""
 	def __init__(self, response, iter_=False):
 		response.encoding = 'utf-8'

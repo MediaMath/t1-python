@@ -1,79 +1,343 @@
-TerminalOne API Library
-=======================
+TerminalOne-Python
+==================
 
-**WIP** Python implementation of a T1 API Library. This library consists
-of Python classes for working with T1 entities. This library is written
-for Python 2.7. I have tried to ensure compatibility with 3.x, but this
-is not guaranteed and should be used at your own risk.
+**WIP** Python library for MediaMath's APIs. This library consists of
+classes for working with T1 APIs and managing entities. It is written
+for Python 2.7 and >=3.3. Compatibility with Python 3 is made possible
+by bundling the module `six <https://pypi.python.org/pypi/six>`__.
 
-The best way to use this package is to instantiate the ``T1`` class, and
-do everything through there. That way, the only thing you have to import
-is T1 (``import terminalone`` or ``from terminalone import T1``), then
-instantiate the class
-(``t1 = terminalone.T1(username, password, api_key, [auth_method], [environment])``).
+API Documentation is availble at
+`https://developer.mediamath.com/docs/TerminalOne_API_Overview <https://developer.mediamath.com/docs/TerminalOne_API_Overview>`__.
 
-.. code:: python
+Table of Contents
+-----------------
 
-    >>> from terminalone import T1
-    >>> t1 = T1('myusername', 'mypassword', 'my_api_key')
-    >>> t1.authenticate('cookie') # 'cookie' and 'basic' currently supported
+-  `Installation <#installation>`__
+-  `Usage <#usage>`__
 
-Authenticating upon instantiation is done by using the auth\_method
-keyword:
+   -  `Service Object <#service-object>`__
+   -  `Fetching Entities and
+      Collections <#fetching-entities-and-collections>`__
 
-.. code:: python
+      -  `Collections <#collections>`__
+      -  `Entities <#entities>`__
+      -  `Searching for entities <#searching-for-entities>`__
+      -  `Addenda <#addenda>`__
 
-    >>> t1 = T1('myusername', 'mypassword', 'my_api_key', auth_method='basic')
+-  `Authors <#authors>`__
+-  `Copyright <#copyright>`__
 
-Environment can be “production” or “sandbox”, defaulting to production:
+Installation
+------------
 
-.. code:: python
-
-    >>> t1 = T1('myusername', 'mypassword', 'my_api_key', environment='sandbox')
-
-Please note that until your API key is approved to be used in
-production, you should use environment=‘sandbox’ when instantiating T1.
-
-A specific entity can be retrieved by using the ``get`` method from
-``T1``:
+Installation is simple with pip in a virtual environment:
 
 .. code:: python
 
-    >>> my_advertiser = t1.get('advertisers', 111111)
+    $ pip install --extra-index-url=https://code.mediamath.com/pypi/simple/ TerminalOne
 
-You can then access that entity’s properties using either instance
-attributes or the dict ``properties``:
+The ``--extra-index-url`` flag specifies a package index URL; this is
+where the code is hosted. Alternatively, download the latest tag of the
+repository as a tarball or zip file and run:
 
 .. code:: python
 
+    $ python setup.py install
+
+Usage
+-----
+
+Service Object
+~~~~~~~~~~~~~~
+
+*class* ``terminalone.T1``\ (*username*\ =\ ``None``,
+*password*\ =\ ``None``, *api\_key*\ =\ ``None``,
+*auth\_method*\ =\ ``None``, *session\_id*\ =\ ``None``,
+*environment*\ =\ ``"production"``, *api\_base*\ =\ ``None``)
+
+The ``T1`` class is the starting point for this package. This is where
+authentication and session, entity retrieval, creation, etc. are
+handled.
+
+-  *username* and *password* correspond to credentials for a T1 user.
+-  *api\_key* is an approved API key generated at `MediaMath's Developer
+   Portal <https://developer.mediamath.com>`__.
+-  *session\_id* is for applications receiving a session ID instead of
+   user credentials, such as an app. In this case *api\_key* should
+   still be provided.
+-  *auth\_method* is a string corresponding to which method of
+   authentication the session to use. Currently only "cookie" has full
+   support, while "basic" is supported with Execution and Management
+   API.
+-  Either *environment* or *api\_base* should be provided to specify
+   where the request goes.
+
+.. code:: python
+
+    >>> import terminalone
+    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie")
+
+Using ``auth_method`` authenticates upon instantiation. Authentication
+can also be done separately by calling the ``authenticate`` method with
+the same acceptable arguments as the keyword:
+
+.. code:: python
+
+    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key")
+    >>> t1.authenticate("cookie")
+
+Environment can be "production" or "qa", defaulting to production:
+
+.. code:: python
+
+    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie", environment="qa")
+
+If you have a specific API base (for instance, if you are testing
+against a local deployment) you can use the ``api_base`` keyword:
+
+.. code:: python
+
+    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", api_base="https://myqaserver.domain.com/api/v2.0", auth_method="cookie")
+
+If you are receiving a (cloned) session ID, for instance the norm for
+apps, you will not have user credentials to log in with. Instead,
+provide the session ID and API key:
+
+.. code:: python
+
+    >>> t1 = terminalone.T1(session_id="13ea5a26e77b64e7361c7ef84910c18a8d952cf0", api_key="my_api_key")
+
+Fetching Entities and Collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use ``get`` for entity and collection retrieval:
+
+``T1.get``\ (*collection*, *entity*\ =\ ``None``, *child*\ =\ ``None``,
+*limit*\ =\ ``None``, *include*\ =\ ``None``, *full*\ =\ ``None``,
+*page\_limit*\ =\ ``100``, *page\_offset*\ =\ ``0``,
+*sort\_by*\ =\ ``"id"``, *get\_all*\ =\ ``False``, *query*\ =\ ``None``,
+*count*\ =\ ``False``)
+
+-  *collection*: T1 collection, e.g. ``"advertisers"``
+-  *entity*: Integer ID of entity being retrieved from T1
+-  *child*: Child object of a particular entity, e.g. ``"dma"``,
+   ``"acl"``
+-  *limit*: dict to query for relation entity, e.g.
+   ``{"advertiser": 123456}``
+-  *include*: str/list of relations to include, e.g. ``"advertiser"``,
+   ``["campaign", "advertiser"]``
+-  *full*: When retrieving multiple entities, specifies which types to
+   return the full record for. e.g.
+
+   -  ``"campaign"`` (full record for campaign entities returned)
+   -  ``True`` (full record of all entities returned),
+   -  ``["campaign", "advertiser"]`` (full record for campaigns and
+      advertisers returned)
+
+-  *page\_limit* and *page\_offset* handle pagination. *page\_limit*
+   specifies how many entities to return at a time, default and max of
+   100. *page\_offset* specifies which entity to start at for that page.
+-  *sort\_by*: sort order. Default ``"id"``. e.g. ``"-id"``, ``"name"``
+-  *get\_all*: Whether to retrieve all results for a query or just a
+   single page. Mutually exclusive with *page\_limit*/*page\_offset*
+-  *query*: Search parameters. *Note*: it's much simpler to use ``find``
+   instead of ``get``, allowing ``find`` to construct the query.
+-  *count*: bool return the number of entities as a second parameter
+-  *raise* ``terminalone.errors.ClientError`` if *page\_limit* > 100,
+   ``terminalone.errors.APIError`` on >399 HTTP status code
+-  *return*: If single entity is specified, returns a single entity
+   object. If multiple entities, generator yielding each entity.
+
+Collections
+^^^^^^^^^^^
+
+.. code:: python
+
+    >>> advertisers = t1.get("advertisers")
+    >>> for advertiser in advertisers:
+    ...     print(advertiser)
+    ...
+    Advertiser(id=1, name="My Brand Advertiser", _type="advertiser")
+    ...
+
+Returns generator over the first 100 advertisers (or fewer if the user
+only has access to fewer), ordered ascending by ID. Each entity is the
+limited object, containing just ``id``, ``name``, and ``_type``
+(``_type`` just signifies the type returned by the API, in this case,
+"advertiser").
+
+.. code:: python
+
+    >>> ag_advertisers = t1.get("advertisers",
+    ...                         limit={"agency": 123456},
+    ...                         include="agency",
+    ...                         full="advertiser")
+    >>> for advertiser in ag_advertisers:
+    ...     print(advertiser)
+    ...
+    Advertiser(id=1, name="My Brand Advertiser", agency=Agency(id=123456, name="Operating Agency", _type="agency"), agency_id=123456, status=True, ...)
+    ...
+
+Generator over up to 100 advertisers within agency ID 123456. Each
+advertiser includes its parent agency object as an attribute. The
+advertiser objects are the full entities, so all fields are returned.
+Agency objects are limited and have the same fields as advertisers in
+the previous example.
+
+.. code:: python
+
+    >>> campaigns, count = t1.get("campaigns",
+    ...                           get_all=True,
+    ...                           full=True,
+    ...                           sort_by="-updated_on")
+    >>> print(count)
+    539
+    >>> for campaign in campaigns:
+    ...     print(campaign)
+    Campaign(id=123, name="Summer Acquisition", updated_on=datetime.datetime(2015, 4, 4, 0, 15, 0, 0), ...)
+    Campaign(id=456, name="Spring Acquisition", updated_on=datetime.datetime(2015, 4, 4, 0, 10, 0, 0), ...)
+    ...
+
+Generator over every campaign accessible by the user, sorted in
+descending order of last update. Second argument is integer number of
+campaigns retrieved, as returned by the API. ``get_all=True`` removes
+the need to worry about pagination — it is handled by the SDK
+internally.
+
+.. code:: python
+
+    >>> _, count = t1.get("advertisers",
+    ...                   page_limit=1,
+    ...                   count=True)
+    >>> print(count)
+    23
+
+Sole purpose is to get the count of advertisers accessible by the user.
+Use ``page_limit=1`` to minimize unnecessary resources, and assign to
+``_`` to throw away the single entity retrieved.
+
+Entities
+^^^^^^^^
+
+A specific entity can be retrieved by using ``get`` with an entity ID as
+the second argument, or using the ``entity`` keyword. You can then
+access that entity's properties using instance attributes:
+
+.. code:: python
+
+    >>> my_advertiser = t1.get("advertisers", 111111)
     >>> my_advertiser.id
     111111
-    >>> my_advertiser.properties['id']
-    111111
+
+If for some reason you need to access the object like a dictionary (for
+instance, if you need to iterate over fields or dump to a CSV), the dict
+``properties`` is available. However, you shouldn't modify
+``properties`` directly, as it bypasses validation.
 
 Once you have your instance, you can modify its values, and then save it
-back:
+back. A return value of ``None`` indicates success. Otherwise, an error
+is raised.
 
 .. code:: python
 
-    >>> my_advertiser.name = 'Updated name'
+    >>> my_advertiser.name = "Updated name"
     >>> my_advertiser.save()
-    ok
+    >>>
 
-Create new entities my calling the ``new`` method on your T1 instance:
-
-.. code:: python
-
-    >>> new_creative = t1.new('campaign')
-    >>> # OR
-    >>> new_creative = t1.new('campaigns')
-
-Why don’t we import the object classes directly? For instance, why
-doesn’t this work?
+Create new entities my calling ``T1.new`` on your instance:
 
 .. code:: python
 
-    >>> from terminalone import T1Campaign
+    >>> new_properties = {
+    ...     "name": "Spring Green",
+    ...     "status": True,
+    ... }
+    >>> new_concept = t1.new("concept", properties=new_properties)
+    >>> new_concept.advertiser_id = 123456
+    >>> new_concept.save()
+    >>>
+
+Searching for entities
+^^^^^^^^^^^^^^^^^^^^^^
+
+Limiting entities by relation ID is one way to limit entities, but we
+can also search with more intricate queries using ``find``:
+
+``T1.find``\ (*collection*, *variable*, *operator*, *candidates*,
+\*\*\ *kwargs*)
+
+-  *collection*: T1 collection, same use as with ``get``
+-  *variable*: Field to query for, e.g. ``name``
+-  *operator*: Arithmetic operator, e.g. ``"<"``
+-  *candidates*: Query value, e.g. ``"jonsmith*"``
+-  *kwargs*: Additional keyword arguments to pass onto ``get``. All
+   keyword arguments applicable for ``get`` are applicable here as well.
+
+*class* ``terminalone.filters``
+
+-  ``IN``
+-  ``NULL``
+-  ``NOT_NULL``
+-  ``EQUALS``
+-  ``NOT_EQUALS``
+-  ``GREATER``
+-  ``GREATER_OR_EQUAL``
+-  ``LESS``
+-  ``LESS_OR_EQUAL``
+-  ``CASE_INS_STRING``
+
+.. code:: python
+
+    >>> greens = t1.find("atomic_creatives",
+    ...                  "name",
+    ...                  terminalone.filters.CASE_INS_STRING,
+    ...                  "*Green*",
+    ...                  include="concept",
+    ...                  get_all=True)
+
+Generator over all creatives with "Green" in the name. Include concept.
+
+.. code:: python
+
+    >>> my_campaigns = t1.find("campaigns",
+    ...                       "id",
+    ...                       terminalone.filers.IN,
+    ...                       [123, 234, 345],
+    ...                       full=True)
+
+Generator over campaign IDs 123, 234, and 345. Note that when using
+``terminalone.filers.IN``, *variable* is automatically ID, so that
+argument is effectively ignored. Further, *candidates* must be a list of
+integer IDs.
+
+.. code:: python
+
+    >>> pixels = t1.find("pixel_bundles",
+    ...                  "keywords",
+    ...                  terminalone.filters.NOT_NULL,
+    ...                  None)
+
+Generator over first 100 pixels with non-null keywords field.
+
+.. code:: python
+
+    >>> strats = t1.find("strategies",
+    ...                  "status",
+    ...                  terminalone.filters.EQUALS,
+    ...                  True,
+    ...                  limit={"campaign": 123456})
+
+Active campaigns within campaign ID 123456.
+
+Addenda
+^^^^^^^
+
+Why don't we import the object classes directly? For instance, why
+doesn't this work?
+
+.. code:: python
+
+    >>> from terminalone import Campaign
 
 The answer here is that we need to keep a common session so that we can
 share session information across requests. This allows you to work with
@@ -81,13 +345,13 @@ many objects, only passing in authentication information once.
 
 .. code:: python
 
-    >>> t1 = T1('myusername', 'mypassword', 'my_api_key')
-    >>> t1.authenticate('cookie')
-    >>> c = t1.new('campaign')
+    >>> t1 = T1("myusername", "mypassword", "my_api_key")
+    >>> t1.authenticate("cookie")
+    >>> c = t1.new("campaign")
     >>> c.session is t1.session
     True
 
-Common use cases:
+Copyright
+---------
 
-API Documentation can be found at
-https://kb.mediamath.com/wiki/display/APID/API+Documentation+Home.
+Copyright MediaMath 2015. All rights reserved.
