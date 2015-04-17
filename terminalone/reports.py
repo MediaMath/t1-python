@@ -54,6 +54,16 @@ class Report(Connection):
 		else:
 			super(Report, self).__setattr__(key, value)
 
+	def report_uri(self, report):
+		md = self.metadata
+		if not hasattr(self, 'report'):
+			if report not in md['reports']:
+				raise ClientError('Invalid report')
+
+			return md['reports'][report]['URI_Data'].rsplit('/', 1)[-1]
+		else:
+			return md['URI_Data']
+
 	def set(self, data):
 		for field, value in six.iteritems(data):
 			setattr(self, field, value)
