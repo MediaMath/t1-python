@@ -13,7 +13,8 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 		- [Collections](#collections)
 		- [Entities](#entities)
 		- [Searching for entities](#searching-for-entities)
-		- [Addenda](#addenda)
+		- [Appendix](#appendix)
+- [Contact](#contact)
 - [Copyright](#copyright)
 
 
@@ -21,13 +22,13 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 
 Installation is simple with pip in a virtual environment:
 
-```
+```bash
 $ pip install --extra-index-url=https://code.mediamath.com/pypi/simple/ TerminalOne
 ```
 
 The `--extra-index-url` flag specifies a package index URL; this is where the code is hosted. Alternatively, download the latest tag of the repository as a tarball or zip file and run:
 
-```
+```bash
 $ python setup.py install
 ```
 
@@ -249,7 +250,86 @@ Generator over first 100 pixels with non-null keywords field.
 
 Active campaigns within campaign ID 123456.
 
-#### Addenda
+### Fetching Reports
+
+*class* `terminalone.Report`
+
+`Report.metadata`
+
+To use MediaMath's [Reports API](https://developer.mediamath.com/docs/read/reports_api), instantiate an instance with `T1.new`:
+
+```python
+>>> rpts = t1.new("report")
+```
+
+This is a metadata object, and can be used to retrieve information about which reports are available.
+
+```python
+>>> pprint.pprint(rpts.metadata)
+{'reports': {...
+             'geo': {'Description': 'Standard Geo Report',
+                     'Name': 'Geo Report',
+                     'URI_Data': 'https://api.mediamath.com/reporting/v1/std/geo',
+                     'URI_Meta': 'https://api.mediamath.com/reporting/v1/std/geo/meta'},
+...}
+>>> pprint.pprint(rpts.metadata, depth=2)
+{'reports': {'audience_index': {...},
+             'audience_index_pixel': {...},
+             'day_part': {...},
+             'device_technology': {...},
+             'geo': {...},
+             'performance': {...},
+             'pulse': {...},
+             'reach_frequency': {...},
+             'site_transparency': {...},
+             'technology': {...},
+             'video': {...},
+             'watermark': {...}}}
+```
+
+You can retrieve the URI stub of any report by calling `Report.report_uri`:
+
+```python
+>>> print(rpts.get_uri("geo"))
+'geo'
+```
+
+(Which is just a short-cut to getting the final part of the path of `Report.metadata[report]['URI_Data']`. Getting the URI from the specification is preferred to assuming that the name is the same as the stub. This is more directly applicable by instantiating the object for it:
+
+```python
+>>> report = t1.new("report", rpts.report_uri("performance"))
+```
+
+You can access metadata about this report from the `Report.metadata` property as well. To get data, first set properties about the query with `Report.set`, and use the `Report.get` method, which returns a tuple `(headers, data)`.:
+
+```python
+>>> report.set({
+...     'dimensions': ['campaign_id', 'strategy_name'],
+...     'filter': {'campaign_id': 126173},
+...     'metrics': ['impressions', 'total_spend'],
+...     'time_rollup': 'by_day',
+...     'start_date': '2013-01-01',
+...     'end_date': '2013-12-31',
+...     'order': ['date'],
+... })
+>>> headers, data = report.get()
+>>> print(headers)
+['start_date', 'end_date', 'campaign_id', 'strategy_name', 'impressions']
+>>> for line in data:
+...     # do work on line
+...     print(line)
+...
+['2013-06-27', '2013-06-27', '126173', 'PS', '231']
+...
+```
+
+`headers` is a list of headers, while `data` is a csv.reader object. Type casting is not present in the current version, but is tentatively planned for a future date.
+
+More information about these parameters can be found [here](https://developer.mediamath.com/docs/read/reports_api/Data_Retrieval).
+
+
+
+#### Appendix
 Why don't we import the object classes directly? For instance, why doesn't this work?
 
 ```python
@@ -265,6 +345,10 @@ The answer here is that we need to keep a common session so that we can share se
 >>> c.session is t1.session
 True
 ```
+
+## Contact
+
+For questions about either API workflow or this library, email [developers@mediamath.com](mailto:developers@mediamath.com).
 
 ## Copyright
 

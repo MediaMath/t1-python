@@ -14,7 +14,7 @@ from .utils import compose
 # from .vendor.iterstuff.lookahead import Lookahead
 from .vendor.six import six
 from .vendor.six.six.moves.urllib.parse import unquote, urlencode
-# from .xmlparser import ParseError, XMLParser
+from .xmlparser import ParseError, XMLParser
 
 class Report(Connection):
 
@@ -24,13 +24,13 @@ class Report(Connection):
 		'filter': compose(unquote, urlencode),
 		'having': compose(unquote, urlencode),
 		'metrics': ','.join,
-		'order': None,
+		'order': ','.join,
 		'start_date': None,
 		'time_window': None,
 		'time_rollup': None,
 	}
 
-	def __init__(self, session, report=None, **kwargs):
+	def __init__(self, session, report=None, properties=None, **kwargs):
 		super(Report, self).__init__(create_session=False,
 									 environment='reports', **kwargs)
 		self.session = session
@@ -39,7 +39,9 @@ class Report(Connection):
 		if report is not None:
 			self.report = report
 
-		if kwargs:
+		if properties is not None:
+			self.set(properties)
+		elif kwargs:
 			self.set(kwargs)
 
 	def __getattr__(self, attr):
@@ -114,7 +116,7 @@ class Report(Connection):
 			else:
 				params[key] = value
 
-		it = self._get(url, params=params).iter_lines()
+		it = self._get(url, params=params).iter_lines(decode_unicode=True)
 
 		if as_dict:
 			reader = csv.DictReader(it)
