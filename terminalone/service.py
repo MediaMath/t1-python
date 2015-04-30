@@ -23,7 +23,9 @@ from .models.concept import Concept
 from .models.organization import Organization
 from .models.permission import Permission
 from .models.pixelbundle import PixelBundle
+from .models.pixelprovider import PixelProvider
 from .models.strategy import Strategy
+from .models.strategyconcept import StrategyConcept
 from .models.strategysupplysource import StrategySupplySource
 from .models.targetdimension import TargetDimension
 from .models.targetvalue import TargetValue
@@ -40,7 +42,9 @@ CLASSES = {
 	'organizations': Organization,
 	# 'pixels': Pixel,
 	'pixel_bundles': PixelBundle,
+	'pixel_providers': PixelProvider,
 	'strategies': Strategy,
+	'strategy_concepts': StrategyConcept,
 	'strategy_supply_sources': StrategySupplySource,
 	'users': User,
 	'target_dimensions': TargetDimension,
@@ -58,7 +62,9 @@ SINGULAR = {
 	'organization': Organization,
 	# 'pixel': Pixel,
 	'pixel_bundle': PixelBundle,
+	'pixel_provider': PixelProvider,
 	'strategy': Strategy,
+	'strategy_concept': StrategyConcept,
 	'strategy_supply_source': StrategySupplySource,
 	'user': User,
 	'target_dimension': TargetDimension,
@@ -67,25 +73,26 @@ SINGULAR = {
 	'report': Report,
 }
 CHILD_PATHS = {
-	'dma': 'target_dimensions/1',
-	'connection speed': 'target_dimensions/2',
-	'isp': 'target_dimensions/3',
-	'browser': 'target_dimensions/4',
-	'os': 'target_dimensions/5',
-	'region': 'target_dimensions/7',
-	'mathselect250': 'target_dimensions/8',
-	'country': 'target_dimensions/14',
-	'safety': 'target_dimensions/15',
-	'channels': 'target_dimensions/16',
-	'fold position': 'target_dimensions/19',
-	'linear format': 'target_dimensions/20',
-	'content initiation': 'target_dimensions/21',
-	'audio': 'target_dimensions/22',
-	'player size': 'target_dimensions/23',
-	'device': 'target_dimensions/24',
 	'acl': 'acl',
+	'audio': 'target_dimensions/22',
+	'browser': 'target_dimensions/4',
+	'channels': 'target_dimensions/16',
+	'concepts': 'concepts',
+	'connection speed': 'target_dimensions/2',
+	'content initiation': 'target_dimensions/21',
+	'country': 'target_dimensions/14',
+	'device': 'target_dimensions/24',
+	'dma': 'target_dimensions/1',
+	'fold position': 'target_dimensions/19',
+	'isp': 'target_dimensions/3',
+	'linear format': 'target_dimensions/20',
+	'mathselect250': 'target_dimensions/8',
+	'os': 'target_dimensions/5',
 	'permission': 'permissions',
 	'permissions': 'permissions',
+	'player size': 'target_dimensions/23',
+	'region': 'target_dimensions/7',
+	'safety': 'target_dimensions/15',
 }
 
 class T1(Connection):
