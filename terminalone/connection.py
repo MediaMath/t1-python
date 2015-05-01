@@ -72,6 +72,9 @@ class Connection(object):
 		except ParseError as e:
 			self.response = response
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
+		except Exception:
+			self.response = response
+			raise
 		return result.entities, result.entity_count
 
 	def _post(self, url, data):
@@ -88,4 +91,7 @@ class Connection(object):
 		except ParseError as e:
 			self.response = response
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
+		except Exception:
+			self.response = response
+			raise
 		return result.entities, result.entity_count
