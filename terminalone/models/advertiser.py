@@ -12,7 +12,7 @@ from ..entity import Entity
 class Advertiser(Entity):
 	"""docstring for Advertiser"""
 	collection = 'advertisers'
-	type = 'advertiser'
+	resource = 'advertiser'
 	_relations = {
 		'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
 	}

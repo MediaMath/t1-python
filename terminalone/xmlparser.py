@@ -18,6 +18,9 @@ from .errors import (T1Error, APIError, ClientError, ValidationError,
 
 ParseError = ET.ParseError
 
+# Map known status.code repsonses to Exceptions. 'ok' signifies no exception,
+# so that is None. 'invalid' can have many errors and needs
+# an additional level of parsing, while the others can be instantiated directly.
 STATUS_CODES = {
 	'ok': None,
 	'invalid': True,
@@ -39,7 +42,10 @@ class XMLParser(object):
 		else:
 			map_ = map
 		if result.find('entities') is not None:
-			self.entity_count = int(result.find('entities').get('count'))
+			try:
+				self.entity_count = int(result.find('entities').get('count'))
+			except TypeError:
+				self.entity_count = 0
 			self.entities = map_(self.dictify_entity,
 								result.iterfind('entities/entity'))
 		elif result.find('entity') is not None:
@@ -59,22 +65,26 @@ class XMLParser(object):
 				'rels': {},
 			}]
 		elif result.find('permissions') is not None:
-			self.advertiser = self.dictify_permission_entity(
+			advertiser = self.dictify_permission_entity(
 				next(result.iterfind('permissions/entities/advertiser'), None))
-			self.agency = self.dictify_permission_entity(
+			agency = self.dictify_permission_entity(
 				next(result.iterfind('permissions/entities/agency'), None))
-			self.organization = self.dictify_permission_entity(
+			organization = self.dictify_permission_entity(
 				next(result.iterfind('permissions/entities/organization'), None))
-			self.entities = map_(self.dictify_permission_entity,
-								result.iterfind('permissions/flags'))
+
+			# flags will only ever have one instance. But the return expects
+			# an iterator, so let's just make a list out of it
+			self.entities = [self.dictify_permission_entity(
+				next(result.iterfind('permissions/flags'), None)),]
 			self.entity_count = 1
 			self.entities[0].update({
 				'_type': 'permission',
-				'advertiser': self.advertiser,
-				'agency': self.agency,
-				'organization': self.organization,
+				'advertiser': advertiser,
+				'agency': agency,
+				'organization': organization,
 				'rels': {},
 			})
+
 		elif result.find('log_entries') is not None:
 			self.entity_count = 1
 			self.entities = map_(self.dictify_history_entry,

@@ -13,7 +13,7 @@ from ..entity import SubEntity
 class ACL(SubEntity):
 	"""docstring for ACL."""
 	collection = 'acl'
-	type = 'acl'
+	resource = 'acl'
 	_pull = {
 		'_type': None,
 		'editable': None,

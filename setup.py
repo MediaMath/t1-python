@@ -4,16 +4,21 @@ try:
 	from setuptools import setup
 except ImportError:
 	from distutils.core import setup
+import os
 import warnings
 
-def read_md(filename):
+def long_description():
+	import os
+	if os.path.exists('README.rst'):
+		with open('README.rst') as f:
+			return f.read()
 	try:
 		import pypandoc
 	except ImportError:
 		warnings.warn('pypandoc module not found; could not convert Markdown to RST')
-		return open(filename).read()
+		return open('README.md').read()
 	else:
-		return pypandoc.convert(filename, 'rst', format='md')
+		return pypandoc.convert('README.md', 'rst', format='md')
 
 packages = [
 	'terminalone',
@@ -31,7 +36,7 @@ setup(
 	author_email='prasanna@mediamath.com',
 	url='http://www.mediamath.com',
 	description="A package for interacting with MediaMath's TerminalOne API.",
-	long_description=read_md('README.md'),
+	long_description=long_description(),
 	packages=packages,
 	install_requires=requirements,
 	platforms=['any'],

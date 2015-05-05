@@ -12,7 +12,7 @@ from ..entity import Entity
 class PixelBundle(Entity):
 	"""docstring for PixelBundle"""
 	collection = 'pixel_bundles'
-	type = 'pixel_bundle',
+	resource = 'pixel_bundle',
 	_relations = {
 		'advertiser', 'agency', 'provider',
 	}

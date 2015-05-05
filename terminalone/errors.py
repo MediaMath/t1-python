@@ -7,6 +7,7 @@ to parse it.
 """
 
 from __future__ import absolute_import
+from .vendor.six import six
 
 class T1Error(Exception):
 	"""Base exception class for the module. To catch all errors, catch this.
@@ -54,7 +55,7 @@ class ValidationError(APIError):
 	"""docstring for ValidationError"""
 	def __init__(self, code, errors):
 		msg_list = ['{} (code: {}): {}'.format(error, val['code'], val['error'])
-			for (error, val) in errors.iteritems()]
+			for (error, val) in six.iteritems(errors)]
 		messages = [code] + msg_list
 		self.message = '\n'.join(messages)
 	def __str__(self):

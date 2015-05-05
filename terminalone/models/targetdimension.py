@@ -14,7 +14,7 @@ from .targetvalue import TargetValue
 class TargetDimension(SubEntity):
 	"""docstring for TargetDimension."""
 	collection = 'target_dimensions'
-	type = 'target_dimension'
+	resource = 'target_dimension'
 	_relations = {
 		'strategy', 'target_value',
 	}

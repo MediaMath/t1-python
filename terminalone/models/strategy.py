@@ -16,7 +16,7 @@ OPERATOR_PATTERN = re.compile(r'(AND|OR)')
 class Strategy(Entity):
 	"""docstring for Strategy."""
 	collection = 'strategies'
-	type = 'strategy'
+	resource = 'strategy'
 	_relations = {
 		'campaign', 'currency', 'time_zone',
 	}

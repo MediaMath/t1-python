@@ -13,7 +13,7 @@ from ..entity import Entity
 class TargetValue(Entity):
 	"""docstring for TargetValue."""
 	collection = 'target_values'
-	type = 'target_value'
+	resource = 'target_value'
 	_relations = {
 		'target_dimension',
 	}

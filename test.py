@@ -1,7 +1,7 @@
 from __future__ import print_function
 from terminalone import T1, filters
+from terminalone.utils import credentials
 from terminalone.vendor.six import six
-from credentials import api
 
 REPORTS = []
 
@@ -98,6 +98,10 @@ def test_find(t1):
 	good = all(n.lower().startswith('test') for n in names)
 	assert good, 'Expected all results to start with "test", got: %r' % names
 
+def test_permissions(t1):
+	p = t1.get('users', 1090, child='permissions')
+	assert p._type == 'permission', 'Expected permission entity, got: %r' % p
+
 def test_picard_meta(t1):
 	r = t1.new('report')
 	md = r.metadata
@@ -129,11 +133,12 @@ def main():
 		test_limit,
 		test_include,
 		test_find,
+		test_permissions,
 		test_picard_meta,
 		test_report_meta,
 	]
 
-	t1 = setup(api())
+	t1 = setup(credentials())
 	for test in tests:
 		test(t1)
 		print("Passed test for {}".format(test.__name__.replace('test_', '')))

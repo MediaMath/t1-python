@@ -70,8 +70,11 @@ class Connection(object):
 		try:
 			result = XMLParser(response)
 		except ParseError as e:
-			self.response = response
+			Connection.__setattr__(self, 'response')
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
+		except Exception:
+			Connection.__setattr__(self, 'response')
+			raise
 		return result.entities, result.entity_count
 
 	def _post(self, url, data):
@@ -86,6 +89,9 @@ class Connection(object):
 		try:
 			result = XMLParser(response)
 		except ParseError as e:
-			self.response = response
+			Connection.__setattr__(self, 'response')
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
+		except Exception:
+			Connection.__setattr__(self, 'response')
+			raise
 		return result.entities, result.entity_count

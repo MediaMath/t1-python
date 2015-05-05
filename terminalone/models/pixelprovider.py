@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides site list object.
+"""Provides pixel provider object.
 
 Python library for interacting with the T1 API. Uses third-party module Requests
 (http://docs.python-requests.org/en/latest/) to get and post data, and ElementTree
@@ -9,29 +9,31 @@ to parse it.
 from __future__ import absolute_import
 from ..entity import Entity
 
-class SiteList(Entity):
-	"""docstring for SiteList."""
-	collection = 'site_lists'
-	resource = 'site_list'
+class PixelProvider(Entity):
+	"""docstring for pixel provider."""
+	collection = 'pixel_providers'
+	resource = 'pixel_provider'
+	_executors = Entity._enum({'MEDIAMATH', 'UDI'}, 'UDI')
 	_relations = {
-		'organization',
+		'agency',
+		'vendor',
 	}
-	_restrictions = Entity._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
 	_pull = {
+		'agency_id': int,
 		'created_on': Entity._strpt,
-		'filename': None,
+		'execution_by': None,
 		'id': int,
 		'name': None,
-		'organization_id': int,
-		'restriction': None,
 		'status': Entity._int_to_bool,
+		'taxonomy_file': None,
 		'updated_on': Entity._strpt,
+		'vendor_id': int,
 		'version': int,
 	}
 	_push = _pull.copy()
 	_push.update({
-		'restriction': _restrictions,
+		'execution_by': _executors,
 		'status': int,
 	})
 	def __init__(self, session, properties=None, **kwargs):
-		super(SiteList, self).__init__(session, properties, **kwargs)
+		super(PixelProvider, self).__init__(session, properties, **kwargs)
