@@ -70,10 +70,10 @@ class Connection(object):
 		try:
 			result = XMLParser(response)
 		except ParseError as e:
-			Connection.__setattr__(self, 'response')
+			Connection.__setattr__(self, 'response', response)
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
 		except Exception:
-			Connection.__setattr__(self, 'response')
+			Connection.__setattr__(self, 'response', response)
 			raise
 		return result.entities, result.entity_count
 
@@ -89,9 +89,9 @@ class Connection(object):
 		try:
 			result = XMLParser(response)
 		except ParseError as e:
-			Connection.__setattr__(self, 'response')
+			Connection.__setattr__(self, 'response', response)
 			raise ClientError('Could not parse XML response: {!r}'.format(e))
 		except Exception:
-			Connection.__setattr__(self, 'response')
+			Connection.__setattr__(self, 'response', response)
 			raise
 		return result.entities, result.entity_count
