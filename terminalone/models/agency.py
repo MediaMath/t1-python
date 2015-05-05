@@ -12,7 +12,7 @@ from ..entity import Entity
 class Agency(Entity):
 	"""docstring for Agency"""
 	collection = 'agencies'
-	type = 'agency'
+	resource = 'agency'
 	_relations = {
 		'organization', 'billing_contact', 'sales_contact',
 		'traffic_contact',

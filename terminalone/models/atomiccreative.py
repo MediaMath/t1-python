@@ -12,7 +12,7 @@ from ..entity import Entity
 class AtomicCreative(Entity):
 	"""docstring for AtomicCreative"""
 	collection = 'atomic_creatives'
-	type = 'atomic_creative'
+	resource = 'atomic_creative'
 	_relations = {
 		'advertiser', 'concept', 'creatives',
 	}

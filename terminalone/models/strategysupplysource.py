@@ -7,7 +7,7 @@ from ..entity import Entity
 class StrategySupplySource(Entity):
 	"""docstring for StrategySupplySource."""
 	collection = 'strategy_supply_sources'
-	type = 'strategy_supply_sources'
+	resource = 'strategy_supply_sources'
 	_relations = {
 		'strategy',
 		'supply_source',

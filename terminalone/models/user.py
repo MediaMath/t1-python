@@ -12,7 +12,7 @@ from ..entity import Entity
 class User(Entity):
 	"""docstring for User."""
 	collection = 'users'
-	type = 'user'
+	resource = 'user'
 	_relations = {
 		'creator',
 	}

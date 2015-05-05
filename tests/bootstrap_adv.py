@@ -26,7 +26,7 @@ campaigns = [
 		'start_date': start_date,
 		'end_date': end_date,
 		'frequency_type': 'no-limit',
-		'advertiser_id': 139471,
+		'advertiser_id': 100000,
 		'goal_category': 'audience',
 		'goal_type': 'cpa',
 		'goal_value': 1.00,
@@ -46,7 +46,7 @@ strategies = [
 pixels = [
 	{
 		'name': 'Test Event Pixel',
-		'advertiser_id': 139471,
+		'advertiser_id': 100000,
 		'eligible': True,
 		'pixel_type': 'event',
 		'status': True,
@@ -54,8 +54,8 @@ pixels = [
 	},
 	{
 		'name': 'Test Data Pixel',
-		'agency_id': 100022,
-		'provider_id': 261,
+		'agency_id': 100000,
+		'provider_id': 100,
 		'cost_cpm': 0.00,
 		'cost_cpts': 0.00,
 		'cost_pct_cpm': 0.00,
@@ -68,7 +68,7 @@ pixels = [
 concepts = [
 	{
 		'name': 'Test Concept',
-		'advertiser_id': 139471,
+		'advertiser_id': 100000,
 		'status': True,
 	}
 ]

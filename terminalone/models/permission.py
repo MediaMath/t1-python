@@ -13,7 +13,7 @@ from ..entity import SubEntity
 class Permission(SubEntity):
 	"""docstring for Permission."""
 	collection = 'permissions'
-	type = 'permission'
+	resource = 'permission'
 
 	_pull = {
 		'_type': None,

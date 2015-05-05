@@ -12,7 +12,7 @@ from ..entity import Entity
 class Concept(Entity):
 	"""docstring for Concept."""
 	collection = 'concepts'
-	type = 'concept'
+	resource = 'concept'
 	_relations = {
 		'advertiser',
 	}

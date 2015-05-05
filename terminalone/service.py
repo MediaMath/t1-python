@@ -73,26 +73,26 @@ SINGULAR = {
 	'report': Report,
 }
 CHILD_PATHS = {
-	'acl': 'acl',
-	'audio': 'target_dimensions/22',
-	'browser': 'target_dimensions/4',
-	'channels': 'target_dimensions/16',
-	'concepts': 'concepts',
-	'connection speed': 'target_dimensions/2',
-	'content initiation': 'target_dimensions/21',
-	'country': 'target_dimensions/14',
-	'device': 'target_dimensions/24',
-	'dma': 'target_dimensions/1',
-	'fold position': 'target_dimensions/19',
-	'isp': 'target_dimensions/3',
-	'linear format': 'target_dimensions/20',
-	'mathselect250': 'target_dimensions/8',
-	'os': 'target_dimensions/5',
-	'permission': 'permissions',
-	'permissions': 'permissions',
-	'player size': 'target_dimensions/23',
-	'region': 'target_dimensions/7',
-	'safety': 'target_dimensions/15',
+	'acl': ('acl', 0),
+	'audio': ('target_dimensions', 22),
+	'browser': ('target_dimensions', 4),
+	'channels': ('target_dimensions', 16),
+	'concepts': ('concepts', 0),
+	'connection speed': ('target_dimensions', 2),
+	'content initiation': ('target_dimensions', 21),
+	'country': ('target_dimensions', 14),
+	'device': ('target_dimensions', 24),
+	'dma': ('target_dimensions', 1),
+	'fold position': ('target_dimensions', 19),
+	'isp': ('target_dimensions', 3),
+	'linear format': ('target_dimensions', 20),
+	'mathselect250': ('target_dimensions', 8),
+	'os': ('target_dimensions', 5),
+	'permission': ('permissions', 0),
+	'permissions': ('permissions', 0),
+	'player size': ('target_dimensions', 23),
+	'region': ('target_dimensions', 7),
+	'safety': ('target_dimensions', 15),
 }
 
 class T1(Connection):
@@ -245,13 +245,23 @@ class T1(Connection):
 		if entity is not None:
 			url.append(str(entity)) # str so that we can use join
 
+		child_id = None
 		if child is not None:
 			try:
-				url.append(CHILD_PATHS[child.lower()])
+				child_path = CHILD_PATHS[child.lower()]
 			except AttributeError:
 				raise ClientError("`child` must be a string of the entity to retrieve")
 			except KeyError:
-				raise ClientError("`child` must correspond to an entity not in T1")
+				raise ClientError("`child` must correspond to an entity in T1")
+			# child_path should always be a tuple of (path, id). For children
+			# that do not have IDs, like concepts and permissions, ID is 0
+			if child_path[1]:
+				child_id = child_path[1]
+				url.append(child_path[0])
+				# All values need to be strings for join
+				url.append(str(child_path[1]))
+			else:
+				url.append(child_path[0])
 
 		if isinstance(limit, dict):
 			if len(limit) != 1:
@@ -261,7 +271,7 @@ class T1(Connection):
 			url.extend(['limit',
 						'{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
 
-		return '/'.join(url)
+		return '/'.join(url), child_id
 
 	def get(
 		self,
@@ -305,8 +315,9 @@ class T1(Connection):
 		if page_limit > 100:
 			raise ClientError('page_limit parameter must not exceed 100')
 
+		child_id = None
 		if _url is None:
-			_url = self._construct_url(collection, entity, child, limit)
+			_url, chlid_id = self._construct_url(collection, entity, child, limit)
 
 		if get_all:
 			gen = self._get_all(collection,
@@ -330,9 +341,18 @@ class T1(Connection):
 
 		entities, ent_count = self._get(_url, params=_params)
 		if entity is not None:
+			# TODO: known bug here with iterator children.
+			# For instance, if you get('strategies', 123, child='concepts'),
+			# API returns a structure as if you just requested the concepts
+			# but had that limit. This is new so whatever, just take the first
+			# and be happy with it.
 			entities = next(iter(entities))
 			if child is not None:
-				entities['id'] = _url.split('/')[-1]
+				# Child can be either a target dimension (with an ID) or
+				# a bare child, like concepts or permissions. These should not
+				# have an ID passed in.
+				if child_id is not None:
+					entities['id'] = child_id
 				entities['parent_id'] = entity
 				entities['parent'] = collection
 			return self._return_class(entities)

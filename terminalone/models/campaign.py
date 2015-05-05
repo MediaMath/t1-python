@@ -14,7 +14,7 @@ class Campaign(Entity):
 
 	When creating a new campaign, "zone_name" must be """
 	collection = 'campaigns'
-	type = 'campaign'
+	resource = 'campaign'
 	_relations = {
 		'advertiser', 'ad_server', 'currency', 'merit_pixel', 'time_zone',
 	}

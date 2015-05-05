@@ -12,7 +12,7 @@ from ..entity import Entity
 class PixelProvider(Entity):
 	"""docstring for pixel provider."""
 	collection = 'pixel_providers'
-	type = 'pixel_provider'
+	resource = 'pixel_provider'
 	_executors = Entity._enum({'MEDIAMATH', 'UDI'}, 'UDI')
 	_relations = {
 		'agency',

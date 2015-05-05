@@ -8,6 +8,7 @@ import os
 import warnings
 
 def long_description():
+	import os
 	if os.path.exists('README.rst'):
 		with open('README.rst') as f:
 			return f.read()

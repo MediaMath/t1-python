@@ -12,7 +12,7 @@ from ..entity import Entity
 class SiteList(Entity):
 	"""docstring for SiteList."""
 	collection = 'site_lists'
-	type = 'site_list'
+	resource = 'site_list'
 	_relations = {
 		'organization',
 	}
