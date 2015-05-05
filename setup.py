@@ -31,7 +31,7 @@ requirements = ['requests>=2.3.0']
 
 setup(
 	name='TerminalOne',
-	version='0.5.1',
+	version='0.5.2a1',
 	author='Prasanna Swaminathan',
 	author_email='prasanna@mediamath.com',
 	url='http://www.mediamath.com',
