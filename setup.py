@@ -9,14 +9,17 @@ import warnings
 
 def long_description():
 	import os
-	if os.path.exists('README.rst'):
+	CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+	rst = os.path.join(CURRENT_DIR, 'README.rst')
+	if os.path.exists(rst):
 		with open('README.rst') as f:
 			return f.read()
 	try:
 		import pypandoc
 	except ImportError:
 		warnings.warn('pypandoc module not found; could not convert Markdown to RST')
-		return open('README.md').read()
+		with open(os.path.join(CURRENT_DIR, 'README.md')) as f:
+			return f.read()
 	else:
 		return pypandoc.convert('README.md', 'rst', format='md')
 
@@ -31,7 +34,7 @@ requirements = ['requests>=2.3.0']
 
 setup(
 	name='TerminalOne',
-	version='0.5.2a1',
+	version='0.5.2',
 	author='Prasanna Swaminathan',
 	author_email='prasanna@mediamath.com',
 	url='http://www.mediamath.com',
