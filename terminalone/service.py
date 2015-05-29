@@ -317,7 +317,7 @@ class T1(Connection):
 
 		child_id = None
 		if _url is None:
-			_url, chlid_id = self._construct_url(collection, entity, child, limit)
+			_url, child_id = self._construct_url(collection, entity, child, limit)
 
 		if get_all:
 			gen = self._get_all(collection,
