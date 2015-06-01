@@ -12,8 +12,8 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 	- [Fetching Entities and Collections](#fetching-entities-and-collections)
 		- [Collections](#collections)
 		- [Searching for entities](#searching-for-entities)
-        - [Entities](#entities)
-        - [Reports](#reports)
+		- [Entities](#entities)
+		- [Reports](#reports)
 		- [Appendix](#appendix)
 - [Contact](#contact)
 - [Copyright](#copyright)
@@ -233,11 +233,11 @@ A specific entity can be retrieved by using `get` with an entity ID as the secon
 *class* `terminalone.Entity`
 
 - `set(properties)`
-    Set all data in mapping object `properties` to the entity.
+	Set all data in mapping object `properties` to the entity.
 - `save(data=None)`
-    Save the entity. If `data` is provided, send that. Typically used with no arguments.
+	Save the entity. If `data` is provided, send that. Typically used with no arguments.
 - `properties`
-    Dictionary of entity properties
+	Dictionary of entity properties
 
 (*Note: you will typically interact with subclasses, not `Entity` itself*)
 
@@ -287,40 +287,40 @@ To use MediaMath's [Reports API](https://developer.mediamath.com/docs/read/repor
 
 *class* `terminalone.Report`
 
-- `metadata`
-    Metadata of reports available or of individual report. Calculated on first call (API request made); cached for future calls.
-- `parameters`
-    Dictionary of request parameters
-- `set(data)`
-    Set request parameters with a mapping object `data`
-- `report_uri(report)`
-    Get URI stub for report
-- `get(as_dict=False)`
-    Get report data (requires calling `T1.new` with a report name). Returns headers and `csv.reader`. If `as_dict` is True, returns data as `csv.DictReader`
+- `metadata`  
+	Metadata of reports available or of individual report. Calculated on first call (API request made); cached for future calls.
+- `parameters`  
+	Dictionary of request parameters
+- `set(data)`  
+	Set request parameters with a mapping object `data`
+- `report_uri(report)`  
+	Get URI stub for report
+- `get(as_dict=False)`  
+	Get report data (requires calling `T1.new` with a report name). Returns headers and `csv.reader`. If `as_dict` is True, returns data as `csv.DictReader`
 
 This is a metadata object, and can be used to retrieve information about which reports are available.
 
 ```python
 >>> pprint.pprint(rpts.metadata)
 {'reports': {...
-             'geo': {'Description': 'Standard Geo Report',
-                     'Name': 'Geo Report',
-                     'URI_Data': 'https://api.mediamath.com/reporting/v1/std/geo',
-                     'URI_Meta': 'https://api.mediamath.com/reporting/v1/std/geo/meta'},
+			 'geo': {'Description': 'Standard Geo Report',
+					 'Name': 'Geo Report',
+					 'URI_Data': 'https://api.mediamath.com/reporting/v1/std/geo',
+					 'URI_Meta': 'https://api.mediamath.com/reporting/v1/std/geo/meta'},
 ...}
 >>> pprint.pprint(rpts.metadata, depth=2)
 {'reports': {'audience_index': {...},
-             'audience_index_pixel': {...},
-             'day_part': {...},
-             'device_technology': {...},
-             'geo': {...},
-             'performance': {...},
-             'pulse': {...},
-             'reach_frequency': {...},
-             'site_transparency': {...},
-             'technology': {...},
-             'video': {...},
-             'watermark': {...}}}
+			 'audience_index_pixel': {...},
+			 'day_part': {...},
+			 'device_technology': {...},
+			 'geo': {...},
+			 'performance': {...},
+			 'pulse': {...},
+			 'reach_frequency': {...},
+			 'site_transparency': {...},
+			 'technology': {...},
+			 'video': {...},
+			 'watermark': {...}}}
 ```
 
 You can retrieve the URI stub of any report by calling `Report.report_uri`:
