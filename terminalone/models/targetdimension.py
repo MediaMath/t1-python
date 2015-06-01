@@ -38,9 +38,7 @@ class TargetDimension(SubEntity):
 	def save(self, data=None, **kwargs):
 		"""Saves the TargetDimension object.
 
-		The data keyword expects dictionary of properties to POST to T1.
-
-		Arguments are optional.
+		data: Optional dictionary of properties.
 		"""
 		if self.properties.get('id'):
 			url = '/'.join([self.api_base, self.parent, str(self.parent_id),
@@ -53,13 +51,13 @@ class TargetDimension(SubEntity):
 		else:
 			if 'obj' in kwargs:
 				import warnings
-				warnings.warn('The obj flag is deprecated - please discontinue use.',
+				warnings.warn('The obj flag is deprecated; discontinue use.',
 								DeprecationWarning, stacklevel=2)
 			data = {
 				'exclude': [location.id if isinstance(location, TargetValue) 
-								else location for location in self.exclude],
+										else location for location in self.exclude],
 				'include': [location.id if isinstance(location, TargetValue)
-								else location for location in self.include]
+										else location for location in self.include]
 			}
 		entity = self._post(url, data=data)[0][0]
 		self._update_self(entity)
@@ -69,10 +67,14 @@ class TargetDimension(SubEntity):
 		if isinstance(target, list):
 			for child_id in target:
 				entities, ent_count = self._get(url+str(child_id))
-				group.append(TargetValue(self.session, properties=entities[0], environment=self.environment))
+				group.append(TargetValue(self.session,
+										 properties=entities[0],
+										 environment=self.environment))
 		elif isinstance(target, int):
 			entities, ent_count = self._get(url+str(target))
-			group.append(TargetValue(self.session, properties=entities[0], environment=self.environment))
+			group.append(TargetValue(self.session,
+									 properties=entities[0],
+						 			 environment=self.environment))
 
 	def remove_from(self, group, target):
 		target_values = dict((target_value.id, target_value) 

@@ -11,25 +11,9 @@ from __future__ import absolute_import, division
 from .connection import Connection
 from .entity import Entity
 from .errors import ClientError
+from .models import *
 from .reports import Report
 from .utils import filters
-from .models.acl import ACL
-from .models.adserver import AdServer
-from .models.advertiser import Advertiser
-from .models.agency import Agency
-from .models.atomiccreative import AtomicCreative
-from .models.campaign import Campaign
-from .models.concept import Concept
-from .models.organization import Organization
-from .models.permission import Permission
-from .models.pixelbundle import PixelBundle
-from .models.pixelprovider import PixelProvider
-from .models.strategy import Strategy
-from .models.strategyconcept import StrategyConcept
-from .models.strategysupplysource import StrategySupplySource
-from .models.targetdimension import TargetDimension
-from .models.targetvalue import TargetValue
-from .models.user import User
 from .vendor.six import six
 
 CLASSES = {
@@ -172,11 +156,12 @@ class T1(Connection):
 			raise AttributeError('No authentication method for ' + auth_method)
 
 
-	def new(self, collection, *args, **kwargs):
+	def new(self, collection, report=None, properties=None, *args, **kwargs):
 		"""Returns a fresh class instance for a new entity.
 
 		ac = t1.new('atomic_creative') OR
-		ac = t1.new('atomic_creatives')
+		ac = t1.new('atomic_creatives') OR even
+		ac = t1.new(terminalone.models.AtomicCreative)
 		"""
 		if isinstance(collection, Entity):
 			ret = collection
@@ -189,21 +174,17 @@ class T1(Connection):
 				ret = CLASSES[collection]
 
 		if ret == Report:
-			if args:
-				return ret(self.session,
-						   args[0],
-						   auth=self._auth,
-						   **kwargs)
-			else:
-				return ret(self.session,
-						   auth=self._auth,
-						   **kwargs)
+			return ret(self.session,
+					   report=report,
+					   auth=self._auth,
+					   **kwargs)
 
 		return ret(self.session,
-					environment=self.environment,
-					base=self.api_base,
-					auth=self._auth,
-					*args, **kwargs)
+				   environment=self.environment,
+				   base=self.api_base,
+				   auth=self._auth,
+				   properties=properties,
+				   *args, **kwargs)
 
 	def _return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -228,16 +209,19 @@ class T1(Connection):
 						'page_offset': page_offset,
 						'sort_by': sort_by,
 						'q': query,}
+
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
 			params['with'] = include
+
 		if isinstance(full, list):
 			params['full'] = ','.join(full)
 		elif full is True:
 			params['full'] = '*'
 		elif full is not None:
 			params['full'] = full
+
 		return params
 
 	def _construct_url(self, collection, entity, child, limit):
