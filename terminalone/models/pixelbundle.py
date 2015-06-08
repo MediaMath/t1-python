@@ -9,8 +9,8 @@ to parse it.
 from __future__ import absolute_import
 from ..entity import Entity
 
-class PixelBundle(Entity):
-	"""docstring for PixelBundle"""
+class Pixel(Entity):
+	"""docstring for Pixel"""
 	collection = 'pixel_bundles'
 	resource = 'pixel_bundle',
 	_relations = {
@@ -69,7 +69,7 @@ class PixelBundle(Entity):
 	_readonly_update = {'advertiser_id', 'agency_id', 'pixel_type',
 						'provider_id', 'tag_type'}
 	def __init__(self, session, properties=None, **kwargs):
-		super(PixelBundle, self).__init__(session, properties, **kwargs)
+		super(Pixel, self).__init__(session, properties, **kwargs)
 
 	def save(self, data=None):
 		"""Extra validation for data pixels
@@ -78,7 +78,7 @@ class PixelBundle(Entity):
 		:return: None. Object is updated or error is raised
 		"""
 		if self.pixel_type != 'data':
-			return super(PixelBundle, self).save(data=data)
+			return super(Pixel, self).save(data=data)
 
 		if data is None:
 			data = self.properties.copy()
@@ -92,4 +92,6 @@ class PixelBundle(Entity):
 			data.pop('cost_cpm', None)
 			data.pop('cost_pct_cpm', None)
 
-		return super(PixelBundle, self).save(data=data)
+		return super(Pixel, self).save(data=data)
+
+PixelBundle = Pixel

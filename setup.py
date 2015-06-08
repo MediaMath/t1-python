@@ -26,6 +26,7 @@ def long_description():
 packages = [
 	'terminalone',
 	'terminalone.models',
+	'terminalone.utils',
 	'terminalone.vendor',
 	'terminalone.vendor.six',
 ]

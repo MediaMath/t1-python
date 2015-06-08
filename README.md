@@ -45,7 +45,7 @@ The starting point for this package. Authentication and session, entity retrieva
 - *password*: Password for corresponding T1 user
 - *api_key*: Approved API key generated at [MediaMath's Developer Portal](https://developer.mediamath.com).
 - *session_id*: For applications receiving a session ID instead of user credentials, such as an app in T1's Apps tab. *api_key* should still be provided.
-- *auth_method*: string enum corresponding to which method of authentication the session to use. Currently only "cookie" has full support, while "basic" is supported with Execution and Management API.
+- *auth_method*: string enum corresponding to which method of authentication the session to use. Currently only "cookie" is supported.
 - Either *environment* or *api_base* should be provided to specify where the request goes.
 
 ```python

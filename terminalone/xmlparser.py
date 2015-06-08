@@ -36,7 +36,7 @@ class XMLParser(object):
 	def __init__(self, response, iter_=False):
 		response.encoding = 'utf-8'
 		result = ET.fromstring(response.content)
-		self.get_status(result)
+		self.get_status(result, response)
 		if iter_:
 			map_ = imap
 		else:
@@ -92,13 +92,16 @@ class XMLParser(object):
 		# self.attribs = {'entity_count': self.entity_count,
 		# 				'entities': self.entities,}
 
-	def get_status(self, xmlresult):
+	def get_status(self, xmlresult, response):
 		"""Gets the status code of T1 XML response.
 
 		If code is valid, returns None; otherwise raises the appropriate Error.
 		"""
-		status_code = xmlresult.find('status').attrib['code']
-		message = xmlresult.find('status').text
+		status = xmlresult.find('status')
+		if status is None:
+			raise T1Error(None, response.content)
+		status_code = status.attrib['code']
+		message = status.text
 
 		try:
 			e = STATUS_CODES[status_code]

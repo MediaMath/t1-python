@@ -24,7 +24,7 @@ CLASSES = {
 	'campaigns': Campaign,
 	'concepts': Concept,
 	'organizations': Organization,
-	# 'pixels': Pixel,
+	'pixels': ChildPixel,
 	'pixel_bundles': PixelBundle,
 	'pixel_providers': PixelProvider,
 	'strategies': Strategy,
@@ -36,6 +36,26 @@ CLASSES = {
 	'permissions': Permission,
 	'reports': Report,
 }
+PATHS = {
+	AdServer: 'ad_servers',
+	Advertiser: 'advertisers',
+	Agency: 'agencies',
+	AtomicCreative: 'atomic_creatives',
+	Campaign: 'campaigns',
+	Concept: 'concepts',
+	Organization: 'organizations',
+	ChildPixel: 'pixels',
+	PixelBundle: 'pixel_bundles',
+	PixelProvider: 'pixel_providers',
+	Strategy: 'strategies',
+	StrategyConcept: 'strategy_concepts',
+	StrategySupplySource: 'strategy_supply_sources',
+	User: 'users',
+	TargetDimension: 'target_dimensions',
+	TargetValue: 'target_values',
+	Permission: 'permissions',
+	Report: 'reports',
+}
 SINGULAR = {
 	'ad_server': AdServer,
 	'advertiser': Advertiser,
@@ -44,7 +64,7 @@ SINGULAR = {
 	'campaign': Campaign,
 	'concept': Concept,
 	'organization': Organization,
-	# 'pixel': Pixel,
+	'pixel': ChildPixel,
 	'pixel_bundle': PixelBundle,
 	'pixel_provider': PixelProvider,
 	'strategy': Strategy,
@@ -163,7 +183,7 @@ class T1(Connection):
 		ac = t1.new('atomic_creatives') OR even
 		ac = t1.new(terminalone.models.AtomicCreative)
 		"""
-		if isinstance(collection, Entity):
+		if type(collection) == type and issubclass(collection, Entity):
 			ret = collection
 		elif '_acl' in collection:
 			ret = ACL
@@ -296,6 +316,9 @@ class T1(Connection):
 			`count` is True => number of entities as second return val
 		:raise ClientError: if page_limit > 100
 		"""
+		if type(collection) == type and issubclass(collection, Entity):
+			collection = PATHS[collection]
+
 		if page_limit > 100:
 			raise ClientError('page_limit parameter must not exceed 100')
 
@@ -305,14 +328,14 @@ class T1(Connection):
 
 		if get_all:
 			gen = self._get_all(collection,
-						entity=entity,
-						child=child,
-						include=include,
-						full=full,
-						sort_by=sort_by,
-						query=query,
-						count=count,
-						_url=_url)
+								entity=entity,
+								child=child,
+								include=include,
+								full=full,
+								sort_by=sort_by,
+								query=query,
+								count=count,
+								_url=_url)
 			if count:
 				ent_count = next(gen)
 				return gen, ent_count
@@ -369,7 +392,9 @@ class T1(Connection):
 							full=kwargs.get('full'),
 							page_offset=page_offset,
 							sort_by=kwargs.get('sort_by'),
-							query=kwargs.get('query'))
+							query=kwargs.get('query'),
+							get_all=False, # otherwise we could go in a loop
+			)
 			for item in gen:
 				yield item
 
