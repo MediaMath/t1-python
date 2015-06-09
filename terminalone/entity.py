@@ -152,12 +152,15 @@ class Entity(Connection):
 		if 'version' not in data and update:
 			data['version'] = self.version
 		for key, value in six.iteritems(data.copy()):
+			f = self._push.get(key, False)
 			if key in self._readonly or key in self._relations:
 				del data[key]
 			elif update and key in self._readonly_update:
 				del data[key]
+			elif f is False:
+				del data[key]
 			else:
-				if self._push.get(key) is not None:
+				if f is not None:
 					data[key] = self._push[key](value)
 				else:
 					data[key] = value

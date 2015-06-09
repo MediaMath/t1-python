@@ -35,4 +35,5 @@ nosetests.xml
 .project
 .pydevproject
 
+# File for easy local testing
 bootstrap.py

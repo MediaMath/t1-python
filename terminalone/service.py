@@ -11,25 +11,9 @@ from __future__ import absolute_import, division
 from .connection import Connection
 from .entity import Entity
 from .errors import ClientError
+from .models import *
 from .reports import Report
 from .utils import filters
-from .models.acl import ACL
-from .models.adserver import AdServer
-from .models.advertiser import Advertiser
-from .models.agency import Agency
-from .models.atomiccreative import AtomicCreative
-from .models.campaign import Campaign
-from .models.concept import Concept
-from .models.organization import Organization
-from .models.permission import Permission
-from .models.pixelbundle import PixelBundle
-from .models.pixelprovider import PixelProvider
-from .models.strategy import Strategy
-from .models.strategyconcept import StrategyConcept
-from .models.strategysupplysource import StrategySupplySource
-from .models.targetdimension import TargetDimension
-from .models.targetvalue import TargetValue
-from .models.user import User
 from .vendor.six import six
 
 CLASSES = {
@@ -40,7 +24,7 @@ CLASSES = {
 	'campaigns': Campaign,
 	'concepts': Concept,
 	'organizations': Organization,
-	# 'pixels': Pixel,
+	'pixels': ChildPixel,
 	'pixel_bundles': PixelBundle,
 	'pixel_providers': PixelProvider,
 	'strategies': Strategy,
@@ -52,6 +36,26 @@ CLASSES = {
 	'permissions': Permission,
 	'reports': Report,
 }
+PATHS = {
+	AdServer: 'ad_servers',
+	Advertiser: 'advertisers',
+	Agency: 'agencies',
+	AtomicCreative: 'atomic_creatives',
+	Campaign: 'campaigns',
+	Concept: 'concepts',
+	Organization: 'organizations',
+	ChildPixel: 'pixels',
+	PixelBundle: 'pixel_bundles',
+	PixelProvider: 'pixel_providers',
+	Strategy: 'strategies',
+	StrategyConcept: 'strategy_concepts',
+	StrategySupplySource: 'strategy_supply_sources',
+	User: 'users',
+	TargetDimension: 'target_dimensions',
+	TargetValue: 'target_values',
+	Permission: 'permissions',
+	Report: 'reports',
+}
 SINGULAR = {
 	'ad_server': AdServer,
 	'advertiser': Advertiser,
@@ -60,7 +64,7 @@ SINGULAR = {
 	'campaign': Campaign,
 	'concept': Concept,
 	'organization': Organization,
-	# 'pixel': Pixel,
+	'pixel': ChildPixel,
 	'pixel_bundle': PixelBundle,
 	'pixel_provider': PixelProvider,
 	'strategy': Strategy,
@@ -172,13 +176,14 @@ class T1(Connection):
 			raise AttributeError('No authentication method for ' + auth_method)
 
 
-	def new(self, collection, *args, **kwargs):
+	def new(self, collection, report=None, properties=None, *args, **kwargs):
 		"""Returns a fresh class instance for a new entity.
 
 		ac = t1.new('atomic_creative') OR
-		ac = t1.new('atomic_creatives')
+		ac = t1.new('atomic_creatives') OR even
+		ac = t1.new(terminalone.models.AtomicCreative)
 		"""
-		if isinstance(collection, Entity):
+		if type(collection) == type and issubclass(collection, Entity):
 			ret = collection
 		elif '_acl' in collection:
 			ret = ACL
@@ -189,21 +194,17 @@ class T1(Connection):
 				ret = CLASSES[collection]
 
 		if ret == Report:
-			if args:
-				return ret(self.session,
-						   args[0],
-						   auth=self._auth,
-						   **kwargs)
-			else:
-				return ret(self.session,
-						   auth=self._auth,
-						   **kwargs)
+			return ret(self.session,
+					   report=report,
+					   auth=self._auth,
+					   **kwargs)
 
 		return ret(self.session,
-					environment=self.environment,
-					base=self.api_base,
-					auth=self._auth,
-					*args, **kwargs)
+				   environment=self.environment,
+				   base=self.api_base,
+				   auth=self._auth,
+				   properties=properties,
+				   *args, **kwargs)
 
 	def _return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
@@ -228,16 +229,19 @@ class T1(Connection):
 						'page_offset': page_offset,
 						'sort_by': sort_by,
 						'q': query,}
+
 		if isinstance(include, list): # Can't use "with" here because keyword
 			params['with'] = ','.join(include)
 		elif include is not None:
 			params['with'] = include
+
 		if isinstance(full, list):
 			params['full'] = ','.join(full)
 		elif full is True:
 			params['full'] = '*'
 		elif full is not None:
 			params['full'] = full
+
 		return params
 
 	def _construct_url(self, collection, entity, child, limit):
@@ -312,6 +316,9 @@ class T1(Connection):
 			`count` is True => number of entities as second return val
 		:raise ClientError: if page_limit > 100
 		"""
+		if type(collection) == type and issubclass(collection, Entity):
+			collection = PATHS[collection]
+
 		if page_limit > 100:
 			raise ClientError('page_limit parameter must not exceed 100')
 
@@ -321,14 +328,14 @@ class T1(Connection):
 
 		if get_all:
 			gen = self._get_all(collection,
-						entity=entity,
-						child=child,
-						include=include,
-						full=full,
-						sort_by=sort_by,
-						query=query,
-						count=count,
-						_url=_url)
+								entity=entity,
+								child=child,
+								include=include,
+								full=full,
+								sort_by=sort_by,
+								query=query,
+								count=count,
+								_url=_url)
 			if count:
 				ent_count = next(gen)
 				return gen, ent_count
@@ -385,7 +392,9 @@ class T1(Connection):
 							full=kwargs.get('full'),
 							page_offset=page_offset,
 							sort_by=kwargs.get('sort_by'),
-							query=kwargs.get('query'))
+							query=kwargs.get('query'),
+							get_all=False, # otherwise we could go in a loop
+			)
 			for item in gen:
 				yield item
 

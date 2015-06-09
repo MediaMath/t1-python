@@ -38,7 +38,7 @@ def test_get_all(t1):
 		c += 1
 	assert c == count, 'Expected %d orgs, got %d' % (count, c)
 
-def test_entity(t1):
+def test_entity_get_save(t1):
 	adv = t1.get('advertisers', 105162)
 	assert adv.id == 105162, "Expected ID 105162, got: %d" % adv.id
 	assert all(
@@ -52,6 +52,7 @@ def test_entity(t1):
 			'ad_server_id',
 		]
 	), 'Expected a full record, got: %r' % adv
+	adv.save()
 
 def test_full(t1):
 	adv = next(t1.get('advertisers', page_limit=1))
@@ -128,7 +129,7 @@ def main():
 		test_collection,
 		test_counts,
 		test_get_all,
-		test_entity,
+		test_entity_get_save,
 		test_full,
 		test_limit,
 		test_include,

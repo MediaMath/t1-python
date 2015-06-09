@@ -34,7 +34,7 @@ class Report(Connection):
 		super(Report, self).__init__(create_session=False,
 									 environment='reports', **kwargs)
 		self.session = session
-		self.params = {}
+		self.parameters = {}
 
 		if report is not None:
 			self.report = report
@@ -45,14 +45,14 @@ class Report(Connection):
 			self.set(kwargs)
 
 	def __getattr__(self, attr):
-		if attr in self.params:
-			return self.params[attr]
+		if attr in self.parameters:
+			return self.parameters[attr]
 		else:
 			raise AttributeError(attr)
 
 	def __setattr__(self, key, value):
 		if key in self._fields:
-			self.params[key] = value
+			self.parameters[key] = value
 		else:
 			super(Report, self).__setattr__(key, value)
 
@@ -110,7 +110,7 @@ class Report(Connection):
 		url = '/'.join([self.api_base, self.report])
 
 		params = {}
-		for key, value in six.iteritems(self.params):
+		for key, value in six.iteritems(self.parameters):
 			if self._fields[key]:
 				params[key] = self._fields[key](value)
 			else:

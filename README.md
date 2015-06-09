@@ -11,8 +11,9 @@ API Documentation is availble at [https://developer.mediamath.com/docs/TerminalO
 	- [Service Object](#service-object)
 	- [Fetching Entities and Collections](#fetching-entities-and-collections)
 		- [Collections](#collections)
-		- [Entities](#entities)
 		- [Searching for entities](#searching-for-entities)
+		- [Entities](#entities)
+		- [Reports](#reports)
 		- [Appendix](#appendix)
 - [Contact](#contact)
 - [Copyright](#copyright)
@@ -38,12 +39,13 @@ $ python setup.py install
 
 *class* `terminalone.T1`(*username*=`None`, *password*=`None`, *api_key*=`None`, *auth_method*=`None`, *session_id*=`None`, *environment*=`"production"`, *api_base*=`None`)
 
-The `T1` class is the starting point for this package. This is where authentication and session, entity retrieval, creation, etc. are handled.
+The starting point for this package. Authentication and session, entity retrieval, creation, etc. are handled here. Parameters:
 
-- *username* and *password* correspond to credentials for a T1 user.
-- *api_key* is an approved API key generated at [MediaMath's Developer Portal](https://developer.mediamath.com).
-- *session_id* is for applications receiving a session ID instead of user credentials, such as an app. In this case *api_key* should still be provided.
-- *auth_method* is a string corresponding to which method of authentication the session to use. Currently only "cookie" has full support, while "basic" is supported with Execution and Management API.
+- *username*: Username of a valid T1 user (that is, valid at [https://t1.mediamath.com](https://t1.mediamath.com)).
+- *password*: Password for corresponding T1 user
+- *api_key*: Approved API key generated at [MediaMath's Developer Portal](https://developer.mediamath.com).
+- *session_id*: For applications receiving a session ID instead of user credentials, such as an app in T1's Apps tab. *api_key* should still be provided.
+- *auth_method*: string enum corresponding to which method of authentication the session to use. Currently only "cookie" is supported.
 - Either *environment* or *api_base* should be provided to specify where the request goes.
 
 ```python
@@ -64,7 +66,7 @@ Environment can be "production" or "qa", defaulting to production:
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie", environment="qa")
 ```
 
-If you have a specific API base (for instance, if you are testing against a local deployment) you can use the `api_base` keyword:
+If you have a specific API base (for instance, if you are testing against a sandbox deployment) (*Note*: sandbox environments are not yet useable), you can use the `api_base` keyword:
 
 ```python
 >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", api_base="https://myqaserver.domain.com/api/v2.0", auth_method="cookie")
@@ -78,7 +80,7 @@ If you are receiving a (cloned) session ID, for instance the norm for apps, you 
 
 ### Fetching Entities and Collections
 
-Use `get` for entity and collection retrieval:
+Entity and collection retrieval. Parameters:
 
 `T1.get`(*collection*, *entity*=`None`, *child*=`None`, *limit*=`None`, *include*=`None`, *full*=`None`, *page_limit*=`100`, *page_offset*=`0`, *sort_by*=`"id"`, *get_all*=`False`, *query*=`None`, *count*=`False`)
 
@@ -96,8 +98,9 @@ Use `get` for entity and collection retrieval:
 - *get_all*: Whether to retrieve all results for a query or just a single page. Mutually exclusive with *page_limit*/*page_offset*
 - *query*: Search parameters. *Note*: it's much simpler to use `find` instead of `get`, allowing `find` to construct the query.
 - *count*: bool return the number of entities as a second parameter
-- *raise* `terminalone.errors.ClientError` if *page_limit* > 100, `terminalone.errors.APIError` on >399 HTTP status code
-- *return*: If single entity is specified, returns a single entity object. If multiple entities, generator yielding each entity.
+
+Raises: `terminalone.errors.ClientError` if *page_limit* > 100, `terminalone.errors.APIError` on >399 HTTP status code.  
+Returns: If single entity is specified, returns a single entity object. If multiple entities, generator yielding each entity.
 
 #### Collections
 
@@ -151,39 +154,6 @@ Generator over every campaign accessible by the user, sorted in descending order
 ```
 
 Sole purpose is to get the count of advertisers accessible by the user. Use `page_limit=1` to minimize unnecessary resources, and assign to `_` to throw away the single entity retrieved.
-
-#### Entities
-
-A specific entity can be retrieved by using `get` with an entity ID as the second argument, or using the `entity` keyword. You can then access that entity's properties using instance attributes:
-
-```python
->>> my_advertiser = t1.get("advertisers", 111111)
->>> my_advertiser.id
-111111
-```
-
-If for some reason you need to access the object like a dictionary (for instance, if you need to iterate over fields or dump to a CSV), the dict `properties` is available. However, you shouldn't modify `properties` directly, as it bypasses validation.
-
-Once you have your instance, you can modify its values, and then save it back. A return value of `None` indicates success. Otherwise, an error is raised.
-
-```python
->>> my_advertiser.name = "Updated name"
->>> my_advertiser.save()
->>>
-```
-
-Create new entities my calling `T1.new` on your instance:
-
-```python
->>> new_properties = {
-...     "name": "Spring Green",
-...     "status": True,
-... }
->>> new_concept = t1.new("concept", properties=new_properties)
->>> new_concept.advertiser_id = 123456
->>> new_concept.save()
->>>
-```
 
 #### Searching for entities
 
@@ -250,11 +220,64 @@ Generator over first 100 pixels with non-null keywords field.
 
 Active campaigns within campaign ID 123456.
 
-### Fetching Reports
+#### Entities
 
-*class* `terminalone.Report`
+A specific entity can be retrieved by using `get` with an entity ID as the second argument, or using the `entity` keyword. You can then access that entity's properties using instance attributes:
 
-`Report.metadata`
+```python
+>>> my_advertiser = t1.get("advertisers", 111111)
+>>> my_advertiser.id
+111111
+```
+
+*class* `terminalone.Entity`
+
+- `set(properties)`
+	Set all data in mapping object `properties` to the entity.
+- `save(data=None)`
+	Save the entity. If `data` is provided, send that. Typically used with no arguments.
+- `properties`
+	Dictionary of entity properties
+
+(*Note: you will typically interact with subclasses, not `Entity` itself*)
+
+If for some reason you need to access the object like a dictionary (for instance, if you need to iterate over fields or dump to a CSV), the dict `properties` is available. However, you shouldn't modify `properties` directly, as it bypasses validation.
+
+Once you have your instance, you can modify its values, and then save it back. A return value of `None` indicates success. Otherwise, an error is raised.
+
+```python
+>>> my_advertiser.name = "Updated name"
+>>> my_advertiser.save()
+>>>
+```
+
+Create new entities my calling `T1.new` on your instance.
+
+`T1.new`(*collection*, *report=None*, *properties=None*)
+
+- *collection*: T1 collection, same as above
+- *report*: New report object; discussed in [Reports](#reports)
+- *properties*: Properties to pass into new object.
+
+```python
+>>> new_properties = {
+...     "name": "Spring Green",
+...     "status": True,
+... }
+>>> new_concept = t1.new("concept", properties=new_properties)
+>>> new_concept.advertiser_id = 123456
+>>> new_concept.save()
+>>>
+```
+
+`properties` is an optional mapping object with properties to get passed in. You can use a string representation of the object (such as `"concept"` above); or, you can use the object itself from `terminalone.models`:
+
+```python
+>>> new_concept = t1.new(terminalone.models.Concept, properties=new_properties)
+>>> 
+```
+
+### Reports
 
 To use MediaMath's [Reports API](https://developer.mediamath.com/docs/read/reports_api), instantiate an instance with `T1.new`:
 
@@ -262,29 +285,42 @@ To use MediaMath's [Reports API](https://developer.mediamath.com/docs/read/repor
 >>> rpts = t1.new("report")
 ```
 
+*class* `terminalone.Report`
+
+- `metadata`  
+	Metadata of reports available or of individual report. Calculated on first call (API request made); cached for future calls.
+- `parameters`  
+	Dictionary of request parameters
+- `set(data)`  
+	Set request parameters with a mapping object `data`
+- `report_uri(report)`  
+	Get URI stub for report
+- `get(as_dict=False)`  
+	Get report data (requires calling `T1.new` with a report name). Returns headers and `csv.reader`. If `as_dict` is True, returns data as `csv.DictReader`
+
 This is a metadata object, and can be used to retrieve information about which reports are available.
 
 ```python
 >>> pprint.pprint(rpts.metadata)
 {'reports': {...
-             'geo': {'Description': 'Standard Geo Report',
-                     'Name': 'Geo Report',
-                     'URI_Data': 'https://api.mediamath.com/reporting/v1/std/geo',
-                     'URI_Meta': 'https://api.mediamath.com/reporting/v1/std/geo/meta'},
+			 'geo': {'Description': 'Standard Geo Report',
+					 'Name': 'Geo Report',
+					 'URI_Data': 'https://api.mediamath.com/reporting/v1/std/geo',
+					 'URI_Meta': 'https://api.mediamath.com/reporting/v1/std/geo/meta'},
 ...}
 >>> pprint.pprint(rpts.metadata, depth=2)
 {'reports': {'audience_index': {...},
-             'audience_index_pixel': {...},
-             'day_part': {...},
-             'device_technology': {...},
-             'geo': {...},
-             'performance': {...},
-             'pulse': {...},
-             'reach_frequency': {...},
-             'site_transparency': {...},
-             'technology': {...},
-             'video': {...},
-             'watermark': {...}}}
+			 'audience_index_pixel': {...},
+			 'day_part': {...},
+			 'device_technology': {...},
+			 'geo': {...},
+			 'performance': {...},
+			 'pulse': {...},
+			 'reach_frequency': {...},
+			 'site_transparency': {...},
+			 'technology': {...},
+			 'video': {...},
+			 'watermark': {...}}}
 ```
 
 You can retrieve the URI stub of any report by calling `Report.report_uri`:
@@ -323,7 +359,7 @@ You can access metadata about this report from the `Report.metadata` property as
 ...
 ```
 
-`headers` is a list of headers, while `data` is a csv.reader object. Type casting is not present in the current version, but is tentatively planned for a future date.
+`headers` is a list of headers, while `data` is a `csv.reader` object. Type casting is not present in the current version, but is tentatively planned for a future date.
 
 More information about these parameters can be found [here](https://developer.mediamath.com/docs/read/reports_api/Data_Retrieval).
 
