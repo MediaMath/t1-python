@@ -8,6 +8,7 @@ from .agency import Agency
 from .atomiccreative import AtomicCreative
 from .campaign import Campaign
 from .concept import Concept
+from .deal import Deal
 from .organization import Organization
 from .permission import Permission
 from .pixel import ChildPixel
@@ -20,4 +21,4 @@ from .targetdimension import TargetDimension
 from .targetvalue import TargetValue
 from .user import User
 
-__all__ = ['ACL', 'AdServer', 'Advertiser', 'Agency', 'AtomicCreative', 'Campaign', 'Concept', 'Organization', 'Permission', 'ChildPixel', 'Pixel', 'PixelBundle', 'PixelProvider', 'Strategy', 'StrategyConcept', 'StrategySupplySource', 'TargetDimension', 'TargetValue', 'User']
+__all__ = ['ACL', 'AdServer', 'Advertiser', 'Agency', 'AtomicCreative', 'Campaign', 'Concept', 'Deal', 'Organization', 'Permission', 'ChildPixel', 'Pixel', 'PixelBundle', 'PixelProvider', 'Strategy', 'StrategyConcept', 'StrategySupplySource', 'TargetDimension', 'TargetValue', 'User']
