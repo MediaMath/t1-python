@@ -4,12 +4,14 @@ from terminalone.utils import credentials
 from terminalone.vendor.six import six
 
 REPORTS = []
+API_BASE = 'api.mediamath.com'
 
 # TODO make real unit tests out of this
 
 def setup(credentials):
 	try:
 		t1 = T1(auth_method='cookie',
+				api_base=API_BASE,
 				**credentials)
 	except Exception as e:
 		print(e.message)
@@ -19,6 +21,10 @@ def setup(credentials):
 
 	assert hasattr(t1, 'user_id'), 'No user ID present'
 	return t1
+
+def test_session_id(t1):
+	t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='cookie')
+	assert hasattr(t2, 'username'), 'Expected new T1 session, got: %r' % t2
 
 def test_collection(t1):
 	adv = t1.get('advertisers')
@@ -83,8 +89,32 @@ def test_limit(t1):
 
 def test_include(t1):
 	pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
+		include='advertiser', full=True, page_limit=1))
 	assert hasattr(pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
 	assert hasattr(pxl.advertiser, 'id'), 'Expected advertiser instance, got: %r' % pxl.advertiser
+
+def test_include_traversal(t1):
+	pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
+		include=[['advertiser', 'agency'],], full=True, page_limit=1))
+	assert hasattr(pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
+	assert hasattr(pxl.advertiser, 'agency'), 'Expected agency instance, got: %r' % pxl.advertiser
+
+def test_include_plural(t1):
+	camp = next(t1.get('campaigns', limit={'advertiser': 105162},
+		include='strategies', page_limit=1))
+	assert hasattr(camp, 'strategies'), 'Expected strategies included, got: %r' % camp
+	assert isinstance(camp.strategies, list), 'Expected list of strategies, got: %r' % camp.strategies
+	assert hasattr(camp.strategies[0], 'id'), 'Expected strategy instances, got: %r' % camp.strategies[0]
+
+def test_include_multi(t1):
+	# sort_by=-concept_id to ensure that we get a creative with a concept
+	ac = next(t1.get('atomic_creatives', limit={'advertiser': 105162},
+		include=[['advertiser',], ['concept',]],
+		full=True,
+		page_limit=1,
+		sort_by='-concept_id'))
+	assert hasattr(ac, 'advertiser'), 'Expected advertiser included, got: %r' % ac
+	assert hasattr(ac, 'concept'), 'Expected concept included, got: %r' % ac
 
 def test_find(t1):
 	pxls = t1.find('pixel_bundles', 'id', operator=filters.IN,
@@ -125,6 +155,7 @@ def test_report_meta(t1):
 
 def main():
 	tests = [
+		test_session_id,
 		test_collection,
 		test_counts,
 		test_get_all,
@@ -132,6 +163,9 @@ def main():
 		test_full,
 		test_limit,
 		test_include,
+		test_include_traversal,
+		test_include_plural,
+		test_include_multi,
 		test_find,
 		test_permissions,
 		test_picard_meta,

@@ -90,12 +90,12 @@ Entity and collection retrieval. Parameters:
 - *limit*: dict to query for relation entity, e.g. `{"advertiser": 123456}`
 - *include*: str/list of relations:
 	- string, e.g.
-		- `'advertiser'`
-	- list of *non-traversable* elements, e.g.
-		- `['vendor', 'concept']`
-	- list of list/strings of traversable elements, e.g.
-		- `[['advertiser', 'agency'], 'vendor']`
-		- `[['advertiser', 'agency'], ['vendor', 'vendor_domains']]`
+		- `T1.get('advertiser', include='agency')`
+	- list of *lateral* (non-hierarchical) relations, e.g.
+		- `T1.get('advertiser', include=['agency', 'ad_server'])`
+	- list of list/strings of *hierarchical* relations, e.g.
+		- `T1.get('advertiser', include=[['agency', 'organization'],]`
+		- `T1.get('advertiser', include=[['agency', 'organization'], 'ad_server']`
 - *full*: When retrieving multiple entities, specifies which types to return the full record for. e.g.
 	- `"campaign"` (full record for campaign entities returned)
 	- `True` (full record of all entities returned),
