@@ -11,60 +11,59 @@ import warnings
 from requests import Session
 from .vendor.six import six
 from .errors import ClientError
+from .utils import PATHS
 from .xmlparser import XMLParser, ParseError
 
 
 class Connection(object):
-	VALID_ENVS = frozenset(['production', 'sandbox', 'qa', 'demo'])
+	VALID_ENVS = frozenset(['production', 'qa'])
 	API_BASES = {
-		'production': 'https://api.mediamath.com/api/v2.0',
-		'execmgmt': 'https://api.mediamath.com/api/v2.0',
-		'reports': 'https://api.mediamath.com/reporting/v1/std',
-		'qa': 'https://t1qa2.mediamath.com/api/v2.0',
+		'production': 'api.mediamath.com',
+		'qa': 't1qa2.mediamath.com',
 	}
 	def __init__(self,
 				environment='production',
-				base=None, api_base=None,
-				create_session=True,
+				api_base=None,
+				_create_session=True,
 				auth=None):
 		"""Sets up Requests Session to be used for all connections to T1.
 
 		:param environment: str to look up API Base to use. e.g. 'production'
 		for https://api.mediamath.com/api/v2.0
-		:param base: str API base. should be in format https://[url] without
-		trailing slash, and including version. Will be deprecated.
-		:param api_base: str alias for base. Preferred.
-		:param create_session: bool flag to create a Requests Session.
+		:param api_base: str API domain. should be the qualified domain name without
+		trailing slash. e.g. "api.mediamath.com".
+		:param _create_session: bool flag to create a Requests Session.
 		Should only be used for initial T1 instantiation.
 		"""
-		if base is None and api_base is None:
+		if api_base is None:
 			try:
 				Connection.__setattr__(self, 'api_base',
 						Connection.API_BASES[environment])
 			except KeyError:
 				raise ClientError("Environment: {!r}, does not exist.".format(environment))
-		elif api_base is not None:
-			Connection.__setattr__(self, 'api_base', api_base)
 		else:
-			warnings.warn('`base` parameter is deprecated; use `api_base` instead.',
-						DeprecationWarning, stacklevel=2)
-			Connection.__setattr__(self, 'api_base', base)
-		if create_session:
+			Connection.__setattr__(self, 'api_base', api_base)
+		if _create_session:
 			Connection.__setattr__(self, 'session', Session())
 
 	def _check_session(self, user=None):
 		if user is None:
-			user, _ = self._get(self.api_base + '/session')
+			user, __ = self._get(PATHS['mgmt'], 'session')
+		user = next(user)
 		Connection.__setattr__(self, 'user_id',
-							   int(next(iter(user))['id']))
+							   int(user['id']))
+		Connection.__setattr__(self, 'username',
+							   user['name'])
 		Connection.__setattr__(self, 'session_id',
 							   self.session.cookies['adama_session'])
 
-	def _get(self, url, params=None):
+	def _get(self, path, rest, params=None):
 		"""Base method for subclasses to call.
-		:param url: str API URL
+		:param path: str API path (can be from terminalone.utils.PATHS)
+		:param rest: str rest of url (module-specific path, )
 		:param params: dict query string params
 		"""
+		url = '/'.join(['https:/', self.api_base, path, rest])
 		response = self.session.get(url, params=params, stream=True)
 
 		try:
@@ -75,15 +74,17 @@ class Connection(object):
 		except Exception:
 			Connection.__setattr__(self, 'response', response)
 			raise
-		return result.entities, result.entity_count
+		return iter(result.entities), result.entity_count
 
-	def _post(self, url, data):
+	def _post(self, path, rest, data):
 		"""Base method for subclasses to call.
 		:param url: str API URL
 		:param data: dict POST data
 		"""
 		if not data:
 			raise ClientError('No POST data.')
+
+		url = '/'.join(['https:/', self.api_base, path, rest])
 		response = self.session.post(url, data=data, stream=True)
 
 		try:
@@ -94,4 +95,4 @@ class Connection(object):
 		except Exception:
 			Connection.__setattr__(self, 'response', response)
 			raise
-		return result.entities, result.entity_count
+		return iter(result.entities), result.entity_count

@@ -9,9 +9,9 @@ to parse it.
 from __future__ import absolute_import
 try:
 	from itertools import imap
+	map = imap
 	import xml.etree.cElementTree as ET
 except ImportError: # Python 3
-	imap = map
 	import xml.etree.ElementTree as ET
 from .errors import (T1Error, APIError, ClientError, ValidationError,
 						AuthRequiredError, NotFoundError)
@@ -33,64 +33,30 @@ STATUS_CODES = {
 
 class XMLParser(object):
 	"""docstring for T1XMLParser"""
-	def __init__(self, response, iter_=False):
+	def __init__(self, response):
 		response.encoding = 'utf-8'
 		result = ET.fromstring(response.content)
 		self.get_status(result, response)
-		if iter_:
-			map_ = imap
-		else:
-			map_ = map
-		if result.find('entities') is not None:
-			try:
-				self.entity_count = int(result.find('entities').get('count'))
-			except TypeError:
-				self.entity_count = 0
-			self.entities = map_(self.dictify_entity,
-								result.iterfind('entities/entity'))
-		elif result.find('entity') is not None:
-			self.entity_count = 1
-			self.entities = map_(self.dictify_entity,
-								result.iterfind('entity'))
-		elif result.find('include') or result.find('exclude') or result.find('enabled') is not None:
-			exclude = map_(self.dictify_entity,
-								result.iterfind('exclude/entities/entity'))
-			include = map_(self.dictify_entity,
-								result.iterfind('include/entities/entity'))
-			self.entity_count = 1
-			self.entities = [{
-				'_type': 'target_dimension',
-				'exclude': exclude,
-				'include': include,
-				'rels': {},
-			}]
-		elif result.find('permissions') is not None:
-			advertiser = self.dictify_permission_entity(
-				next(result.iterfind('permissions/entities/advertiser'), None))
-			agency = self.dictify_permission_entity(
-				next(result.iterfind('permissions/entities/agency'), None))
-			organization = self.dictify_permission_entity(
-				next(result.iterfind('permissions/entities/organization'), None))
 
-			# flags will only ever have one instance. But the return expects
-			# an iterator, so let's just make a list out of it
-			self.entities = [self.dictify_permission_entity(
-				next(result.iterfind('permissions/flags'), None)),]
-			self.entity_count = 1
-			self.entities[0].update({
-				'_type': 'permission',
-				'advertiser': advertiser,
-				'agency': agency,
-				'organization': organization,
-				'rels': {},
-			})
+		xfind = lambda haystack, needle: haystack.find(needle) is not None
 
-		elif result.find('log_entries') is not None:
+		if xfind(result, 'entities'):
+			self._parse_collection(result)
+
+		elif xfind(result, 'entity'):
 			self.entity_count = 1
-			self.entities = map_(self.dictify_history_entry,
+			self.entities = self._parse_entities(result)
+
+		elif any(xfind(result, x) for x in ['include, exclude', 'enabled']):
+			self._parse_target_dimensions(result)
+
+		elif xfind(result, 'permissions'):
+			self._parse_permissions(result)
+
+		elif xfind(result, 'log_entries'):
+			self.entity_count = 1
+			self.entities = map(self.dictify_history_entry,
 								result.iterfind('log_entries/entry'))
-		# self.attribs = {'entity_count': self.entity_count,
-		# 				'entities': self.entities,}
 
 	def get_status(self, xmlresult, response):
 		"""Gets the status code of T1 XML response.
@@ -120,6 +86,46 @@ class XMLParser(object):
 
 		raise e(status_code, message)
 
+	def _parse_entities(self, ent_root):
+		return map(self.dictify_entity, ent_root.iterfind('entity'))
+
+	def _parse_collection(self, result):
+		root = result.find('entities')
+		self.entity_count = int(root.get('count') or 0)
+		self.entities = self._parse_entities(root)
+
+	def _parse_target_dimensions(self, result):
+		exclude = map(self.dictify_entity,
+					  result.iterfind('exclude/entities/entity'))
+		include = map(self.dictify_entity,
+					  result.iterfind('include/entities/entity'))
+		self.entity_count = 1
+		self.entities = [{
+			'_type': 'target_dimension',
+			'exclude': exclude,
+			'include': include,
+		}]
+
+	def _parse_permissions(self, result):
+		root = result.find('permissions/entities')
+		organization, agency, advertiser = None, None, None
+		if root:
+			advertiser = self.dictify_permission(root.find('advertiser'))
+			agency = self.dictify_permission(root.find('agency'))
+			organization = self.dictify_permission(root.find('organization'))
+
+		flags = self.dictify_permission(result.find('permissions/flags'))
+		flags.update({
+			'_type': 'permission',
+			'advertiser': advertiser,
+			'agency': agency,
+			'organization': organization,
+		})
+
+		# There will only be one instance here.
+		# But the caller expects an iterator, so make a list of it
+		self.entities, self.entity_count = [flags,], 1
+
 	def _parse_field_error(self, xml):
 		errors = {}
 		for error in xml.iter('field-error'):
@@ -132,18 +138,22 @@ class XMLParser(object):
 		output = entity.attrib
 		# Hold relation objects in specific dict. T1Service instantiates the
 		# correct classes.
-		output['rels'] = {}
+		output['relations'] = {}
 		if 'type' in output:
 			output['_type'] = output['type']
 			del output['type']
 		for prop in entity:
 			if prop.tag == 'entity': # Get parent entities recursively
-				output['rels'][prop.attrib['rel']] = self.dictify_entity(prop)
+				ent = self.dictify_entity(prop)
+				if prop.attrib['rel'] == ent.get('_type'):
+					output['relations'][prop.attrib['rel']] = ent
+				else:
+					output['relations'].setdefault(prop.attrib['rel'], []).append(ent)
 			else:
 				output[prop.attrib['name']] = prop.attrib['value']
 		return output
 
-	def dictify_permission_entity(self, entity):
+	def dictify_permission(self, entity):
 		if not entity:
 			return
 		output = {}

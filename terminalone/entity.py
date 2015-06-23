@@ -11,6 +11,7 @@ from datetime import datetime
 import warnings
 from .connection import Connection
 from .errors import ClientError
+from .utils import PATHS
 from .vendor.six import six
 
 
@@ -38,7 +39,7 @@ class Entity(Connection):
 
 		# __setattr__ is overridden below. So, to set self.properties as an empty
 		# dict, we need to use the built-in __setattr__ method; thus, super()
-		super(Entity, self).__init__(create_session=False, **kwargs)
+		super(Entity, self).__init__(_create_session=False, **kwargs)
 		super(Entity, self).__setattr__('session', session)
 		if properties is None:
 			super(Entity, self).__setattr__('properties', {})
@@ -147,24 +148,39 @@ class Entity(Connection):
 				data[key] = self._pull[key](value)
 		return data
 
+	def _conds_for_removal(self, key, update, f):
+		return (key in self._readonly
+				or key in self._relations
+				or (update
+					and key in self._readonly_update)
+				or f is False)
+
 	def _validate_write(self, data):
 		update = 'id' in self.properties
 		if 'version' not in data and update:
 			data['version'] = self.version
 		for key, value in six.iteritems(data.copy()):
 			f = self._push.get(key, False)
-			if key in self._readonly or key in self._relations:
+
+			if self._conds_for_removal(key, update, f):
 				del data[key]
-			elif update and key in self._readonly_update:
-				del data[key]
-			elif f is False:
-				del data[key]
+				continue
+
+			if f is not None:
+				data[key] = self._push[key](value)
 			else:
-				if f is not None:
-					data[key] = self._push[key](value)
-				else:
-					data[key] = value
+				data[key] = value
 		return data
+
+	def _construct_url(self, addl=None):
+		l = [self.collection,]
+
+		if self.properties.get('id'):
+			l.append(str(self.id))
+		if addl is not None:
+			l.extend(addl)
+
+		return '/'.join(l)
 
 	def _update_self(self, entity):
 		for key, value in six.iteritems(entity):
@@ -174,17 +190,15 @@ class Entity(Connection):
 		for attr, value in six.iteritems(properties):
 			setattr(self, attr, value)
 
-	def save(self, data=None):
-		if self.properties.get('id'):
-			url = '/'.join([self.api_base, self.collection, str(self.id)])
-		else:
-			url = '/'.join([self.api_base, self.collection])
+	def save(self, data=None, url=None):
+		if url is None:
+			url = self._construct_url()
 		if data is not None:
 			data = self._validate_write(data)
 		else:
 			data = self._validate_write(self.properties)
-		entity, __ = self._post(url, data=data)
-		self._update_self(next(iter(entity)))
+		entity, __ = super(Entity, self)._post(PATHS['mgmt'], url, data=data)
+		self._update_self(next(entity))
 
 	def update(self, *args, **kwargs):
 		return self.save(*args, **kwargs)
@@ -192,22 +206,17 @@ class Entity(Connection):
 	def history(self):
 		if not self.properties.get('id'):
 			raise ClientError('Entity ID not given')
-		url  = '/'.join([self.api_base, self.collection, str(self.id), 'history'])
-		history, __ = self._get(url)
+		url  = self._construct_url(addl=['history',])
+		history, __ = super(Entity, self)._get(PATHS['mgmt'], url)
 		return history
 
 class SubEntity(Entity):
-	def save(self, data=None):
+	def _construct_url(self, addl=None):
+		l = [self.parent, str(self.parent_id), self.collection]
+
 		if self.properties.get('id'):
-			url = '/'.join([self.api_base, self.parent, self.parent_id,
-							self.collection, self.id])
-		else:
-			url = '/'.join([self.api_base, self.parent,
-							self.parent_id, self.collection])
-		if data is not None:
-			data = self._validate_write(data)
-		else:
-			data = self._validate_write(self.properties)
-		entity = self._post(url, data=data)[0][0]
-		self._update_self(entity)
+			l.append(str(self.id))
+		if addl is not None:
+			l.extend(addl)
+		return '/'.join(l)
 

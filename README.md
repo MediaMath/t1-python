@@ -69,7 +69,7 @@ Environment can be "production" or "qa", defaulting to production:
 If you have a specific API base (for instance, if you are testing against a sandbox deployment) (*Note*: sandbox environments are not yet useable), you can use the `api_base` keyword:
 
 ```python
->>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", api_base="https://myqaserver.domain.com/api/v2.0", auth_method="cookie")
+>>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", api_base="myqaserver.domain.com", auth_method="cookie")
 ```
 
 If you are receiving a (cloned) session ID, for instance the norm for apps, you will not have user credentials to log in with. Instead, provide the session ID and API key:
@@ -88,7 +88,14 @@ Entity and collection retrieval. Parameters:
 - *entity*: Integer ID of entity being retrieved from T1
 - *child*: Child object of a particular entity, e.g. `"dma"`, `"acl"`
 - *limit*: dict to query for relation entity, e.g. `{"advertiser": 123456}`
-- *include*: str/list of relations to include, e.g. `"advertiser"`, `["campaign", "advertiser"]`
+- *include*: str/list of relations:
+	- string, e.g.
+		- `T1.get('advertiser', include='agency')`
+	- list of *lateral* (non-hierarchical) relations, e.g.
+		- `T1.get('advertiser', include=['agency', 'ad_server'])`
+	- list of list/strings of *hierarchical* relations, e.g.
+		- `T1.get('advertiser', include=[['agency', 'organization'],]`
+		- `T1.get('advertiser', include=[['agency', 'organization'], 'ad_server']`
 - *full*: When retrieving multiple entities, specifies which types to return the full record for. e.g.
 	- `"campaign"` (full record for campaign entities returned)
 	- `True` (full record of all entities returned),

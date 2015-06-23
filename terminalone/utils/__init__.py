@@ -3,3 +3,4 @@
 from .compose import compose
 from .credentials import credentials
 from .filters import filters
+from .paths import PATHS

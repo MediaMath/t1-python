@@ -13,7 +13,7 @@ from .entity import Entity
 from .errors import ClientError
 from .models import *
 from .reports import Report
-from .utils import filters
+from .utils import filters, PATHS
 from .vendor.six import six
 
 CLASSES = {
@@ -36,7 +36,7 @@ CLASSES = {
 	'permissions': Permission,
 	'reports': Report,
 }
-PATHS = {
+MODEL_PATHS = {
 	AdServer: 'ad_servers',
 	Advertiser: 'advertisers',
 	Agency: 'agencies',
@@ -148,11 +148,11 @@ class T1(Connection):
 			self.session.cookies.set(
 				name='adama_session',
 				value=session_id,
-				domain=six.moves.urllib.parse.urlparse(self.api_base).netloc,
+				domain=self.api_base,
 				expires=kwargs.get('expires', int(time()+86400)),
 			)
 		else:
-			user, _ = self._post(self.api_base + '/login', data={
+			user, __ = super(T1, self)._post(PATHS['mgmt'], 'login', data={
 				'user': self.username,
 				'password': self.password,
 				'api_key': self.api_key,
@@ -197,22 +197,29 @@ class T1(Connection):
 			return ret(self.session,
 					   report=report,
 					   auth=self._auth,
+					   environment=self.environment,
+					   api_base=self.api_base,
 					   **kwargs)
 
 		return ret(self.session,
 				   environment=self.environment,
-				   base=self.api_base,
+				   api_base=self.api_base,
 				   auth=self._auth,
 				   properties=properties,
 				   *args, **kwargs)
 
 	def _return_class(self, ent_dict):
 		ent_type = ent_dict.get('_type', ent_dict.get('type'))
-		rels = ent_dict['rels']
-		if rels:
-			for rel_name, data in six.iteritems(rels):
-				ent_dict[rel_name] = self._return_class(data)
-		del rels, ent_dict['rels']
+		relations = ent_dict.get('relations')
+		if relations:
+			for rel_name, data in six.iteritems(relations):
+				if isinstance(data, list):
+					ent_dict[rel_name] = []
+					for cls in data:
+						ent_dict[rel_name].append(self._return_class(cls))
+				else:
+					ent_dict[rel_name] = self._return_class(data)
+		ent_dict.pop('relations', None)
 		return self.new(ent_type, properties=ent_dict)
 
 	def _gen_classes(self, entities):
@@ -230,9 +237,27 @@ class T1(Connection):
 						'sort_by': sort_by,
 						'q': query,}
 
-		if isinstance(include, list): # Can't use "with" here because keyword
-			params['with'] = ','.join(include)
-		elif include is not None:
+		# include can be either a string (e.g. 'advertiser'),
+		# list of *non-traversable* relations (e.g. ['vendor', 'concept']),
+		# or a list of lists/strings of traversable elements, e.g.
+		# [['advertiser', 'agency'], 'vendor'],
+		# [['advertiser', 'agency'], ['vendor', 'vendor_domains']]
+		# If we're given a string, leave it as-is
+		# If we're given a list, for each element:
+		# -> If the item is a string, leave it as-is
+		# -> If the item is a list, comma-join it
+		# Examples from above:
+		# include='advertiser' -> with=advertiser
+		# include=['vendor', 'concept'] -> with=vendor&with=concept
+		# include=[['advertiser', 'agency'], 'vendor']
+		# -> with=advertiser,agency&with=vendor
+		# include=[['advertiser', 'agency'], ['vendor', 'vendor_domains']]
+		# -> with=advertiser,agency&with=vendor,vendor_domains
+		if include is not None:
+			if isinstance(include, list):
+				for i, item in enumerate(include):
+					if isinstance(item, list):
+						include[i] = ','.join(item)
 			params['with'] = include
 
 		if isinstance(full, list):
@@ -245,7 +270,7 @@ class T1(Connection):
 		return params
 
 	def _construct_url(self, collection, entity, child, limit):
-		url = [self.api_base, collection]
+		url = [collection,]
 		if entity is not None:
 			url.append(str(entity)) # str so that we can use join
 
@@ -317,7 +342,7 @@ class T1(Connection):
 		:raise ClientError: if page_limit > 100
 		"""
 		if type(collection) == type and issubclass(collection, Entity):
-			collection = PATHS[collection]
+			collection = MODEL_PATHS[collection]
 
 		if page_limit > 100:
 			raise ClientError('page_limit parameter must not exceed 100')
@@ -346,14 +371,14 @@ class T1(Connection):
 			_params = self._construct_params(entity, include, full, page_limit,
 										page_offset, sort_by, query)
 
-		entities, ent_count = self._get(_url, params=_params)
+		entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 		if entity is not None:
 			# TODO: known bug here with iterator children.
 			# For instance, if you get('strategies', 123, child='concepts'),
 			# API returns a structure as if you just requested the concepts
 			# but had that limit. This is new so whatever, just take the first
 			# and be happy with it.
-			entities = next(iter(entities))
+			entities = next(entities)
 			if child is not None:
 				# Child can be either a target dimension (with an ID) or
 				# a bare child, like concepts or permissions. These should not
@@ -376,7 +401,7 @@ class T1(Connection):
 		return self.get(collection, get_all=True, **kwargs)
 
 	def _get_all(self, collection, **kwargs):
-		_, num_recs = self._get(kwargs['_url'], params={
+		__, num_recs = super(T1, self)._get(PATHS['mgmt'], kwargs['_url'], params={
 			'page_limit': 1,
 			'q': kwargs.get('query'),
 		})
@@ -385,6 +410,7 @@ class T1(Connection):
 			yield num_recs
 
 		for page_offset in six.moves.range(0, num_recs, 100):
+			# get_all=False, otherwise we could go in a loop
 			gen = self.get(collection,
 							_url=kwargs['_url'],
 							entity=kwargs.get('entity'),
@@ -393,7 +419,7 @@ class T1(Connection):
 							page_offset=page_offset,
 							sort_by=kwargs.get('sort_by'),
 							query=kwargs.get('query'),
-							get_all=False, # otherwise we could go in a loop
+							get_all=False,
 			)
 			for item in gen:
 				yield item
