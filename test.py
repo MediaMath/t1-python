@@ -9,8 +9,8 @@ REPORTS = []
 
 def setup(credentials):
 	try:
-		t1 = T1(**credentials)
-		t1.authenticate('cookie')
+		t1 = T1(auth_method='cookie',
+				**credentials)
 	except Exception as e:
 		print(e.message)
 		print(dir(e))
@@ -83,7 +83,6 @@ def test_limit(t1):
 
 def test_include(t1):
 	pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
-		include='advertiser', full=True))
 	assert hasattr(pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
 	assert hasattr(pxl.advertiser, 'id'), 'Expected advertiser instance, got: %r' % pxl.advertiser
 

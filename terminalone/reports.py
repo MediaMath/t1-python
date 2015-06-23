@@ -10,7 +10,7 @@ from __future__ import absolute_import, division
 import csv
 from .connection import Connection
 from .errors import ClientError#, T1Error
-from .utils import compose
+from .utils import compose, PATHS
 # from .vendor.iterstuff.lookahead import Lookahead
 from .vendor.six import six
 from .vendor.six.six.moves.urllib.parse import unquote, urlencode
@@ -31,8 +31,7 @@ class Report(Connection):
 	}
 
 	def __init__(self, session, report=None, properties=None, **kwargs):
-		super(Report, self).__init__(create_session=False,
-									 environment='reports', **kwargs)
+		super(Report, self).__init__(_create_session=False, **kwargs)
 		self.session = session
 		self.parameters = {}
 
@@ -70,12 +69,13 @@ class Report(Connection):
 		for field, value in six.iteritems(data):
 			setattr(self, field, value)
 
-	def _get(self, url, params=None):
+	def _get(self, path, params=None):
 		"""Base method customized for the mix of JSON and XML
 
-		:param url: str API URL
+		:param path: str path to hit. Should not start with slash
 		:param params: dict query string params
 		"""
+		url = '/'.join(['https:/', self.api_base, PATHS['reports'], path])
 		response = self.session.get(url, params=params, stream=True)
 
 		if not response.ok:
@@ -94,11 +94,11 @@ class Report(Connection):
 			return self._metadata
 
 		if hasattr(self, 'report'):
-			url = self.api_base + '/{}/meta'.format(self.report)
+			path = self.report + '/meta'
 		else:
-			url = self.api_base + '/meta'
+			path = 'meta'
 
-		res = self._get(url)
+		res = self._get(path)
 
 		self._metadata = res.json()
 		return self._metadata
@@ -107,8 +107,6 @@ class Report(Connection):
 		if not hasattr(self, 'report'):
 			raise ClientError("Can't run get without report!")
 
-		url = '/'.join([self.api_base, self.report])
-
 		params = {}
 		for key, value in six.iteritems(self.parameters):
 			if self._fields[key]:
@@ -116,7 +114,7 @@ class Report(Connection):
 			else:
 				params[key] = value
 
-		it = self._get(url, params=params).iter_lines(decode_unicode=True)
+		it = self._get(self.report, params=params).iter_lines(decode_unicode=True)
 
 		if as_dict:
 			reader = csv.DictReader(it)
