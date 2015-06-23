@@ -148,23 +148,28 @@ class Entity(Connection):
 				data[key] = self._pull[key](value)
 		return data
 
+	def _conds_for_removal(self, key, update, f):
+		return (key in self._readonly
+				or key in self._relations
+				or (update
+					and key in self._readonly_update)
+				or f is False)
+
 	def _validate_write(self, data):
 		update = 'id' in self.properties
 		if 'version' not in data and update:
 			data['version'] = self.version
 		for key, value in six.iteritems(data.copy()):
 			f = self._push.get(key, False)
-			if key in self._readonly or key in self._relations:
+
+			if self._conds_for_removal(key, update, f):
 				del data[key]
-			elif update and key in self._readonly_update:
-				del data[key]
-			elif f is False:
-				del data[key]
+				continue
+
+			if f is not None:
+				data[key] = self._push[key](value)
 			else:
-				if f is not None:
-					data[key] = self._push[key](value)
-				else:
-					data[key] = value
+				data[key] = value
 		return data
 
 	def _construct_url(self, addl=None):
