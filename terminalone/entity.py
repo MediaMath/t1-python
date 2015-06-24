@@ -135,12 +135,9 @@ class Entity(Connection):
 	@staticmethod
 	def _valid_id(id_):
 		try:
-			myid = int(id_)
+			return int(id_) < 1
 		except (ValueError, TypeError):
 			return False
-		if myid < 1:
-			return False
-		return True
 
 	def _validate_read(self, data):
 		for key, value in six.iteritems(data):
