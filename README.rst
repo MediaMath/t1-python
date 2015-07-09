@@ -35,10 +35,9 @@ Installation is simple with pip in a virtual environment:
 
 .. code:: bash
 
-    $ pip install --extra-index-url=https://code.mediamath.com/pypi/simple/ TerminalOne
+    $ pip install TerminalOne
 
-The ``--extra-index-url`` flag specifies a package index URL; this is
-where the code is hosted. Alternatively, download the latest tag of the
+Alternatively, download the latest tag of the
 repository as a tarball or zip file and run:
 
 .. code:: bash
