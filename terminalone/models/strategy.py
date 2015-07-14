@@ -147,6 +147,7 @@ class Strategy(Entity):
         url = self._construct_url(addl=['supplies',])
         entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
         self._update_self(next(entity))
+        self._deserialize_target_expr()
         if 'relations' in self.properties:
             del self.properties['relations']
 
