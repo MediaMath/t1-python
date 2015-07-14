@@ -147,8 +147,20 @@ class Strategy(Entity):
         url = self._construct_url(addl=['supplies',])
         entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
         self._update_self(next(entity))
+        self._deserialize_target_expr()
         if 'relations' in self.properties:
             del self.properties['relations']
+
+    def save_domains(self, data):
+        url = self._construct_url(addl=['domain_restrictions',])
+        try:
+            entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+        except AttributeError:
+            # this endpoint doesn't return an entity like the supplies endpoint
+            # so we ignore the error
+            pass
+
+        # you can't get these values so we don't need to reset anything
 
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""
