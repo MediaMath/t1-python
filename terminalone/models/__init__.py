@@ -21,6 +21,7 @@ from .sitelist import SiteList
 from .siteplacement import SitePlacement
 from .strategy import Strategy
 from .strategyconcept import StrategyConcept
+from .strategydomain import StrategyDomain
 from .strategysupplysource import StrategySupplySource
 from .targetdimension import TargetDimension
 from .targetvalue import TargetValue
@@ -47,6 +48,7 @@ __all__ = ['ACL',
            'SitePlacement',
            'Strategy',
            'StrategyConcept',
+           'StrategyDomain',
            'StrategySupplySource',
            'TargetDimension',
            'TargetValue',

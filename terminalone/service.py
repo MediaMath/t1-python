@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides service object for T1.
-
-Python library for interacting with the T1 API. Uses third-party module Requests
-(http://docs.python-requests.org/en/latest/) to get and post data, and ElementTree
-to parse it. Uses json and cPickle/pickle to serialize cookie objects.
-"""
+"""Provides service object for T1."""
 
 from __future__ import absolute_import, division
 from .connection import Connection
@@ -34,6 +29,7 @@ CLASSES = {
     'site_placements': SitePlacement,
     'strategies': Strategy,
     'strategy_concepts': StrategyConcept,
+    'strategy_domain_restrictions': StrategyDomain,
     'strategy_supply_sources': StrategySupplySource,
     'users': User,
     'target_dimensions': TargetDimension,
@@ -60,6 +56,7 @@ MODEL_PATHS = {
     SitePlacement: 'site_placements',
     Strategy: 'strategies',
     StrategyConcept: 'strategy_concepts',
+    StrategyDomain: 'strategy_domain_restrictions',
     StrategySupplySource: 'strategy_supply_sources',
     User: 'users',
     TargetDimension: 'target_dimensions',
@@ -86,6 +83,7 @@ SINGULAR = {
     'site_placement': SitePlacement,
     'strategy': Strategy,
     'strategy_concept': StrategyConcept,
+    'strategy_domain_restriction': StrategyDomain,
     'strategy_supply_source': StrategySupplySource,
     'user': User,
     'target_dimension': TargetDimension,

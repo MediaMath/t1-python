@@ -21,6 +21,16 @@ SCRIPT_TAG = ('<script type="text/javascript" src="http://tags.mathtag.com'
               '{{INSERT_PUBLISHER_URL}}&random={{INSERT_CACHEBUSTER}}"></script>')
 
 def generate_pmpd_tag(tag_type, placement_slot, publisher_site, publisher):
+    """Generate PMP-D tag from already-created values.
+
+    :param tag_type: enum{'iframe', 'js', 'js/iframe'} type of tag
+    :param placement_slot: PlacementSlot instance
+    :param publisher_site: PublisherSite instance
+    :param publisher: Publisher instance
+    :return: str tag
+    :raise: TypeError if param is wrong type.
+        ValueError if invalid tag_type.
+    """
     if not isinstance(placement_slot, PlacementSlot):
         raise TypeError('placement_slot should be a PlacementSlot instance')
     if not isinstance(publisher_site, PublisherSite):
@@ -39,9 +49,8 @@ def generate_pmpd_tag(tag_type, placement_slot, publisher_site, publisher):
     else:
         tag = SCRIPT_TAG + '<noscript>' + IFRAME_TAG + '</noscript>'
 
-    tag = tag.format(pub_id=publisher.id,
-                     site_id=publisher_site.id,
-                     slot_id=placement_slot.id,
-                     width=placement_slot.width,
-                     height=placement_slot.height)
-    return tag
+    return tag.format(pub_id=publisher.id,
+                      site_id=publisher_site.id,
+                      slot_id=placement_slot.id,
+                      width=placement_slot.width,
+                      height=placement_slot.height)

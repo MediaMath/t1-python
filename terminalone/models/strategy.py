@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 import re
 from ..entity import Entity
-from ..utils import PATHS
+from ..utils import PATHS, suppress
 
 PIXEL_PATTERN = re.compile(r'\[(\d+)\]')
 OPERATOR_PATTERN = re.compile(r'(AND|OR)')
@@ -153,12 +153,10 @@ class Strategy(Entity):
 
     def save_domains(self, data):
         url = self._construct_url(addl=['domain_restrictions',])
-        try:
+        # this endpoint doesn't return an entity like the supplies endpoint
+        # so we ignore the error
+        with suppress(AttributeError):
             entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
-        except AttributeError:
-            # this endpoint doesn't return an entity like the supplies endpoint
-            # so we ignore the error
-            pass
 
         # you can't get these values so we don't need to reset anything
 
