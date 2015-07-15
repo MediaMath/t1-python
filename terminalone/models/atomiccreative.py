@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from ..entity import Entity
 
 class AtomicCreative(Entity):
-    """docstring for AtomicCreative"""
+    """T1 Creative entity, or an atomic_creative entity."""
     collection = 'atomic_creatives'
     resource = 'atomic_creative'
     _relations = {
@@ -17,7 +17,6 @@ class AtomicCreative(Entity):
                                 'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
                                 'TERMINALONE', 'MEDIAFORGE', 'OTHER'},
                                'OTHER')
-    _approved = Entity._enum({'PENDING', 'APPROVED', 'REJECTED'}, 'PENDING')
     _expand_dir = Entity._default_empty('NONRESTRICTED')
     _expand_trig = Entity._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'}, 'CLICK')
     _file_types = Entity._enum({'swf', 'gif', 'html5', 'jpg', 'jpeg', 'tif',
@@ -71,7 +70,6 @@ class AtomicCreative(Entity):
     _push.update({
         'ad_format': _ad_formats,
         'ad_server_type': _ad_servers,
-        # 'approval_status': _approved,
         'end_date': Entity._strft,
         'expansion_direction': _expand_dir,
         'expansion_trigger': _expand_trig,

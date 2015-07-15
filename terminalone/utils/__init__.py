@@ -6,3 +6,4 @@ from .compose import compose
 from .credentials import credentials
 from .paths import PATHS
 from .pmpd import generate_pmpd_tag
+from .suppress import suppress

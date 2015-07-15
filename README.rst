@@ -1,6 +1,12 @@
 TerminalOne-Python
 ==================
 
+.. image:: https://img.shields.io/pypi/v/TerminalOne.svg
+    :target: https://pypi.python.org/pypi/TerminalOne
+
+.. image:: https://img.shields.io/pypi/dm/TerminalOne.svg
+    :target: https://pypi.python.org/pypi/TerminalOne
+
 Python library for MediaMath's APIs. This library consists of
 classes for working with T1 APIs and managing entities. It is written
 for Python 2.7 and >=3.3. Compatibility with Python 3 is made possible
@@ -22,6 +28,7 @@ Table of Contents
       -  `Collections <#collections>`__
       -  `Searching for entities <#searching-for-entities>`__
       -  `Entities <#entities>`__
+      -  `Child Entities <#child-entities>`__
       -  `Reports <#reports>`__
       -  `Appendix <#appendix>`__
 
@@ -339,7 +346,7 @@ is raised.
     >>> my_advertiser.save()
     >>>
 
-Create new entities my calling ``T1.new`` on your instance.
+Create new entities by calling ``T1.new`` on your instance.
 
 ``T1.new``\ (*collection*, *report=None*, *properties=None*)
 
@@ -367,6 +374,17 @@ passed in. You can use a string representation of the object (such as
 
     >>> new_concept = t1.new(terminalone.models.Concept, properties=new_properties)
     >>> 
+
+Child Entities
+^^^^^^^^^^^^^^
+
+To retrieve child entities (for instance, ``/users/:id/permissions``), include
+the ``child`` argument in a call to ``T1.get``:
+
+.. code:: python
+
+    >>> permissions = t1.get("users", 1, child="permissions")
+
 
 Reports
 ~~~~~~~
@@ -429,7 +447,7 @@ You can retrieve the URI stub of any report by calling
     >>> print(rpts.get_uri("geo"))
     'geo'
 
-(Which is just a short-cut to getting the final part of the path of
+Which is just a short-cut to getting the final part of the path of
 ``Report.metadata[report]['URI_Data']``. Getting the URI from the
 specification is preferred to assuming that the name is the same as the
 stub. This is more directly applicable by instantiating the object for
