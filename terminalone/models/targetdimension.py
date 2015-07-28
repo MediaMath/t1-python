@@ -4,12 +4,12 @@
 from __future__ import absolute_import
 import warnings
 from ..errors import ClientError
-from ..entity import SubEntity
+from ..entity import Entity, SubEntity
 from .targetvalue import TargetValue
 from ..utils import PATHS
 
 class TargetDimension(SubEntity):
-    """docstring for TargetDimension."""
+    """TargetDimension object. Used for most current targeting settings."""
     collection = 'target_dimensions'
     resource = 'target_dimension'
     _relations = {
@@ -24,7 +24,11 @@ class TargetDimension(SubEntity):
     _push = _pull
     def __init__(self, session, properties=None, **kwargs):
         super(TargetDimension, self).__init__(session, properties, **kwargs)
-        self.environment = kwargs['environment']
+        super(Entity, self).__setattr__('environment',
+                                        kwargs.get('environment'))
+        self._deserialize_targets()
+
+    def _deserialize_targets(self):
         self.include, self.exclude = list(self.include), list(self.exclude)
         for index, ent_dict in enumerate(self.exclude):
             self.exclude[index] = TargetValue(self.session,
@@ -41,7 +45,6 @@ class TargetDimension(SubEntity):
         data: optional dict of properties
         """
         if 'obj' in kwargs:
-            import warnings
             warnings.warn('The obj flag is deprecated; discontinue use.',
                           DeprecationWarning, stacklevel=2)
         if data is None:
@@ -51,10 +54,16 @@ class TargetDimension(SubEntity):
             'exclude': [location.id if isinstance(location, TargetValue)
                         else location for location in self.exclude],
             'include': [location.id if isinstance(location, TargetValue)
-                        else location for location in self.include]
+                        else location for location in self.include],
+            # TargetDimension doesn't have a version associated.
+            # But we want to use .save, rather than ._post.
+            # As such, we need to have a version number included.
+            # Setting it to None will make _validate_write yank it from the body
+            'version': None,
         })
 
-        return super(TargetDimension, self).save(data=data)
+        super(TargetDimension, self).save(data=data)
+        self._deserialize_targets()
 
     def add(self, group, target):
         """Add target value by ID or instance to group"""
