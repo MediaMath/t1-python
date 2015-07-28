@@ -13,7 +13,7 @@ from . import errors
 __author__ = 'Prasanna Swaminathan'
 __copyright__ = 'Copyright 2015, MediaMath'
 __license__ = 'BSD'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __maintainer__ = 'Prasanna Swaminathan'
 __email__ = 'prasanna@mediamath.com'
 __status__ = 'Development'
