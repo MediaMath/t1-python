@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from ..entity import Entity
 
 class StrategySupplySource(Entity):
-    """docstring for StrategySupplySource."""
+    """StrategySupplySource object, for strategies targeting not-all-exchanges."""
     collection = 'strategy_supply_sources'
-    resource = 'strategy_supply_sources'
+    resource = 'strategy_supply_source'
     _relations = {
         'strategy',
         'supply_source',
