@@ -9,10 +9,6 @@ class CreativeApproval(Entity):
     """T1 Creative entity, or an atomic_creative entity."""
     collection = 'creative_approvals'
     resource = 'creative_approval'
-    _relations = {
-        
-    }
-    _approval_types = Entity._enum({'APPROVED', 'REJECTED', 'PENDING'}, 'PENDING')
     _pull = {
         'additional_detail': None,
         'approval_status': None,
@@ -26,8 +22,6 @@ class CreativeApproval(Entity):
         'updated_on': Entity._strpt,
         'version': int,
     }
-
-    _readonly = Entity._readonly 
 
     def save(self, *args, **kwargs):
         raise ClientError('This object is not editable.')
