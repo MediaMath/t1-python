@@ -9,7 +9,7 @@ class AtomicCreative(Entity):
     collection = 'atomic_creatives'
     resource = 'atomic_creative'
     _relations = {
-        'advertiser', 'concept', 'creatives',
+        'advertiser', 'concept', 'creative_approvals', 'creatives',
     }
     _ad_formats = Entity._enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'},
                                'DISPLAY')
