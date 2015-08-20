@@ -7,7 +7,7 @@ import responses
 import requests
 
 from terminalone import T1
-from terminalone.errors import ValidationError, AuthRequiredError
+from terminalone import errors
 
 API_BASE = 'api.mediamath.com'
 
@@ -84,7 +84,7 @@ class TestT1Login(unittest.TestCase):
         responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
                                callback=login_callback)
 
-        with self.assertRaises(AuthRequiredError) as cm:
+        with self.assertRaises(errors.AuthRequiredError) as cm:
             T1(auth_method='cookie',
                 api_base=API_BASE,
                 **mock_credentials)
@@ -92,8 +92,47 @@ class TestT1Login(unittest.TestCase):
         exc = cm.exception
         self.assertEqual(exc.message, 'Authentication error')
 
-    def test_no_data_fails(self):
-        pass
+    @responses.activate
+    def test_no_key_fails(self):
+        def login_callback(request):
+            body = open('fixtures/login_no_key.xml').read()
+            return (403, {}, body)
+
+        mock_credentials = {
+            'username': 'user',
+            'password': 'pass',
+        }
+        responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               callback=login_callback)
+
+        with self.assertRaises(errors.T1Error) as cm:
+            T1(auth_method='cookie',
+                api_base=API_BASE,
+                **mock_credentials)
+
+        exc = cm.exception
+        self.assertEqual('<h1>Developer Inactive</h1>', exc.message)
+
+    @responses.activate
+    def test_no_user_fails(self):
+        def login_callback(request):
+            body = open('fixtures/login_badrequest.xml').read()
+            return (400, {}, body)
+
+        mock_credentials = {
+            'password': 'pass',
+            'api_key': 'api_key',
+        }
+        responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               callback=login_callback)
+
+        with self.assertRaises(errors.ValidationError) as cm:
+            T1(auth_method='cookie',
+                api_base=API_BASE,
+                **mock_credentials)
+
+        exc = cm.exception
+        self.assertEqual('invalid', exc.message)
 
 
 class TestXMLParsing(unittest.TestCase):
