@@ -37,6 +37,11 @@ CLASSES = {
     'target_values': TargetValue,
     'permissions': Permission,
     'reports': Report,
+    'vendors': Vendor,
+    'vendor_contracts': VendorContract,
+    'vendor_domains': VendorDomain,
+    'vendor_pixels': VendorPixel,
+    'vendor_pixel_domains': VendorPixelDomain,
 }
 MODEL_PATHS = {
     AdServer: 'ad_servers',
@@ -65,6 +70,11 @@ MODEL_PATHS = {
     TargetValue: 'target_values',
     Permission: 'permissions',
     Report: 'reports',
+    Vendor: 'vendors',
+    VendorContract: 'vendor_contracts',
+    VendorDomain: 'vendor_domains',
+    VendorPixel: 'vendor_pixels',
+    VendorPixelDomain: 'vendor_pixel_domains',
 }
 SINGULAR = {
     'ad_server': AdServer,
@@ -93,6 +103,11 @@ SINGULAR = {
     'target_value': TargetValue,
     'permission': Permission,
     'report': Report,
+    'vendor': Vendor,
+    'vendor_contract': VendorContract,
+    'vendor_domain': VendorDomain,
+    'vendor_pixel': VendorPixel,
+    'vendor_pixel_domain': VendorPixelDomain,
 }
 CHILD_PATHS = {
     'acl': ('acl', 0),

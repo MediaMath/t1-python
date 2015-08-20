@@ -27,6 +27,11 @@ from .strategysupplysource import StrategySupplySource
 from .targetdimension import TargetDimension
 from .targetvalue import TargetValue
 from .user import User
+from .vendor import Vendor
+from .vendorcontract import VendorContract
+from .vendordomain import VendorDomain
+from .vendorpixel import VendorPixel
+from .vendorpixeldomain import VendorPixelDomain
 
 __all__ = ['ACL',
            'AdServer',
@@ -54,4 +59,9 @@ __all__ = ['ACL',
            'StrategySupplySource',
            'TargetDimension',
            'TargetValue',
-           'User']
+           'User',
+           'Vendor',
+           'VendorContract',
+           'VendorDomain',
+           'VendorPixel',
+           'VendorPixelDomain',]
