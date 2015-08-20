@@ -37,7 +37,7 @@ requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
 
 class TestT1Login(unittest.TestCase):
     """docstring for TestT1Login"""
-
+    @responses.activate
     def test_correct_login_works(self):
         EXPECTED_SESSION = 'd24f41277ae4c202dda876676b0006585b20f64f'
         EXPECTED_USER = 'user'
@@ -50,28 +50,26 @@ class TestT1Login(unittest.TestCase):
             }
             return (200, response_headers, body)
 
-        @responses.activate
-        def run():
-            mock_credentials = {
-                'username': EXPECTED_USER,
-                'password': EXPECTED_USER_ID,
-                'api_key': 'api_key',
-            }
-            responses.add_callback(
-                responses.POST, 'https://api.mediamath.com/api/v2.0/login',
-                callback=login_callback,
-                content_type='application/xml')
 
-            t1 = T1(auth_method='cookie',
-                    api_base=API_BASE,
-                    **mock_credentials)
 
-            assert hasattr(t1, 'user_id'), 'No user ID present'
-            assert (t1.user_id == EXPECTED_USER_ID), 'incorrect user ID returned'
-            assert (t1.username == EXPECTED_USER), 'user name is incorrect'
-            assert (t1.session_id == EXPECTED_SESSION), 'session id not correct'
+        mock_credentials = {
+            'username': EXPECTED_USER,
+            'password': EXPECTED_USER_ID,
+            'api_key': 'api_key',
+        }
+        responses.add_callback(
+            responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+            callback=login_callback,
+            content_type='application/xml')
 
-        run()
+        t1 = T1(auth_method='cookie',
+                api_base=API_BASE,
+                **mock_credentials)
+
+        assert hasattr(t1, 'user_id'), 'No user ID present'
+        assert (t1.user_id == EXPECTED_USER_ID), 'incorrect user ID returned'
+        assert (t1.username == EXPECTED_USER), 'user name is incorrect'
+        assert (t1.session_id == EXPECTED_SESSION), 'session id not correct'
 
     def test_incorrect_login_raises_error(self):
         pass
