@@ -7,6 +7,7 @@ import responses
 import requests
 
 from terminalone import T1
+from terminalone.errors import ValidationError, AuthRequiredError
 
 API_BASE = 'api.mediamath.com'
 
@@ -50,11 +51,9 @@ class TestT1Login(unittest.TestCase):
             }
             return (200, response_headers, body)
 
-
-
         mock_credentials = {
             'username': EXPECTED_USER,
-            'password': EXPECTED_USER_ID,
+            'password': 'password',
             'api_key': 'api_key',
         }
         responses.add_callback(
@@ -71,8 +70,27 @@ class TestT1Login(unittest.TestCase):
         assert (t1.username == EXPECTED_USER), 'user name is incorrect'
         assert (t1.session_id == EXPECTED_SESSION), 'session id not correct'
 
+    @responses.activate
     def test_incorrect_login_raises_error(self):
-        pass
+        def login_callback(request):
+            body = open('fixtures/auth_error.xml').read()
+            return (401, {}, body)
+
+        mock_credentials = {
+            'username': 'bad_user',
+            'password': 'bad_pass',
+            'api_key': 'api_key',
+        }
+        responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               callback=login_callback)
+
+        with self.assertRaises(AuthRequiredError) as cm:
+            T1(auth_method='cookie',
+                api_base=API_BASE,
+                **mock_credentials)
+
+        exc = cm.exception
+        self.assertEqual(exc.message, 'Authentication error')
 
     def test_no_data_fails(self):
         pass
