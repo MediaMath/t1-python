@@ -71,6 +71,9 @@ def test_full(t1):
         ]
     ), 'Expected a full record, got: %r' % adv
 
+def test_get_creative_approval(t1):
+    atomic = t1.get('atomic_creatives', 1810664, include='creative_approvals')
+    assert 3 == len(atomic.creative_approvals)
 
 def test_limit(t1):
     pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
@@ -164,6 +167,7 @@ def main():
         test_permissions,
         test_picard_meta,
         test_report_meta,
+        test_get_creative_approval,
     ]
 
     t1 = setup(credentials())
