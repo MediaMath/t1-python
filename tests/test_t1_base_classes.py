@@ -5,32 +5,12 @@ from __future__ import absolute_import
 import unittest
 import responses
 import requests
+from .requests_patch import patched_extract_cookies_to_jar
 
 from terminalone import T1
 from terminalone import errors
 
 API_BASE = 'api.mediamath.com'
-
-
-def patched_extract_cookies_to_jar(jar, request, response):
-    """Patched version to support mocked HTTPResponses from Responses.
-
-    :param jar: cookielib.CookieJar (not necessarily a RequestsCookieJar)
-    :param request: our own requests.Request object
-    :param response: urllib3.HTTPResponse object
-    """
-    if not (hasattr(response, '_original_response') and
-                response._original_response):
-        # just grab the headers from the mocked response object
-        res = requests.cookies.MockResponse(response.headers)
-    else:
-        # the _original_response field is the wrapped httplib.HTTPResponse object
-        # pull out the HTTPMessage with the headers and put it in the mock:
-        res = requests.cookies.MockResponse(response._original_response.msg)
-
-    req = requests.cookies.MockRequest(request)
-    jar.extract_cookies(res, req)
-
 
 requests.sessions.extract_cookies_to_jar = patched_extract_cookies_to_jar
 requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
