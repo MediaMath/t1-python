@@ -37,3 +37,5 @@ nosetests.xml
 
 # File for easy local testing
 bootstrap.py
+
+.idea/.name

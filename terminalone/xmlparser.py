@@ -28,10 +28,9 @@ STATUS_CODES = {
 
 class XMLParser(object):
     """Parses XML response"""
-    def __init__(self, response):
-        response.encoding = 'utf-8'
-        result = ET.fromstring(response.content)
-        self.get_status(result, response)
+    def __init__(self, xml):
+        result = ET.fromstring(xml)
+        self.get_status(result, xml)
 
         xfind = lambda haystack, needle: haystack.find(needle) is not None
 
@@ -53,14 +52,14 @@ class XMLParser(object):
             self.entities = map(self.dictify_history_entry,
                                 result.iterfind('log_entries/entry'))
 
-    def get_status(self, xmlresult, response):
-        """Gets the status code of T1 XML response.
+    def get_status(self, xmlresult, xml):
+        """Gets the status code of T1 XML.
 
         If code is valid, returns None; otherwise raises the appropriate Error.
         """
         status = xmlresult.find('status')
         if status is None:
-            raise T1Error(None, response.content)
+            raise T1Error(None, xml)
         status_code = status.attrib['code']
         message = status.text
 
@@ -183,17 +182,3 @@ class XMLParser(object):
                                 'new_value': field.attrib['new_value']}
         output['fields'] = fields
         return output
-
-
-def T1RawParse(raw_response):
-    """Raw access to ET parsing.
-
-    Argument should be a raw HTTP Response object -- from requests, this means
-    if resp = requests.get(something, stream=True),
-    argument should be resp.raw
-
-    Mainly used for T1 Connection objects to access cElementTree without directly
-    importing it. This lets all the XML parsing happen here, while the rest of
-    the library can use it freely.
-    """
-    return ET.parse(raw_response)
