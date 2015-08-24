@@ -69,9 +69,10 @@ class Connection(object):
         """
         url = '/'.join(['https:/', self.api_base, path, rest])
         response = self.session.get(url, params=params, stream=True)
+        responseBody = response.content
 
         try:
-            result = XMLParser(response)
+            result = XMLParser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
             raise ClientError('Could not parse XML response: {!r}'.format(exc))
@@ -90,9 +91,10 @@ class Connection(object):
 
         url = '/'.join(['https:/', self.api_base, path, rest])
         response = self.session.post(url, data=data, stream=True)
+        response_body = response.content
 
         try:
-            result = XMLParser(response)
+            result = XMLParser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
             raise ClientError('Could not parse XML response: {!r}'.format(exc))
