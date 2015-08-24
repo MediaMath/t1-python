@@ -8,6 +8,7 @@ from .agency import Agency
 from .atomiccreative import AtomicCreative
 from .campaign import Campaign
 from .concept import Concept
+from .creative import Creative
 from .deal import Deal
 from .organization import Organization
 from .permission import Permission
@@ -40,6 +41,7 @@ __all__ = ['ACL',
            'AtomicCreative',
            'Campaign',
            'Concept',
+           'Creative',
            'Deal',
            'Organization',
            'Permission',
