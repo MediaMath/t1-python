@@ -17,6 +17,7 @@ CLASSES = {
     'atomic_creatives': AtomicCreative,
     'campaigns': Campaign,
     'concepts': Concept,
+    'creatives': Creative,
     'creative_approvals': CreativeApproval,
     'deals': Deal,
     'organizations': Organization,
@@ -38,6 +39,11 @@ CLASSES = {
     'target_values': TargetValue,
     'permissions': Permission,
     'reports': Report,
+    'vendors': Vendor,
+    'vendor_contracts': VendorContract,
+    'vendor_domains': VendorDomain,
+    'vendor_pixels': VendorPixel,
+    'vendor_pixel_domains': VendorPixelDomain,
 }
 MODEL_PATHS = {
     AdServer: 'ad_servers',
@@ -46,6 +52,7 @@ MODEL_PATHS = {
     AtomicCreative: 'atomic_creatives',
     Campaign: 'campaigns',
     Concept: 'concepts',
+    Creative: 'creatives',
     CreativeApproval: 'atomic_creatives',
     Deal: 'deals',
     Organization: 'organizations',
@@ -67,6 +74,11 @@ MODEL_PATHS = {
     TargetValue: 'target_values',
     Permission: 'permissions',
     Report: 'reports',
+    Vendor: 'vendors',
+    VendorContract: 'vendor_contracts',
+    VendorDomain: 'vendor_domains',
+    VendorPixel: 'vendor_pixels',
+    VendorPixelDomain: 'vendor_pixel_domains',
 }
 SINGULAR = {
     'ad_server': AdServer,
@@ -75,6 +87,7 @@ SINGULAR = {
     'atomic_creative': AtomicCreative,
     'campaign': Campaign,
     'concept': Concept,
+    'creative': Creative,
     'creative_approval': CreativeApproval,
     'deal': Deal,
     'organization': Organization,
@@ -96,6 +109,11 @@ SINGULAR = {
     'target_value': TargetValue,
     'permission': Permission,
     'report': Report,
+    'vendor': Vendor,
+    'vendor_contract': VendorContract,
+    'vendor_domain': VendorDomain,
+    'vendor_pixel': VendorPixel,
+    'vendor_pixel_domain': VendorPixelDomain,
 }
 CHILD_PATHS = {
     'acl': ('acl', 0),

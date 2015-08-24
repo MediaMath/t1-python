@@ -9,12 +9,7 @@ from __future__ import absolute_import
 from .utils import filters
 from .service import T1, T1Service
 from . import errors
+from .metadata import (__author__, __copyright__, __license__, __version__,
+					   __maintainer__, __email__, __status__)
 
-__author__ = 'Prasanna Swaminathan'
-__copyright__ = 'Copyright 2015, MediaMath'
-__license__ = 'BSD'
-__version__ = '1.0.3'
-__maintainer__ = 'Prasanna Swaminathan'
-__email__ = 'prasanna@mediamath.com'
-__status__ = 'Development'
 __all__ = ['T1', 'T1Service', 'filters', 'errors']

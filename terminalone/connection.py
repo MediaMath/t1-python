@@ -3,10 +3,15 @@
 
 from __future__ import absolute_import
 from requests import Session
+from requests.utils import default_user_agent
 from .errors import ClientError
+from .metadata import __version__
 from .utils import PATHS
 from .xmlparser import XMLParser, ParseError
 
+def _generate_user_agent(name='t1-python'):
+    return '{name}/{version} {ua}'.format(name=name, version=__version__,
+                                          ua=default_user_agent())
 
 class Connection(object):
     """Base connection object for TerminalOne session"""
@@ -38,6 +43,7 @@ class Connection(object):
             Connection.__setattr__(self, 'api_base', api_base)
         if _create_session:
             Connection.__setattr__(self, 'session', Session())
+            self.session.headers['User-Agent'] = _generate_user_agent()
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.

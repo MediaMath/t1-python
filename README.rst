@@ -303,7 +303,7 @@ Generator over first 100 pixels with non-null keywords field.
     ...                  True,
     ...                  limit={"campaign": 123456})
 
-Active campaigns within campaign ID 123456.
+Active strategies within campaign ID 123456.
 
 Entities
 ^^^^^^^^

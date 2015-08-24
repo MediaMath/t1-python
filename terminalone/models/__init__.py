@@ -9,6 +9,7 @@ from .atomiccreative import AtomicCreative
 from .campaign import Campaign
 from .concept import Concept
 from .creativeapproval import CreativeApproval
+from .creative import Creative
 from .deal import Deal
 from .organization import Organization
 from .permission import Permission
@@ -28,6 +29,11 @@ from .strategysupplysource import StrategySupplySource
 from .targetdimension import TargetDimension
 from .targetvalue import TargetValue
 from .user import User
+from .vendor import Vendor
+from .vendorcontract import VendorContract
+from .vendordomain import VendorDomain
+from .vendorpixel import VendorPixel
+from .vendorpixeldomain import VendorPixelDomain
 
 __all__ = ['ACL',
            'AdServer',
@@ -36,6 +42,7 @@ __all__ = ['ACL',
            'AtomicCreative',
            'Campaign',
            'Concept',
+           'Creative',
            'CreativeApproval',
            'Deal',
            'Organization',
@@ -56,4 +63,9 @@ __all__ = ['ACL',
            'StrategySupplySource',
            'TargetDimension',
            'TargetValue',
-           'User']
+           'User',
+           'Vendor',
+           'VendorContract',
+           'VendorDomain',
+           'VendorPixel',
+           'VendorPixelDomain',]
