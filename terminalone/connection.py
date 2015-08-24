@@ -63,7 +63,7 @@ class Connection(object):
         """
         url = '/'.join(['https:/', self.api_base, path, rest])
         response = self.session.get(url, params=params, stream=True)
-        responseBody = response.content
+        response_body = response.content
 
         try:
             result = XMLParser(response_body)
