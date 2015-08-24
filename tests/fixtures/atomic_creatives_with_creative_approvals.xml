@@ -1,0 +1,60 @@
+<result called_on="2015-08-21 19:26:14.768615+00">
+  <entity name="Atomic Creative 1" id="1000" type="atomic_creative" version="2">
+    <entity name="Creative Approvals #1" id="35505161" rel="creative_approvals" type="creative_approval" version="0">
+      <prop name="atomic_creative_id" value="1000"/>
+      <prop name="supply_source_id" value="27"/>
+      <prop name="external_identifier" value="3001"/>
+      <prop name="approval_status" value="APPROVED"/>
+      <prop name="created_on" value="2015-08-21T04:27:04"/>
+      <prop name="updated_on" value="2015-08-21T04:27:04"/>
+    </entity>
+    <entity name="Creative Approvals #2" id="35505160" rel="creative_approvals" type="creative_approval" version="0">
+      <prop name="atomic_creative_id" value="1000"/>
+      <prop name="supply_source_id" value="10"/>
+      <prop name="external_identifier" value="3002"/>
+      <prop name="approval_status" value="APPROVED"/>
+      <prop name="created_on" value="2015-08-21T04:27:04"/>
+      <prop name="updated_on" value="2015-08-21T04:27:04"/>
+    </entity>
+    <entity name="Creative Approvals #3" id="35468416" rel="creative_approvals" type="creative_approval" version="0">
+      <prop name="atomic_creative_id" value="1000"/>
+      <prop name="supply_source_id" value="6"/>
+      <prop name="external_identifier" value="3003"/>
+      <prop name="rejected_reason" value=""/>
+      <prop name="approval_status" value="APPROVED"/>
+      <prop name="created_on" value="2015-08-20T21:13:35"/>
+      <prop name="updated_on" value="2015-08-21T12:45:28"/>
+      <prop name="additional_detail" value="SSL status: {approved}"/>
+    </entity>
+    <prop name="advertiser_id" value="29"/>
+    <prop name="concept_id" value="15"/>
+    <prop name="name" value="Atomic Creative 1"/>
+    <prop name="ad_server_type" value="AD_SERVER_TYPE"/>
+    <prop name="width" value="120"/>
+    <prop name="height" value="600"/>
+    <prop name="creative_import_file_id" value="4321"/>
+    <prop name="file_type" value="jpg"/>
+    <prop name="is_https" value="1"/>
+    <prop name="is_multi_creative" value="0"/>
+    <prop name="has_sound" value="0"/>
+    <prop name="rich_media" value="0"/>
+    <prop name="status" value="1"/>
+    <prop name="built" value="0"/>
+    <prop name="built_by_user_id" value="6973"/>
+    <prop name="created_on" value="2015-08-18T17:02:03"/>
+    <prop name="last_modified" value="2015-08-18T17:05:10"/>
+    <prop name="external_identifier" value="14446844"/>
+    <prop name="tpas_ad_tag_name" value="tag_name"/>
+    <prop name="click_url" value="http://www.google.com?campaign_type=6&amp;utm_campaign=test_campaign"/>
+    <prop name="updated_on" value="2015-08-18T17:05:10"/>
+    <prop name="ad_format" value="DISPLAY"/>
+    <prop name="expansion_trigger" value="MOUSEOVER"/>
+    <prop name="expansion_direction" value="NONRESTRICTED"/>
+    <prop name="t1as" value="0"/>
+    <prop name="approval_status" value="APPROVED"/>
+    <prop name="media_type" value="display"/>
+    <prop name="tag" value="tag_value"/>
+    <prop name="tag_type" value="SCRIPT"/>
+  </entity>
+  <status code="ok"/>
+</result>

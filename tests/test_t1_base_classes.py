@@ -26,7 +26,8 @@ class TestT1Login(unittest.TestCase):
         expected_user_id = 1
 
         def login_callback(_):
-            body = open('fixtures/session.xml').read()
+            with open('tests/fixtures/session.xml') as f:
+                body = f.read()
             response_headers = {
                 'Set-Cookie': 'adama_session=' + expected_session,
             }
@@ -54,7 +55,8 @@ class TestT1Login(unittest.TestCase):
     @responses.activate
     def test_incorrect_login_raises_error(self):
         def login_callback(_):
-            body = open('fixtures/auth_error.xml').read()
+            with open('tests/fixtures/auth_error.xml') as f:
+                body = f.read()
             return 401, {}, body
 
         mock_credentials = {
@@ -76,7 +78,8 @@ class TestT1Login(unittest.TestCase):
     @responses.activate
     def test_no_key_fails(self):
         def login_callback(_):
-            body = open('fixtures/login_no_key.xml').read()
+            with open('tests/fixtures/login_no_key.xml') as f:
+                body = f.read()
             return 403, {}, body
 
         mock_credentials = {
@@ -97,7 +100,8 @@ class TestT1Login(unittest.TestCase):
     @responses.activate
     def test_no_user_fails(self):
         def login_callback(_):
-            body = open('fixtures/login_badrequest.xml').read()
+            with open('tests/fixtures/login_badrequest.xml') as f:
+                body = f.read()
             return 400, {}, body
 
         mock_credentials = {

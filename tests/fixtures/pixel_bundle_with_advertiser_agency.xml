@@ -1,0 +1,53 @@
+<result called_on="2015-08-21 20:22:14.178803+00">
+  <entities count="529" start="0">
+    <entity name="PS Test Pixel" id="151822" type="pixel_bundle" version="2">
+      <entity name="Dummy Advertiser" id="29" rel="advertiser" type="advertiser" version="4">
+        <entity name="Dummy Agency" id="89" rel="agency" type="agency" version="1">
+          <prop name="organization_id" value="100001"/>
+          <prop name="name" value="Dummy Agency"/>
+          <prop name="created_on" value="2010-12-06T19:52:35"/>
+          <prop name="updated_on" value="2011-02-09T18:16:34"/>
+          <prop name="sales_contact_id" value="281"/>
+          <prop name="billing_contact_id" value="281"/>
+          <prop name="traffic_contact_id" value="281"/>
+          <prop name="status" value="1"/>
+          <prop name="allow_x_adv_pixels" value="1"/>
+          <prop name="allow_x_adv_optimization" value="0"/>
+          <prop name="dmp_enabled" value="inherits"/>
+        </entity>
+        <prop name="agency_id" value="89"/>
+        <prop name="name" value="Dummy Advertiser"/>
+        <prop name="vertical_id" value="4"/>
+        <prop name="ad_server_id" value="2"/>
+        <prop name="sales_contact_id" value="458"/>
+        <prop name="billing_contact_id" value="458"/>
+        <prop name="allow_x_strat_optimization" value="0"/>
+        <prop name="status" value="1"/>
+        <prop name="created_on" value="2012-07-31T20:32:45"/>
+        <prop name="updated_on" value="2015-06-08T23:08:53"/>
+        <prop name="domain" value="http://www.mediamath.com"/>
+        <prop name="minimize_multi_ads" value="0"/>
+        <prop name="frequency_type" value="no-limit"/>
+        <prop name="frequency_interval" value="not-applicable"/>
+        <prop name="dmp_enabled" value="inherits"/>
+      </entity>
+      <prop name="advertiser_id" value="29"/>
+      <prop name="name" value="ixel_bundle_name"/>
+      <prop name="created_on" value="2015-07-01T00:00:39"/>
+      <prop name="eligible" value="1"/>
+      <prop name="tags" value="tag_value"/>
+      <prop name="updated_on" value="2015-07-01T00:00:39"/>
+      <prop name="external_identifier" value="1111111111111"/>
+      <prop name="tag_type" value="image"/>
+      <prop name="pixel_type" value="event"/>
+      <prop name="pricing" value="CPM"/>
+      <prop name="rmx_friendly" value="0"/>
+      <prop name="rmx_merit" value="0"/>
+      <prop name="rmx_conversion_type" value="one"/>
+      <prop name="rmx_conversion_minutes" value="1"/>
+      <prop name="status" value="1"/>
+      <prop name="keywords" value="zz:27181400"/>
+    </entity>
+  </entities>
+  <status code="ok"/>
+</result>

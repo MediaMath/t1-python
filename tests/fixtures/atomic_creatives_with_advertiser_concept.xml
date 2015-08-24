@@ -1,0 +1,63 @@
+<?xml version='1.0' ?>
+<result called_on="2015-08-21 21:11:15.184692+00">
+  <entities count="190" start="0">
+    <entity name="Dummy Concept" id="79" type="atomic_creative" version="4">
+      <entity name="Dummy Advertiser" id="29" rel="advertiser" type="advertiser" version="4">
+        <prop name="agency_id" value="89"/>
+        <prop name="name" value="Dummy Advertiser"/>
+        <prop name="vertical_id" value="4"/>
+        <prop name="ad_server_id" value="2"/>
+        <prop name="sales_contact_id" value="458"/>
+        <prop name="billing_contact_id" value="458"/>
+        <prop name="allow_x_strat_optimization" value="0"/>
+        <prop name="status" value="1"/>
+        <prop name="created_on" value="2012-07-31T20:32:45"/>
+        <prop name="updated_on" value="2015-06-08T23:08:53"/>
+        <prop name="domain" value="http://www.mediamath.com"/>
+        <prop name="minimize_multi_ads" value="0"/>
+        <prop name="frequency_type" value="no-limit"/>
+        <prop name="frequency_interval" value="not-applicable"/>
+        <prop name="dmp_enabled" value="inherits"/>
+      </entity>
+      <entity name="Concept Name" id="516172" rel="concept" type="concept" version="0">
+        <prop name="advertiser_id" value="29" />
+        <prop name="name" value="Concept Name" />
+        <prop name="status" value="1" />
+        <prop name="created_on" value="2015-05-20T20:28:38" />
+        <prop name="updated_on" value="2015-05-20T20:28:38" />
+      </entity>
+      <prop name="advertiser_id" value="29" />
+      <prop name="concept_id" value="516172" />
+      <prop name="name" value="ad-age-ad-300x250" />
+      <prop name="ad_server_type" value="TERMINALONE" />
+      <prop name="width" value="300" />
+      <prop name="height" value="250" />
+      <prop name="file_type" value="gif" />
+      <prop name="is_https" value="1" />
+      <prop name="is_multi_creative" value="0" />
+      <prop name="has_sound" value="0" />
+      <prop name="rich_media" value="0" />
+      <prop name="status" value="1" />
+      <prop name="built" value="0" />
+      <prop name="build_date" value="2015-06-25T19:56:12" />
+      <prop name="built_by_user_id" value="1090" />
+      <prop name="created_on" value="2015-06-25T19:56:12" />
+      <prop name="last_modified" value="2015-06-25T19:56:12" />
+      <prop name="external_identifier" value="mm15124.9915091807" />
+      <prop name="tpas_ad_tag_name" value="ad-age-ad-300x250.gif" />
+      <prop name="click_through_url" value="http://www.mediamath.com" />
+      <prop name="updated_on" value="2015-06-25T19:56:12" />
+      <prop name="ad_format" value="DISPLAY" />
+      <prop name="expansion_trigger" value="MOUSEOVER" />
+      <prop name="expansion_direction" value="NONRESTRICTED" />
+      <prop name="t1as" value="1" />
+      <prop name="edited_tag" value="&lt;script type='text/javascript'&gt;&#13;&#10;&lt;!--&#13;&#10;var isSSL = false;&#13;&#10;var http = &quot;__PROTOCOL__&quot;;&#13;&#10;var swf_file = &quot;__SWF_FILE_PATH__&quot;;&#13;&#10;var img_file = &quot;__IMAGE_FILE_PATH__&quot;;&#13;&#10;var dom = &quot;__CREATIVE_HOST__&quot;;&#13;&#10;var base = http + dom;&#13;&#10;var swf = base + '/' + swf_file;&#13;&#10;var img = base + '/' + img_file;&#13;&#10;&#13;&#10;var as_clk = &quot;&quot;;&#13;&#10;var sa_clk = &quot;__CLICK_URL | uri_preserve_square_brackets__&quot;;&#13;&#10;var ia_clk = &quot;__CLICK_URL | uri_preserve_square_brackets__&quot;;&#13;&#10;if (ia_clk == &quot;&quot;)&#13;&#10;  ia_clk = sa_clk;&#13;&#10;var swf_clk = escape(&quot;[UNENCODED_CLICK_REDIRECT]&quot; + sa_clk);&#13;&#10;var img_clk = &quot;[UNENCODED_CLICK_REDIRECT]&quot; + ia_clk;&#13;&#10;var fv = &quot;clickTag=&quot; + swf_clk  + &quot;&amp;clickTAG=&quot; + swf_clk + &quot;&amp;clickTag1=&quot; + swf_clk + &quot;&amp;clicktag=&quot; + swf_clk;&#13;&#10;var cr_id = 'MM_c' + '[AD_ATTR.creative]';&#13;&#10;var sz = 'WIDTH=&quot;__WIDTH__&quot; HEIGHT=&quot;__HEIGHT__&quot;';&#13;&#10;var swf_tag =&#13;&#10; '&lt;object classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; ' +&#13;&#10;    'codebase=&quot;HTTP://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab&quot; ' +&#13;&#10;    'id=&quot;' + cr_id + '&quot;' + sz + '&gt;' +&#13;&#10;  '&lt;param name=&quot;movie&quot; value=&quot;' + swf + '&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;base&quot; value=&quot;' + base + '&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;flashvars&quot; value='+fv+'&gt;' +&#13;&#10;  '&lt;param name=&quot;salign&quot; value=&quot;lt&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;quality&quot; value=&quot;high&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;wmode&quot; value=&quot;opaque&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;allowScriptAccess&quot; value=&quot;always&quot;&gt;' +&#13;&#10;  '&lt;embed SRC=&quot;' + swf + '&quot; FLASHVARS=&quot;' + fv + '&quot; ' + sz +&#13;&#10;    ' TYPE=&quot;application/x-shockwave-flash&quot; QUALITY=&quot;high&quot; ' +&#13;&#10;    'swliveconnect=&quot;true&quot; WMODE=&quot;opaque&quot; NAME=&quot;' + cr_id +&#13;&#10;    '&quot; BASE=&quot;' + base + '&quot; AllowScriptAccess=&quot;always&quot;&gt;&lt;/embed&gt;' +&#13;&#10; '&lt;/object&gt;';&#13;&#10;var img_tag =&#13;&#10;  '&lt;a target=&quot;_blank&quot; href=&quot;' +&#13;&#10;    img_clk + '&quot;&gt;&lt;img border=0 src=&quot;'+ img + '&quot; ' + sz + '/&gt;&lt;/a&gt;';&#13;&#10;&#13;&#10;var req_fver = parseFloat(0 + &quot;__REQUIRED_FLASH_VERSION__&quot;) || 10;&#13;&#10;var fver = 0;&#13;&#10;function getFlashVer() {&#13;&#10;  var ver = &quot;0&quot;;&#13;&#10;  try {&#13;&#10;    try {&#13;&#10;      var axo = new ActiveXObject(&quot;ShockwaveFlash.ShockwaveFlash.6&quot;);&#13;&#10;      try { axo.AllowScriptAccess = &quot;always&quot;; } catch(e) { return 6; }&#13;&#10;    } catch(e) {}&#13;&#10;    ver = new ActiveXObject(&quot;ShockwaveFlash.ShockwaveFlash&quot;).GetVariable(&quot;$version&quot;);}&#13;&#10;    catch(e) {&#13;&#10;    try {if(navigator.mimeTypes[&quot;application/x-shockwave-flash&quot;].enabledPlugin){ver= navigator.plugins[&quot;Shockwave Flash&quot;].description;}}&#13;&#10;    catch(e) {}&#13;&#10;  }&#13;&#10;  var matches = ver.match(/\d+\.?\d*/) || [&quot;0&quot;];&#13;&#10;  return parseFloat(matches[0]);&#13;&#10;}&#13;&#10;&#13;&#10;try { fver = getFlashVer() } catch(e) {  fver = 1 }&#13;&#10;&#13;&#10;if (swf_file != &quot;&quot; &amp;&amp; fver &gt;= req_fver) {&#13;&#10;  document.write(swf_tag);&#13;&#10;} else {&#13;&#10;  document.write(img_tag);&#13;&#10;}&#13;&#10;//--&gt;&#13;&#10;&lt;/script&gt;&#13;&#10;&lt;noscript&gt;&#13;&#10;  &lt;a href=&quot;[UNENCODED_CLICK_REDIRECT]__CLICK_URL | uri_preserve_square_brackets__&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;__PROTOCOL____CREATIVE_HOST__/__IMAGE_FILE_PATH__&quot; width=&quot;__WIDTH__&quot; height=&quot;__HEIGHT__&quot; border=0 /&gt;&lt;/a&gt;&#13;&#10;&lt;/noscript&gt;&#13;&#10;__THIRD_PARTY_TAGS__" />
+      <prop name="approval_status" value="PENDING" />
+      <prop name="rejected_reason" value="Creative was removed from malware scanning" />
+      <prop name="media_type" value="display" />
+      <prop name="tag" value="&lt;script type='text/javascript'&gt;&#13;&#10;&lt;!--&#13;&#10;var isSSL = false;&#13;&#10;var http = &quot;https://&quot;;&#13;&#10;var swf_file = &quot;&quot;;&#13;&#10;var img_file = &quot;0001/de/ab/7b/5b/74feed4b7df412583a0e5fdf982cf4a8.gif&quot;;&#13;&#10;var dom = &quot;creative.mathads.com&quot;;&#13;&#10;var base = http + dom;&#13;&#10;var swf = base + '/' + swf_file;&#13;&#10;var img = base + '/' + img_file;&#13;&#10;&#13;&#10;var as_clk = &quot;&quot;;&#13;&#10;var sa_clk = &quot;http%3A%2F%2Fwww.mediamath.com&quot;;&#13;&#10;var ia_clk = &quot;http%3A%2F%2Fwww.mediamath.com&quot;;&#13;&#10;if (ia_clk == &quot;&quot;)&#13;&#10;  ia_clk = sa_clk;&#13;&#10;var swf_clk = escape(&quot;[UNENCODED_CLICK_REDIRECT]&quot; + sa_clk);&#13;&#10;var img_clk = &quot;[UNENCODED_CLICK_REDIRECT]&quot; + ia_clk;&#13;&#10;var fv = &quot;clickTag=&quot; + swf_clk  + &quot;&amp;clickTAG=&quot; + swf_clk + &quot;&amp;clickTag1=&quot; + swf_clk + &quot;&amp;clicktag=&quot; + swf_clk;&#13;&#10;var cr_id = 'MM_c' + '[AD_ATTR.creative]';&#13;&#10;var sz = 'WIDTH=&quot;300&quot; HEIGHT=&quot;250&quot;';&#13;&#10;var swf_tag =&#13;&#10; '&lt;object classid=&quot;clsid:d27cdb6e-ae6d-11cf-96b8-444553540000&quot; ' +&#13;&#10;    'codebase=&quot;HTTP://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab&quot; ' +&#13;&#10;    'id=&quot;' + cr_id + '&quot;' + sz + '&gt;' +&#13;&#10;  '&lt;param name=&quot;movie&quot; value=&quot;' + swf + '&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;base&quot; value=&quot;' + base + '&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;flashvars&quot; value='+fv+'&gt;' +&#13;&#10;  '&lt;param name=&quot;salign&quot; value=&quot;lt&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;quality&quot; value=&quot;high&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;wmode&quot; value=&quot;opaque&quot;&gt;' +&#13;&#10;  '&lt;param name=&quot;allowScriptAccess&quot; value=&quot;always&quot;&gt;' +&#13;&#10;  '&lt;embed SRC=&quot;' + swf + '&quot; FLASHVARS=&quot;' + fv + '&quot; ' + sz +&#13;&#10;    ' TYPE=&quot;application/x-shockwave-flash&quot; QUALITY=&quot;high&quot; ' +&#13;&#10;    'swliveconnect=&quot;true&quot; WMODE=&quot;opaque&quot; NAME=&quot;' + cr_id +&#13;&#10;    '&quot; BASE=&quot;' + base + '&quot; AllowScriptAccess=&quot;always&quot;&gt;&lt;/embed&gt;' +&#13;&#10; '&lt;/object&gt;';&#13;&#10;var img_tag =&#13;&#10;  '&lt;a target=&quot;_blank&quot; href=&quot;' +&#13;&#10;    img_clk + '&quot;&gt;&lt;img border=0 src=&quot;'+ img + '&quot; ' + sz + '/&gt;&lt;/a&gt;';&#13;&#10;&#13;&#10;var req_fver = parseFloat(0 + &quot;&quot;) || 10;&#13;&#10;var fver = 0;&#13;&#10;function getFlashVer() {&#13;&#10;  var ver = &quot;0&quot;;&#13;&#10;  try {&#13;&#10;    try {&#13;&#10;      var axo = new ActiveXObject(&quot;ShockwaveFlash.ShockwaveFlash.6&quot;);&#13;&#10;      try { axo.AllowScriptAccess = &quot;always&quot;; } catch(e) { return 6; }&#13;&#10;    } catch(e) {}&#13;&#10;    ver = new ActiveXObject(&quot;ShockwaveFlash.ShockwaveFlash&quot;).GetVariable(&quot;$version&quot;);}&#13;&#10;    catch(e) {&#13;&#10;    try {if(navigator.mimeTypes[&quot;application/x-shockwave-flash&quot;].enabledPlugin){ver= navigator.plugins[&quot;Shockwave Flash&quot;].description;}}&#13;&#10;    catch(e) {}&#13;&#10;  }&#13;&#10;  var matches = ver.match(/\d+\.?\d*/) || [&quot;0&quot;];&#13;&#10;  return parseFloat(matches[0]);&#13;&#10;}&#13;&#10;&#13;&#10;try { fver = getFlashVer() } catch(e) {  fver = 1 }&#13;&#10;&#13;&#10;if (swf_file != &quot;&quot; &amp;&amp; fver &gt;= req_fver) {&#13;&#10;  document.write(swf_tag);&#13;&#10;} else {&#13;&#10;  document.write(img_tag);&#13;&#10;}&#13;&#10;//--&gt;&#13;&#10;&lt;/script&gt;&#13;&#10;&lt;noscript&gt;&#13;&#10;  &lt;a href=&quot;[UNENCODED_CLICK_REDIRECT]http%3A%2F%2Fwww.mediamath.com&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;https://creative.mathads.com/0001/de/ab/7b/5b/74feed4b7df412583a0e5fdf982cf4a8.gif&quot; width=&quot;300&quot; height=&quot;250&quot; border=0 /&gt;&lt;/a&gt;&#13;&#10;&lt;/noscript&gt;&#13;&#10;" />
+      <prop name="tag_type" value="SCRIPT" />
+    </entity>
+  </entities>
+  <status code="ok" />
+</result>
