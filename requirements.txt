@@ -1,2 +1,2 @@
-responses
+responses>=0.4.0
 requests>=2.3.0

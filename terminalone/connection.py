@@ -66,7 +66,7 @@ class Connection(object):
         responseBody = response.content
 
         try:
-            result = XMLParser(responseBody)
+            result = XMLParser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
             raise ClientError('Could not parse XML response: {!r}'.format(exc))
