@@ -19,7 +19,7 @@ packages = [
     'terminalone.vendor',
 ]
 
-requirements = ['requests>=2.3.0']
+requirements = ['requests>=2.3.0', 'responses>=0.4.0']
 
 setup(
     name='TerminalOne',
@@ -45,4 +45,5 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
     ],
+    test_suite="tests",
 )
