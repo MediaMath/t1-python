@@ -1,5 +1,6 @@
 import requests
 
+
 def patched_extract_cookies_to_jar(jar, request, response):
     """Patched version to support mocked HTTPResponses from Responses.
 
@@ -8,7 +9,7 @@ def patched_extract_cookies_to_jar(jar, request, response):
     :param response: urllib3.HTTPResponse object
     """
     if not (hasattr(response, '_original_response') and
-                response._original_response):
+            response._original_response):
         # just grab the headers from the mocked response object
         res = requests.cookies.MockResponse(response.headers)
     else:
@@ -18,4 +19,3 @@ def patched_extract_cookies_to_jar(jar, request, response):
 
     req = requests.cookies.MockRequest(request)
     jar.extract_cookies(res, req)
-

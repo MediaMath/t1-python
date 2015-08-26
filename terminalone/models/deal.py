@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Deal(Entity):
     """docstring for deals."""
     collection = 'deals'
@@ -15,7 +16,7 @@ class Deal(Entity):
     }
     _deal_sources = Entity._enum({'USER', 'INTERNAL'}, 'INTERNAL')
     _media_types = Entity._enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
-    _price_methods = Entity._enum({'CPM',}, 'CPM')
+    _price_methods = Entity._enum({'CPM', }, 'CPM')
     _price_types = Entity._enum({'FIXED', 'FLOOR'}, None)
     _pull = {
         'advertiser_id': int,
@@ -51,5 +52,6 @@ class Deal(Entity):
         'start_datetime': Entity._strft,
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(Deal, self).__init__(session, properties, **kwargs)

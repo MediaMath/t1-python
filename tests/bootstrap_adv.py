@@ -12,10 +12,12 @@ if sys.version_info.major > 2:
 else:
     PY3 = False
 
+
 def iteritems(d):
     if PY3:
         return d.items()
     return d.iteritems()
+
 
 def edit_name(name):
     if not name:
@@ -25,10 +27,12 @@ def edit_name(name):
         if last_char != ' ':
             return name + ' 1'
         return name + '1'
-    return name[:-1] + str(int(last_char)+1)
+    return name[:-1] + str(int(last_char) + 1)
+
 
 def setup(credentials):
     return T1(auth_method='cookie', **credentials)
+
 
 now = datetime.now()
 
@@ -77,7 +81,7 @@ strategies = (
             'pacing_type': 'even',
             'status': False,
             'type': 'REM',
-            
+
         },
     ], 'strategies', None,
 )
@@ -142,10 +146,12 @@ order = [
     pixels,
 ]
 
+
 def learn_props(props):
     for key, value in iteritems(props):
         if value is None and key in learned_vars:
             props[key] = learned_vars[key]
+
 
 def bootstrap_advertiser(t1):
     for item in order:
@@ -161,18 +167,22 @@ def bootstrap_advertiser(t1):
             if item[2] is not None:
                 learned_vars[item[2]] = next(items).id
 
+
 def load_defaults(filename):
     with open(filename) as f:
         data = json.load(f)
     learned_vars.update(data)
+
 
 def main():
     t1 = setup(credentials())
     load_defaults('defaults.json')
     bootstrap_advertiser(t1)
 
+
 if __name__ == '__main__':
     import argparse
+
     __parser = argparse.ArgumentParser(description='bootstrap helper')
     __parser.add_argument('-v', '--verbose', action='store_true', help='debug logging')
     args = __parser.parse_args()

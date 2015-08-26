@@ -14,6 +14,7 @@ class Connection(object):
     API_BASES = {
         'production': 'api.mediamath.com',
     }
+
     def __init__(self,
                  environment='production',
                  api_base=None,

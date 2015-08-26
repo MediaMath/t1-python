@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class StrategySupplySource(Entity):
     """StrategySupplySource object, for strategies targeting not-all-exchanges."""
     collection = 'strategy_supply_sources'
@@ -19,5 +20,6 @@ class StrategySupplySource(Entity):
         'version': int,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(StrategySupplySource, self).__init__(session, properties, **kwargs)

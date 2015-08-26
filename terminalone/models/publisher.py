@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Publisher(Entity):
     """Publisher for PMP-D."""
     collection = 'publishers'
@@ -22,5 +23,6 @@ class Publisher(Entity):
         'version': int,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(Publisher, self).__init__(session, properties, **kwargs)

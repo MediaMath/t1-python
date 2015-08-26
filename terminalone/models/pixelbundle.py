@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Pixel(Entity):
     """docstring for Pixel"""
     collection = 'pixel_bundles'
@@ -60,9 +61,10 @@ class Pixel(Entity):
         'status': int,
         'tag_type': _tag_types,
     })
-    _readonly = Entity._readonly | {'external_identifier', 'tags',}
+    _readonly = Entity._readonly | {'external_identifier', 'tags', }
     _readonly_update = {'advertiser_id', 'agency_id', 'pixel_type',
                         'provider_id', 'tag_type'}
+
     def __init__(self, session, properties=None, **kwargs):
         super(Pixel, self).__init__(session, properties, **kwargs)
 
@@ -88,5 +90,6 @@ class Pixel(Entity):
             data.pop('cost_pct_cpm', None)
 
         return super(Pixel, self).save(data=data, url=url)
+
 
 PixelBundle = Pixel

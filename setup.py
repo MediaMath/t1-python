@@ -5,12 +5,14 @@ try:
 except ImportError:
     from distutils.core import setup
 import os
-import warnings
+
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+
 
 def fread(fname):
     with open(os.path.join(CURRENT_DIR, fname)) as f:
         return f.read()
+
 
 packages = [
     'terminalone',
@@ -19,7 +21,7 @@ packages = [
     'terminalone.vendor',
 ]
 
-requirements = ['requests>=2.3.0', 'responses>=0.4.0']
+requirements = ['requests>=2.3.0', 'responses>=0.4.0', 'pep8>=1.6.2']
 
 setup(
     name='TerminalOne',

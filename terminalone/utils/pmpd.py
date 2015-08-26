@@ -20,6 +20,7 @@ SCRIPT_TAG = ('<script type="text/javascript" src="http://tags.mathtag.com'
               '/ad/js/{pub_id}/{site_id}?pmp={slot_id}&click=&rfr='
               '{{INSERT_PUBLISHER_URL}}&random={{INSERT_CACHEBUSTER}}"></script>')
 
+
 def generate_pmpd_tag(tag_type, placement_slot, publisher_site, publisher):
     """Generate PMP-D tag from already-created values.
 

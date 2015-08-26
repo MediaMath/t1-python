@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Context manager to suppress specified exceptions.
 
 After the exception is suppressed, execution proceeds with the next
@@ -13,6 +13,7 @@ try:
     from contextlib import suppress
 except ImportError:
     from contextlib import contextmanager
+
     @contextmanager
     def suppress(*exceptions):
         """Context manager to suppress specified exceptions.

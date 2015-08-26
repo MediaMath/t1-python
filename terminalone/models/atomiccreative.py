@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class AtomicCreative(Entity):
     """T1 Creative entity, or an atomic_creative entity."""
     collection = 'atomic_creatives'
@@ -86,5 +87,6 @@ class AtomicCreative(Entity):
     })
     _readonly = Entity._readonly | {'t1as', 'built', 'approval_status',
                                     'default_t1as_tag'}
+
     def __init__(self, session, properties=None, **kwargs):
         super(AtomicCreative, self).__init__(session, properties, **kwargs)

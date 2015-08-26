@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class StrategyDayPart(Entity):
     """StrategyDayPart object, for strategies targeting day parts."""
     collection = 'strategy_day_parts'
@@ -28,5 +29,6 @@ class StrategyDayPart(Entity):
         'status': int,
         'user_time': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyDayPart, self).__init__(session, properties, **kwargs)

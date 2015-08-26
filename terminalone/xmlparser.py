@@ -2,11 +2,15 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
+
 try:
     from itertools import imap
+
     map = imap
+    # noinspection PyPep8Naming
     import xml.etree.cElementTree as ET
-except ImportError: # Python 3
+except ImportError:  # Python 3
+    # noinspection PyPep8Naming
     import xml.etree.ElementTree as ET
 from .errors import (T1Error, APIError, ClientError, ValidationError,
                      AuthRequiredError, NotFoundError)
@@ -26,13 +30,16 @@ STATUS_CODES = {
     'bad_request': ClientError,
 }
 
+
 class XMLParser(object):
     """Parses XML response"""
+
     def __init__(self, xml):
         result = ET.fromstring(xml)
         self.get_status(result, xml)
 
-        xfind = lambda haystack, needle: haystack.find(needle) is not None
+        def xfind(haystack, needle):
+            return haystack.find(needle) is not None
 
         if xfind(result, 'entities'):
             self._parse_collection(result)
@@ -122,7 +129,7 @@ class XMLParser(object):
 
         # There will only be one instance here.
         # But the caller expects an iterator, so make a list of it
-        self.entities, self.entity_count = [flags,], 1
+        self.entities, self.entity_count = [flags, ], 1
 
     @staticmethod
     def _parse_field_error(xml):
@@ -144,7 +151,7 @@ class XMLParser(object):
             output['_type'] = output['type']
             del output['type']
         for prop in entity:
-            if prop.tag == 'entity': # Get parent entities recursively
+            if prop.tag == 'entity':  # Get parent entities recursively
                 ent = self.dictify_entity(prop)
                 if prop.attrib['rel'] == ent.get('_type'):
                     relations[prop.attrib['rel']] = ent
