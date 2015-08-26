@@ -4,7 +4,7 @@ python:
   - "3.3"
   - "3.4"
 # command to install dependencies
-install: "pip install -r requirements"
+install: python setup.py install
 # command to run tests
 before_script:
   - pep8 --exclude=migrations --ignore=E501,E225 .
