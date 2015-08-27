@@ -6,8 +6,8 @@ python:
 # command to install dependencies
 install: python setup.py install
 # command to run tests
-before_script:
-  - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
+#before_script:
+#  - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
 script:
-  - nosetests
+  - python setup.py test
 

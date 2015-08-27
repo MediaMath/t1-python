@@ -95,7 +95,7 @@ class TestT1Login(unittest.TestCase):
                **mock_credentials)
 
         exc = cm.exception
-        self.assertEqual('<h1>Developer Inactive</h1>', exc.message)
+        self.assertEqual(b'<h1>Developer Inactive</h1>', exc.message)
 
     @responses.activate
     def test_no_user_fails(self):
