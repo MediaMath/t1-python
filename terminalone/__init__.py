@@ -10,6 +10,6 @@ from .utils import filters
 from .service import T1, T1Service
 from . import errors
 from .metadata import (__author__, __copyright__, __license__, __version__,
-					   __maintainer__, __email__, __status__)
+                       __maintainer__, __email__, __status__)
 
 __all__ = ['T1', 'T1Service', 'filters', 'errors']
