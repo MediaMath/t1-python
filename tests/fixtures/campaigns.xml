@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+<result called_on="2015-08-21 21:18:51.741701+00">
+  <entities count="789" start="0">
+    <entity name="Test 1" id="100071" type="campaign" />
+    <entity name="Test 2" id="100089" type="campaign" />
+    <entity name="Test 3" id="100692" type="campaign" />
+    <entity name="Test 4" id="100413" type="campaign" />
+    <entity name="Test 5" id="100644" type="campaign" />
+  </entities>
+  <status code="ok" />
+</result>

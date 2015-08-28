@@ -1,0 +1,21 @@
+<?xml version='1.0' ?>
+<result>
+  <permissions>
+    <flags>
+      <access type="edit_data_definition" value="0" />
+      <access type="view_data_definition" value="1" />
+      <access type="edit_segments" value="0" />
+      <access type="edit_campaigns" value="0" />
+      <access type="access_internal_fees" value="0" />
+      <access type="edit_margins_and_performance" value="0" />
+      <access type="view_organizations" value="1" />
+      <access type="view_segments" value="1" />
+      <access type="view_dmp_reports" value="1" />
+      <access type="type" value="INTERNAL" />
+      <access type="role" value="USER" />
+      <access type="scope" value="GLOBAL" />
+    </flags>
+  </permissions>
+  <status code="ok" />
+  <user name="dummyuser" id="10000" type="user" />
+</result>

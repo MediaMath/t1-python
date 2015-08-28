@@ -5,32 +5,12 @@ from __future__ import absolute_import
 import unittest
 import responses
 import requests
+from .requests_patch import patched_extract_cookies_to_jar
 
 from terminalone import T1
 from terminalone import errors
 
 API_BASE = 'api.mediamath.com'
-
-
-def patched_extract_cookies_to_jar(jar, request, response):
-    """Patched version to support mocked HTTPResponses from Responses.
-
-    :param jar: cookielib.CookieJar (not necessarily a RequestsCookieJar)
-    :param request: our own requests.Request object
-    :param response: urllib3.HTTPResponse object
-    """
-    if not (hasattr(response, '_original_response') and
-                response._original_response):
-        # just grab the headers from the mocked response object
-        res = requests.cookies.MockResponse(response.headers)
-    else:
-        # the _original_response field is the wrapped httplib.HTTPResponse object
-        # pull out the HTTPMessage with the headers and put it in the mock:
-        res = requests.cookies.MockResponse(response._original_response.msg)
-
-    req = requests.cookies.MockRequest(request)
-    jar.extract_cookies(res, req)
-
 
 requests.sessions.extract_cookies_to_jar = patched_extract_cookies_to_jar
 requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
@@ -46,7 +26,8 @@ class TestT1Login(unittest.TestCase):
         expected_user_id = 1
 
         def login_callback(_):
-            body = open('fixtures/session.xml').read()
+            with open('tests/fixtures/session.xml') as f:
+                body = f.read()
             response_headers = {
                 'Set-Cookie': 'adama_session=' + expected_session,
             }
@@ -74,7 +55,8 @@ class TestT1Login(unittest.TestCase):
     @responses.activate
     def test_incorrect_login_raises_error(self):
         def login_callback(_):
-            body = open('fixtures/auth_error.xml').read()
+            with open('tests/fixtures/auth_error.xml') as f:
+                body = f.read()
             return 401, {}, body
 
         mock_credentials = {
@@ -96,7 +78,8 @@ class TestT1Login(unittest.TestCase):
     @responses.activate
     def test_no_key_fails(self):
         def login_callback(_):
-            body = open('fixtures/login_no_key.xml').read()
+            with open('tests/fixtures/login_no_key.xml') as f:
+                body = f.read()
             return 403, {}, body
 
         mock_credentials = {
@@ -112,12 +95,13 @@ class TestT1Login(unittest.TestCase):
                **mock_credentials)
 
         exc = cm.exception
-        self.assertEqual('<h1>Developer Inactive</h1>', exc.message)
+        self.assertEqual(b'<h1>Developer Inactive</h1>', exc.message)
 
     @responses.activate
     def test_no_user_fails(self):
         def login_callback(_):
-            body = open('fixtures/login_badrequest.xml').read()
+            with open('tests/fixtures/login_badrequest.xml') as f:
+                body = f.read()
             return 400, {}, body
 
         mock_credentials = {
