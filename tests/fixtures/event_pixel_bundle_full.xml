@@ -1,0 +1,23 @@
+<result called_on="2015-08-21 19:35:27.263377+00">
+  <entities count="529" start="0">
+    <entity name="pixel_bundle_name" id="791675" type="pixel_bundle" version="1">
+      <prop name="advertiser_id" value="29"/>
+      <prop name="name" value="ixel_bundle_name"/>
+      <prop name="created_on" value="2015-07-01T00:00:39"/>
+      <prop name="eligible" value="1"/>
+      <prop name="tags" value="tag_value"/>
+      <prop name="updated_on" value="2015-07-01T00:00:39"/>
+      <prop name="external_identifier" value="1111111111111"/>
+      <prop name="tag_type" value="image"/>
+      <prop name="pixel_type" value="event"/>
+      <prop name="pricing" value="CPM"/>
+      <prop name="rmx_friendly" value="0"/>
+      <prop name="rmx_merit" value="0"/>
+      <prop name="rmx_conversion_type" value="one"/>
+      <prop name="rmx_conversion_minutes" value="1"/>
+      <prop name="status" value="1"/>
+      <prop name="keywords" value="zz:27181400"/>
+    </entity>
+  </entities>
+  <status code="ok"/>
+</result>

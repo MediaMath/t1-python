@@ -1,0 +1,76 @@
+{
+  "reports": {
+    "audience_index": {
+      "Description": "Standard Audience Index Report",
+      "Name": "Audience Index Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/audience_index",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/audience_index/meta"
+    },
+    "audience_index_pixel": {
+      "Description": "Standard Audience Index Pixel Report",
+      "Name": "Audience Index Pixel Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/audience_index_pixel",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/audience_index_pixel/meta"
+    },
+    "day_part": {
+      "Description": "Standard Day Part Report",
+      "Name": "Day Part Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/day_part",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/day_part/meta"
+    },
+    "device_technology": {
+      "Description": "Standard Device Technology Report",
+      "Name": "Device Technology Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/device_technology",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/device_technology/meta"
+    },
+    "geo": {
+      "Description": "Standard Geo Report",
+      "Name": "Geo Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/geo",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/geo/meta"
+    },
+    "performance": {
+      "Description": "Standard Performance Report in Campaign Currency",
+      "Name": "Performance Report in Campaign Currency",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/performance",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/performance/meta"
+    },
+    "pulse": {
+      "Description": "Standard Pulse Report",
+      "Name": "Pulse Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/pulse",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/pulse/meta"
+    },
+    "reach_frequency": {
+      "Description": "Standard Reach and Frequency Report",
+      "Name": "Reach and Frequency Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/reach_frequency",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/reach_frequency/meta"
+    },
+    "site_transparency": {
+      "Description": "Standard Site Transparency Report",
+      "Name": "Site Transparency Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/site_transparency",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/site_transparency/meta"
+    },
+    "video": {
+      "Description": "Standard Video Report",
+      "Name": "Video Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/video",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/video/meta"
+    },
+    "video_site_transparency": {
+      "Description": "Standard Video Site Transparency Report",
+      "Name": "Video Site Transparency Report",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/video_site_transparency",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/video_site_transparency/meta"
+    },
+    "watermark": {
+      "Description": "Standard Watermark Report in US Dollars",
+      "Name": "Watermark Report in US Dollars",
+      "URI_Data": "https://api.mediamath.com/reporting/v1/std/watermark",
+      "URI_Meta": "https://api.mediamath.com/reporting/v1/std/watermark/meta"
+    }
+  }
+}

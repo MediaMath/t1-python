@@ -1,0 +1,34 @@
+<?xml version='1.0' ?>
+<result called_on="2015-08-21 21:00:19.294695+00">
+  <entities count="12" start="0">
+    <entity name="Dummy campaign" id="400" type="campaign">
+      <entity name="Pixel target expr without spaces" id="912037" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Pixel target expr with spaces" id="912027" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Al Test Revised" id="208515" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Vid strat test" id="270344" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Another Test" id="147626" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Yet another Test" id="247157" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Targeted Test RMX API Strat" id="151940" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Ongoing PMP-D Testing" id="151938" rel="strategies" type="strategy">
+      </entity>
+      <entity name="PS Test RMX API Strat" id="142852" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Al Test" id="208514" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Supply Source Test Copy" id="239305" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Copy of Ongoing PMP-D Testing" id="207898" rel="strategies" type="strategy">
+      </entity>
+      <entity name="Supply Source Test" id="239246" rel="strategies" type="strategy">
+      </entity>
+    </entity>
+  </entities>
+  <status code="ok" />
+</result>

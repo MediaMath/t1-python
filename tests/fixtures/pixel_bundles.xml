@@ -1,0 +1,9 @@
+<?xml version='1.0' ?>
+<result called_on="2015-08-21 21:15:49.704587+00">
+  <entities count="3" start="0">
+    <entity name="Pixel Bundle 1" id="9991" type="pixel_bundle" />
+    <entity name="Pixel Bundle 2" id="9992" type="pixel_bundle" />
+    <entity name="Pixel Bundle 3" id="9993" type="pixel_bundle" />
+  </entities>
+  <status code="ok" />
+</result>
