@@ -144,7 +144,7 @@ class TestGets(unittest.TestCase):
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/atomic_creatives/1000?with=creative_approvals',
-                      body=open('tests/fixtures/atomic_creatives_with_creative_approvals.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
         atomic = self.t1.get('atomic_creatives', 1000, include='creative_approvals')
@@ -158,7 +158,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
                       '?full=pixel_bundle&page_limit=1&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/event_pixel_bundle_full.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
@@ -185,7 +185,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
                       '?with=advertiser&full=%2A&page_limit=1&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/pixel_bundle_with_advertiser.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
@@ -202,7 +202,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
                       '?with=advertiser%2Cagency&full=%2A&page_limit=1&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/pixel_bundle_with_advertiser_agency.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
@@ -219,7 +219,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/campaigns/limit/advertiser=29'
                       '?page_limit=1&with=strategies&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/campaigns_with_strategies.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
@@ -237,7 +237,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/atomic_creatives/limit/advertiser=29'
                       '?with=advertiser&with=concept&full=%2A&page_limit=1&page_offset=0&sort_by=-concept_id',
-                      body=open('tests/fixtures/atomic_creatives_with_advertiser_concept.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
         ac = next(self.t1.get('atomic_creatives', limit={'advertiser': 29},
@@ -255,13 +255,13 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles'
                       '?q=%289991%2C9992%2C9993%29&page_limit=100&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/pixel_bundles.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/campaigns'
                       '?q=name%3D%3Atest%2A&page_limit=5&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/pixel_bundles.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 

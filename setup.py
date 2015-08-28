@@ -19,7 +19,7 @@ packages = [
     'terminalone.vendor',
 ]
 
-requirements = ['requests>=2.3.0', 'responses>=0.4.0']
+requirements = ['requests>=2.3.0' ]
 
 setup(
     name='TerminalOne',
