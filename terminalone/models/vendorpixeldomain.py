@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class VendorPixelDomain(Entity):
     """Provides vendor pixel entity."""
     collection = 'vendor_pixel_domains'
@@ -22,5 +23,6 @@ class VendorPixelDomain(Entity):
         'version': int,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(VendorPixelDomain, self).__init__(session, properties, **kwargs)

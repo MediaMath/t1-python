@@ -18,9 +18,10 @@ class Entity(Connection):
     T1 should instantiate these classes, passing in the proper session, etc.
     """
     _readonly = {'id', 'build_date', 'created_on',
-                 '_type', # _type is used because "type" is taken by User.
+                 '_type',  # _type is used because "type" is taken by User.
                  'updated_on', 'last_modified'}
     _readonly_update = set()
+
     def __init__(self, session, properties=None, **kwargs):
         """Passes session to underlying connection and validates properties passed in.
 
@@ -76,11 +77,13 @@ class Entity(Connection):
             return self.properties[attribute]
         else:
             raise AttributeError(attribute)
+
     def __setattr__(self, attribute, value):
         if self._pull.get(attribute) is not None:
             self.properties[attribute] = self._pull[attribute](value)
         else:
             self.properties[attribute] = value
+
     def __delattr__(self, attribute):
         if attribute in self.properties:
             del self.properties[attribute]
@@ -90,6 +93,7 @@ class Entity(Connection):
     def __getstate__(self):
         """Custom pickling. TODO"""
         return super(Entity, self).__getstate__()
+
     def __setstate__(self, state):
         """Custom unpickling. TODO"""
         return super(Entity, self).__setstate__(state)
@@ -112,21 +116,25 @@ class Entity(Connection):
     @staticmethod
     def _enum(all_vars, default):
         """Check input against accepted set or return a default."""
+
         def get_value(test_value):
             if test_value in all_vars:
                 return test_value
             else:
                 return default
+
         return get_value
 
     @staticmethod
     def _default_empty(default):
         """Check an input against its falsy value or return a default."""
+
         def get_value(test_value):
             if test_value:
                 return test_value
             else:
                 return default
+
         return get_value
 
     @staticmethod
@@ -155,11 +163,10 @@ class Entity(Connection):
         aren't to be written to. Because relations are incliuded as attributes
         as well, remove these too.
         """
-        return (key in self._readonly
-                or key in self._relations
-                or (update
-                    and key in self._readonly_update)
-                or push_fn is False)
+        return (key in self._readonly or
+                key in self._relations or
+                (update and key in self._readonly_update) or
+                push_fn is False)
 
     def _validate_write(self, data):
         """Convert Python objects to XML values.
@@ -187,7 +194,7 @@ class Entity(Connection):
 
         Collection, ID if present, additional values (like "history") if needed.
         """
-        url = [self.collection,]
+        url = [self.collection, ]
 
         if self.properties.get('id'):
             url.append(str(self.id))
@@ -228,15 +235,17 @@ class Entity(Connection):
         """Retrieve changelog entry for entity."""
         if not self.properties.get('id'):
             raise ClientError('Entity ID not given')
-        url = self._construct_url(addl=['history',])
+        url = self._construct_url(addl=['history', ])
         history, _ = super(Entity, self)._get(PATHS['mgmt'], url)
         return history
+
 
 class SubEntity(Entity):
     """Sub-entity, denoted by object like /collection/:id/sub-entity.
 
     These objects need URLs constructed differently.
     """
+
     def _construct_url(self, addl=None):
         url = [self.parent, str(self.parent_id), self.collection]
 
@@ -245,4 +254,3 @@ class SubEntity(Entity):
         if addl is not None:
             url.extend(addl)
         return '/'.join(url)
-

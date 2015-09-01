@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from ..errors import ClientError
 from ..entity import Entity
 
+
 class TargetValue(Entity):
     """docstring for TargetValue."""
     collection = 'target_values'
@@ -22,6 +23,7 @@ class TargetValue(Entity):
         'target_dimension_id': int,
         'value': int,
     }
+
     def __init__(self, session, properties=None, **kwargs):
         super(TargetValue, self).__init__(session, properties, **kwargs)
 

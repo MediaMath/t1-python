@@ -6,11 +6,13 @@ from datetime import datetime
 from ..entity import Entity
 from ..vendor import six
 
+
 def update_low_priority(original, candidate):
     for item, value in six.iteritems(candidate):
         if item in original:
             continue
         original[item] = value
+
 
 class PlacementSlot(Entity):
     """Site Placement for PMP-D."""
@@ -36,12 +38,12 @@ class PlacementSlot(Entity):
     }
     _auction_types = Entity._enum({'FIRST_PRICED', 'SECOND_PRICED'},
                                   'FIRST_PRICED')
-    _price_types = Entity._enum({'CPM',}, 'CPM')
+    _price_types = Entity._enum({'CPM', }, 'CPM')
     _frequency_intervals = Entity._enum({'hour', 'day', 'week', 'month',
                                          'campaign', 'not-applicable'},
                                         'not-applicable')
     _frequency_types = Entity._enum({'even', 'asap', 'no-limit'}, 'no-limit')
-    _volume_units = Entity._enum({'impressions',}, 'impressions')
+    _volume_units = Entity._enum({'impressions', }, 'impressions')
     _pull = {
         'ad_slot': int,
         'allow_remnant': Entity._int_to_bool,
@@ -78,6 +80,7 @@ class PlacementSlot(Entity):
         'sell_price_type': _price_types,
         'volume_unit': _volume_units,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(PlacementSlot, self).__init__(session, properties, **kwargs)
 

@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Agency(Entity):
     """docstring for Agency"""
     collection = 'agencies'
@@ -32,5 +33,6 @@ class Agency(Entity):
         'allow_x_adv_pixels': int,
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(Agency, self).__init__(session, properties, **kwargs)

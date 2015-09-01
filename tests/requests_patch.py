@@ -17,7 +17,7 @@ def patched_extract_cookies_to_jar(jar, request, response):
         return [self.get(name, default)]
 
     if not (hasattr(response, '_original_response') and
-                response._original_response):
+            response._original_response):
         # just grab the headers from the mocked response object
         if not hasattr(response.headers, 'get_all'):
             response.headers.get_all = types.MethodType(get_all, response.headers)
@@ -30,4 +30,3 @@ def patched_extract_cookies_to_jar(jar, request, response):
 
     req = requests.cookies.MockRequest(request)
     jar.extract_cookies(res, req)
-

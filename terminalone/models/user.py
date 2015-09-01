@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class User(Entity):
     """docstring for User."""
     collection = 'users'
@@ -59,5 +60,6 @@ class User(Entity):
         'view_organizations': int,
     })
     _readonly = Entity._readonly.copy()
+
     def __init__(self, session, properties=None, **kwargs):
         super(User, self).__init__(session, properties, **kwargs)

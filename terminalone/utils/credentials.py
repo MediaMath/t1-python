@@ -3,6 +3,7 @@
 
 from functools import reduce
 
+
 def dpath(dict_, path):
     """Dig into dictionary by string path. e.g.
 
@@ -15,6 +16,7 @@ def dpath(dict_, path):
         paths,
         dict_
     )
+
 
 def credentials(filename=None, root=None):
     """Get credentials from JSON file or environment variables.

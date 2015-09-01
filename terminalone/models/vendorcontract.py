@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class VendorContract(Entity):
     """Provides vendor contract entity."""
     collection = 'vendor_contracts'
@@ -24,5 +25,6 @@ class VendorContract(Entity):
         'version': int,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(VendorContract, self).__init__(session, properties, **kwargs)

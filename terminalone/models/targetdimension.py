@@ -8,6 +8,7 @@ from ..entity import Entity, SubEntity
 from .targetvalue import TargetValue
 from ..utils import PATHS
 
+
 class TargetDimension(SubEntity):
     """TargetDimension object. Used for most current targeting settings."""
     collection = 'target_dimensions'
@@ -22,6 +23,7 @@ class TargetDimension(SubEntity):
         'include': None,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(TargetDimension, self).__init__(session, properties, **kwargs)
         super(Entity, self).__setattr__('environment',
@@ -71,7 +73,7 @@ class TargetDimension(SubEntity):
         if isinstance(target, TargetValue):
             group.append(target)
         elif isinstance(target, int):
-            target = [target,]
+            target = [target, ]
         if hasattr(target, '__iter__'):
             for child_id in target:
                 url[1] = str(child_id)
@@ -82,7 +84,6 @@ class TargetDimension(SubEntity):
                                          environment=self.environment))
         else:
             raise ClientError('add_to target should be an int or iterator')
-
 
     def add_to(self, group, target):
         """Alias for add to retain compatibility"""

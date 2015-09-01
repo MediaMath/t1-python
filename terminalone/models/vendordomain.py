@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class VendorDomain(Entity):
     """Provides vendor domain entity."""
     collection = 'vendor_domains'
@@ -26,5 +27,6 @@ class VendorDomain(Entity):
     _push.update({
         'allow_subdomain_match': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(VendorDomain, self).__init__(session, properties, **kwargs)

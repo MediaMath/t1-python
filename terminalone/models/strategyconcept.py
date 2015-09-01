@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from ..entity import Entity
 from ..utils import PATHS
 
+
 class StrategyConcept(Entity):
     """docstring for StrategyConcept."""
     collection = 'strategy_concepts'
@@ -26,7 +27,8 @@ class StrategyConcept(Entity):
     _push.update({
         'status': int,
     })
-    _readonly = Entity._readonly | {'name',}
+    _readonly = Entity._readonly | {'name', }
+
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyConcept, self).__init__(session, properties, **kwargs)
 

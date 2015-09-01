@@ -3,6 +3,7 @@
 
 from functools import reduce
 
+
 def compose(*functions):
     """Compose functions like you're using functional programming.
 

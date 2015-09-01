@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class StrategyDomain(Entity):
     """Strategy domain restriction object."""
     collection = 'strategy_domain_restrictions'
@@ -25,6 +26,7 @@ class StrategyDomain(Entity):
     _push.update({
         'restriction': _restrictions,
     })
-    _readonly = Entity._readonly | {'created_at',}
+    _readonly = Entity._readonly | {'created_at', }
+
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyDomain, self).__init__(session, properties, **kwargs)
