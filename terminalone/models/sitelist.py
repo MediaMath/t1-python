@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class SiteList(Entity):
     """docstring for SiteList."""
     collection = 'site_lists'
@@ -28,5 +29,6 @@ class SiteList(Entity):
         'restriction': _restrictions,
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(SiteList, self).__init__(session, properties, **kwargs)

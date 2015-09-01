@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class PixelProvider(Entity):
     """docstring for pixel provider."""
     collection = 'pixel_providers'
@@ -30,5 +31,6 @@ class PixelProvider(Entity):
         'execution_by': _executors,
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(PixelProvider, self).__init__(session, properties, **kwargs)

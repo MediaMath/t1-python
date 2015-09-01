@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class VendorPixel(Entity):
     """Provides vendor pixel entity."""
     collection = 'vendor_pixels'
@@ -27,5 +28,6 @@ class VendorPixel(Entity):
     _push.update({
         'set_by': _set_bys,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(VendorPixel, self).__init__(session, properties, **kwargs)

@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Advertiser(Entity):
     """docstring for Advertiser"""
     collection = 'advertisers'
@@ -36,5 +37,6 @@ class Advertiser(Entity):
         'minimize_multi_ads': int,
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(Advertiser, self).__init__(session, properties, **kwargs)

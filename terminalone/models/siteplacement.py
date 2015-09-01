@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class SitePlacement(Entity):
     """Site Placement for PMP-D."""
     collection = 'site_placements'
@@ -35,8 +36,10 @@ class SitePlacement(Entity):
         'media_type': _media_types,
         'pmp_type': _pmp_types,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(SitePlacement, self).__init__(session, properties, **kwargs)
+
     def save(self, data=None, url=None):
         if data is None:
             data = self.properties

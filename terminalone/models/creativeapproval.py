@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from ..errors import ClientError
 from ..entity import Entity
 
+
 class CreativeApproval(Entity):
     """T1 Creative entity, or an atomic_creative entity."""
     collection = 'creative_approvals'

@@ -68,4 +68,4 @@ __all__ = ['ACL',
            'VendorContract',
            'VendorDomain',
            'VendorPixel',
-           'VendorPixelDomain',]
+           'VendorPixelDomain', ]

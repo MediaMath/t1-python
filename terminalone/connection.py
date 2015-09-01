@@ -9,9 +9,11 @@ from .metadata import __version__
 from .utils import PATHS
 from .xmlparser import XMLParser, ParseError
 
+
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
                                           ua=default_user_agent())
+
 
 class Connection(object):
     """Base connection object for TerminalOne session"""
@@ -19,6 +21,7 @@ class Connection(object):
     API_BASES = {
         'production': 'api.mediamath.com',
     }
+
     def __init__(self,
                  environment='production',
                  api_base=None,

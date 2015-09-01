@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from ..errors import ClientError
 from ..entity import SubEntity
 
+
 class Permission(SubEntity):
     """docstring for Permission."""
     collection = 'permissions'

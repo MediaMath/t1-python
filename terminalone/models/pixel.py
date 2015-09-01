@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class ChildPixel(Entity):
     """docstring for child pixel."""
     collection = 'pixels'
@@ -28,5 +29,6 @@ class ChildPixel(Entity):
         'distributed': int,
         'pixel_type': _pixel_types,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(ChildPixel, self).__init__(session, properties, **kwargs)

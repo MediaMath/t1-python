@@ -140,12 +140,14 @@ CHILD_PATHS = {
     'supplies': ('supplies', 0),
 }
 
+
 class T1(Connection):
     """Service class for ALL other T1 entities, e.g.: t1 = T1(auth)
 
     Accepts authentication parameters. Supports get methods to get
     collections or an entity, find method to user inner-join-like queries.
     """
+
     def __init__(self,
                  username=None,
                  password=None,
@@ -191,7 +193,7 @@ class T1(Connection):
                 name='adama_session',
                 value=session_id,
                 domain=self.api_base,
-                expires=kwargs.get('expires', int(time()+86400)),
+                expires=kwargs.get('expires', int(time() + 86400)),
             )
         else:
             user, _ = super(T1, self)._post(PATHS['mgmt'], 'login', data={
@@ -218,7 +220,6 @@ class T1(Connection):
             return self._auth_basic()
         else:
             raise AttributeError('No authentication method for ' + auth_method)
-
 
     def new(self, collection, report=None, properties=None, *args, **kwargs):
         """Returns a fresh class instance for a new entity.
@@ -280,7 +281,7 @@ class T1(Connection):
             params = {'page_limit': page_limit,
                       'page_offset': page_offset,
                       'sort_by': sort_by,
-                      'q': query,}
+                      'q': query, }
 
         # include can be either a string (e.g. 'advertiser'),
         # list of *non-traversable* relations (e.g. ['vendor', 'concept']),
@@ -317,9 +318,9 @@ class T1(Connection):
     @staticmethod
     def _construct_url(collection, entity, child, limit):
         """Construct URL"""
-        url = [collection,]
+        url = [collection, ]
         if entity is not None:
-            url.append(str(entity)) # str so that we can use join
+            url.append(str(entity))  # str so that we can use join
 
         child_id = None
         if child is not None:
@@ -516,5 +517,6 @@ class T1(Connection):
         else:
             query = operator.join([variable, self._parse_candidate(candidates)])
         return self.get(collection, query=query, **kwargs)
+
 
 T1Service = T1

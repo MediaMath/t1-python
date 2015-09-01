@@ -10,6 +10,7 @@ from .vendor import six
 from .vendor.six.moves.urllib.parse import unquote, urlencode
 from .xmlparser import ParseError, XMLParser
 
+
 class Report(Connection):
     """Object for pulling reports"""
     _fields = {

@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Concept(Entity):
     """docstring for Concept."""
     collection = 'concepts'
@@ -24,5 +25,6 @@ class Concept(Entity):
     _push.update({
         'status': int,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(Concept, self).__init__(session, properties, **kwargs)

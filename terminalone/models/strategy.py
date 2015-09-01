@@ -9,6 +9,7 @@ from ..utils import PATHS, suppress
 PIXEL_PATTERN = re.compile(r'\[(\d+)\]')
 OPERATOR_PATTERN = re.compile(r'(AND|OR)')
 
+
 class Strategy(Entity):
     """docstring for Strategy."""
     collection = 'strategies'
@@ -104,7 +105,7 @@ class Strategy(Entity):
         'use_optimization': int,
     })
 
-    _readonly = Entity._readonly | {'effective_goal_value',}
+    _readonly = Entity._readonly | {'effective_goal_value', }
 
     def __init__(self, session, properties=None, **kwargs):
         super(Strategy, self).__init__(session, properties, **kwargs)
@@ -144,7 +145,7 @@ class Strategy(Entity):
         }
 
     def save_supplies(self, data):
-        url = self._construct_url(addl=['supplies',])
+        url = self._construct_url(addl=['supplies', ])
         entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
         self._update_self(next(entity))
         self._deserialize_target_expr()
@@ -152,13 +153,13 @@ class Strategy(Entity):
             del self.properties['relations']
 
     def save_domains(self, data):
-        url = self._construct_url(addl=['domain_restrictions',])
+        url = self._construct_url(addl=['domain_restrictions', ])
         # this endpoint doesn't return an entity like the supplies endpoint
         # so we ignore the error
         with suppress(AttributeError):
             entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
 
-        # you can't get these values so we don't need to reset anything
+            # you can't get these values so we don't need to reset anything
 
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""

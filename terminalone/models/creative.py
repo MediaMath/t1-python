@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Creative(Entity):
     """Provides creative entity."""
     collection = 'creatives'
@@ -25,5 +26,6 @@ class Creative(Entity):
         'version': int,
     }
     _push = _pull
+
     def __init__(self, session, properties=None, **kwargs):
         super(Creative, self).__init__(session, properties, **kwargs)

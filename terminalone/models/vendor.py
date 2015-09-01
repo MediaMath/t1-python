@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..entity import Entity
 
+
 class Vendor(Entity):
     """Provides vendor entity."""
     collection = 'vendors'
@@ -48,5 +49,6 @@ class Vendor(Entity):
         'mm_contract_available': int,
         'vendor_type': _vendor_types,
     })
+
     def __init__(self, session, properties=None, **kwargs):
         super(Vendor, self).__init__(session, properties, **kwargs)
