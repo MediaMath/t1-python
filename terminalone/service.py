@@ -44,6 +44,7 @@ CLASSES = {
     'vendor_domains': VendorDomain,
     'vendor_pixels': VendorPixel,
     'vendor_pixel_domains': VendorPixelDomain,
+    'verticals': Vertical,
 }
 MODEL_PATHS = {
     AdServer: 'ad_servers',
@@ -79,6 +80,7 @@ MODEL_PATHS = {
     VendorDomain: 'vendor_domains',
     VendorPixel: 'vendor_pixels',
     VendorPixelDomain: 'vendor_pixel_domains',
+    Vertical: 'verticals',
 }
 SINGULAR = {
     'ad_server': AdServer,
@@ -114,6 +116,7 @@ SINGULAR = {
     'vendor_domain': VendorDomain,
     'vendor_pixel': VendorPixel,
     'vendor_pixel_domain': VendorPixelDomain,
+    'vertical': Vertical,
 }
 CHILD_PATHS = {
     'acl': ('acl', 0),

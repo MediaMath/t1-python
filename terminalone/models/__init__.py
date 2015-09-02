@@ -34,6 +34,7 @@ from .vendorcontract import VendorContract
 from .vendordomain import VendorDomain
 from .vendorpixel import VendorPixel
 from .vendorpixeldomain import VendorPixelDomain
+from .vertical import Vertical
 
 __all__ = ['ACL',
            'AdServer',
@@ -68,4 +69,5 @@ __all__ = ['ACL',
            'VendorContract',
            'VendorDomain',
            'VendorPixel',
-           'VendorPixelDomain', ]
+           'VendorPixelDomain',
+           'Vertical', ]
