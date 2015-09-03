@@ -26,6 +26,7 @@ from .strategyconcept import StrategyConcept
 from .strategydaypart import StrategyDayPart
 from .strategydomain import StrategyDomain
 from .strategysupplysource import StrategySupplySource
+from .supplysource import SupplySource
 from .targetdimension import TargetDimension
 from .targetvalue import TargetValue
 from .user import User
@@ -62,6 +63,7 @@ __all__ = ['ACL',
            'StrategyDayPart',
            'StrategyDomain',
            'StrategySupplySource',
+           'SupplySource',
            'TargetDimension',
            'TargetValue',
            'User',
