@@ -73,6 +73,7 @@ class PlacementSlot(Entity):
     }
     _push = _pull.copy()
     _push.update({
+        'allow_remnant': int,
         'auction_type': _auction_types,
         'buy_price_type': _price_types,
         'frequency_interval': _frequency_intervals,

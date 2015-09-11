@@ -40,6 +40,20 @@ class SupplySource(Entity):
         'version': int,
     }
     _push = _pull.copy()
+    _push.update({
+        'distribute': int,
+        'has_display': int,
+        'has_mobile_display': int,
+        'has_mobile_video': int,
+        'has_video': int,
+        'is_proservice': int,
+        'mm_safe': int,
+        'pmp_enabled': int,
+        'rtb_enabled': int,
+        'seat_enabled': int,
+        'status': int,
+        'use_pool': int,
+    })
 
     def __init__(self, session, properties=None, **kwargs):
         super(SupplySource, self).__init__(session, properties, **kwargs)

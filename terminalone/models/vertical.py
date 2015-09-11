@@ -12,6 +12,7 @@ class Vertical(Entity):
     _relations = {
         'advertiser',
     }
+
     _pull = {
         'id': int,
         'name': None,
@@ -19,10 +20,8 @@ class Vertical(Entity):
         'updated_on': Entity._strpt,
         'version': int,
     }
-    _push = _pull.copy()
-    _push.update({
-        'name': None,
-    })
+
+    _push = _pull
 
     def __init__(self, session, properties=None, **kwargs):
         super(Vertical, self).__init__(session, properties, **kwargs)

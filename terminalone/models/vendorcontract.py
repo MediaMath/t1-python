@@ -24,7 +24,10 @@ class VendorContract(Entity):
         'vendor_id': int,
         'version': int,
     }
-    _push = _pull
+    _push = _pull.copy()
+    _push.update({
+        'use_mm_contract': int,
+    })
 
     def __init__(self, session, properties=None, **kwargs):
         super(VendorContract, self).__init__(session, properties, **kwargs)

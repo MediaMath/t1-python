@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class AudienceSegment(Entity):
-    """docstring for AudienceSegment"""
+    """Audience segment entity object"""
     collection = 'audience_segments'
     resource = 'audience_segment'
     _relations = {
@@ -32,6 +32,9 @@ class AudienceSegment(Entity):
     }
 
     _push = _pull.copy()
+    _push.update({
+        'buyable': int,
+    })
 
     def __init__(self, session, properties=None, **kwargs):
         super(AudienceSegment, self).__init__(session, properties, **kwargs)
