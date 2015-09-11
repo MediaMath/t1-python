@@ -78,6 +78,21 @@ class TestGets(unittest.TestCase):
         self.assertEqual(c, count)
 
     @responses.activate
+    def test_get_strategy_day_parts(self):
+        self.setup()
+        with open('tests/fixtures/strategy_day_parts.xml') as f:
+            fixture = f.read()
+        responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/strategies/941273/day_parts',
+                      body=fixture,
+                      content_type='application/xml')
+        day_parts = self.t1.get('strategies', 941273, child='day_parts')
+
+        c = 0
+        for _ in day_parts:
+            c += 1
+        self.assertEqual(c, 3)
+
+    @responses.activate
     def test_entity_get_save(self):
         self.setup()
         with open('tests/fixtures/advertiser.xml') as f:

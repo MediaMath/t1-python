@@ -270,10 +270,19 @@ class T1(Connection):
                    json=self.json,
                    *args, **kwargs)
 
-    def _return_class(self, ent_dict):
+    def _return_class(self, ent_dict,
+                      child=None, child_id=None, entity_id=None, collection=None):
         """Generate item for new class instantiation"""
         ent_type = ent_dict.get('_type', ent_dict.get('type'))
         relations = ent_dict.get('relations')
+        if child is not None:
+            # Child can be either a target dimension (with an ID) or
+            # a bare child, like concepts or permissions. These should not
+            # have an ID passed in.anyway i'm at
+            if child_id is not None:
+                ent_dict['id'] = child_id
+            ent_dict['parent_id'] = entity_id
+            ent_dict['parent'] = collection
         if relations is not None:
             for rel_name, data in six.iteritems(relations):
                 if isinstance(data, list):
@@ -285,10 +294,11 @@ class T1(Connection):
             ent_dict.pop('relations', None)
         return self.new(ent_type, properties=ent_dict)
 
-    def _gen_classes(self, entities):
+    def _gen_classes(self, entities, child, child_id, entity_id, collection):
         """Iterate over entities, returning objects for each"""
         for entity in entities:
-            yield self._return_class(entity)
+            e = self._return_class(entity, child, child_id, entity_id, collection)
+            yield e
 
     @staticmethod
     def _construct_params(entity, include, full, page_limit,
@@ -445,28 +455,17 @@ class T1(Connection):
                                              page_offset, sort_by, parent, query)
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
-        if entity is not None:
-            # TODO: known bug here with iterator children.
-            # For instance, if you get('strategies', 123, child='concepts'),
-            # API returns a structure as if you just requested the concepts
-            # but had that limit. This is new so whatever, just take the first
-            # and be happy with it.
-            entities = next(entities)
-            if child is not None:
-                # Child can be either a target dimension (with an ID) or
-                # a bare child, like concepts or permissions. These should not
-                # have an ID passed in.
-                if child_id is not None:
-                    entities['id'] = child_id
-                entities['parent_id'] = entity
-                entities['parent'] = collection
-            return self._return_class(entities)
 
-        ent_gen = self._gen_classes(entities)
-        if count:
-            return ent_gen, ent_count
+        # Frankly this is a bit of a hack around the fact that not all feeds
+        # return a 'count' attribute, so the ent_count is unreliable
+        if ent_count == 1 or (entity is not None and child is None):
+            return self._return_class(next(entities), child, child_id, entity, collection)
         else:
-            return ent_gen
+            ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
+            if count:
+                return ent_gen, ent_count
+            else:
+                return ent_gen
 
     def get_all(self, collection, **kwargs):
         """Retrieves all entities in a collection. Has same signature as .get."""
