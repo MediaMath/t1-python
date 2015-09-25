@@ -15,16 +15,16 @@ class SupplySource(Entity):
     _rtb_types = Entity._enum({'STANDARD', 'MARKETPLACE'}, None)
     _supply_types = Entity._enum({'exchange', 'data'}, None)
     _pull = {
-        'id': int,
         'bidder_exchange_identifier': int,
         'code': None,
         'created_on': Entity._strpt,
-        'default_seat_identifier': Entity._strpt,
+        'default_seat_identifier': None,
         'distribute': Entity._int_to_bool,
         'has_display': Entity._int_to_bool,
         'has_mobile_display': Entity._int_to_bool,
         'has_mobile_video': Entity._int_to_bool,
         'has_video': Entity._int_to_bool,
+        'id': int,
         'is_proservice': Entity._int_to_bool,
         'mm_safe': Entity._int_to_bool,
         'parent_supply_id': int,
