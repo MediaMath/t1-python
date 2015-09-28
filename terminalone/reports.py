@@ -84,7 +84,7 @@ class Report(Connection):
 
         if not response.ok:
             try:
-                result = XMLParser(response)
+                result = XMLParser(response.content)
             except ParseError as exc:
                 self.response = response
                 raise ClientError('Could not parse XML response: {!r}'.format(exc))
