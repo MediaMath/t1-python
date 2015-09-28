@@ -4,6 +4,9 @@ TerminalOne-Python
 .. image:: https://img.shields.io/pypi/v/TerminalOne.svg
     :target: https://pypi.python.org/pypi/TerminalOne
 
+.. image:: https://img.shields.io/travis/MediaMath/t1-python.svg
+    :target: https://travis-ci.org/MediaMath/t1-python
+
 .. image:: https://img.shields.io/pypi/dm/TerminalOne.svg
     :target: https://pypi.python.org/pypi/TerminalOne
 
