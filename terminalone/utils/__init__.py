@@ -4,7 +4,6 @@
 from . import filters
 from .compose import compose
 from .credentials import credentials
-from .paths import PATHS
 from .suppressed import suppress
 
 # PMP-D relies on a models import. If any of the models rely on any of these

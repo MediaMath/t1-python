@@ -2,8 +2,8 @@
 """Provides strategy concept object."""
 
 from __future__ import absolute_import
+from ..config import PATHS
 from ..entity import Entity
-from ..utils import PATHS
 
 
 class StrategyConcept(Entity):

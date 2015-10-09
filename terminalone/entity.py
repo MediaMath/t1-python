@@ -4,9 +4,9 @@
 from __future__ import absolute_import, division
 from datetime import datetime
 import warnings
+from .config import PATHS
 from .connection import Connection
 from .errors import ClientError
-from .utils import PATHS
 from .vendor import six
 
 

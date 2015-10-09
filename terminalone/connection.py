@@ -4,9 +4,9 @@
 from __future__ import absolute_import
 from requests import Session
 from requests.utils import default_user_agent
+from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
 from .errors import ClientError
 from .metadata import __version__
-from .utils import PATHS
 from .xmlparser import XMLParser, ParseError
 
 
@@ -17,14 +17,11 @@ def _generate_user_agent(name='t1-python'):
 
 class Connection(object):
     """Base connection object for TerminalOne session"""
-    VALID_ENVS = frozenset(['production', 'qa'])
-    API_BASES = {
-        'production': 'api.mediamath.com',
-    }
 
     def __init__(self,
                  environment='production',
                  api_base=None,
+                 json=False,
                  _create_session=True):
         """Sets up Requests Session to be used for all connections to T1.
 
@@ -44,9 +41,14 @@ class Connection(object):
                                   .format(environment))
         else:
             Connection.__setattr__(self, 'api_base', api_base)
+
+        Connection.__setattr__(self, 'json', json)
+
         if _create_session:
             Connection.__setattr__(self, 'session', Session())
             self.session.headers['User-Agent'] = _generate_user_agent()
+            if json:
+                self.session.headers['Accept'] = ACCEPT_HEADERS['json']
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
