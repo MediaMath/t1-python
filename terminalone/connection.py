@@ -8,7 +8,7 @@ from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
 from .errors import ClientError
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
-
+from .jsonparser import JSONParser
 
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
@@ -32,7 +32,7 @@ class Connection(object):
         :param _create_session: bool flag to create a Requests Session.
         Should only be used for initial T1 instantiation.
         """
-        self.is_json = json
+
         if api_base is None:
             try:
                 Connection.__setattr__(self, 'api_base',
@@ -44,12 +44,17 @@ class Connection(object):
             Connection.__setattr__(self, 'api_base', api_base)
 
         Connection.__setattr__(self, 'json', json)
+        if json:
+            Connection.__setattr__(self, '_parser', JSONParser)
+        else:
+            Connection.__setattr__(self, '_parser', XMLParser)
 
         if _create_session:
             Connection.__setattr__(self, 'session', Session())
             self.session.headers['User-Agent'] = _generate_user_agent()
             if json:
                 self.session.headers['Accept'] = ACCEPT_HEADERS['json']
+
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
@@ -78,10 +83,10 @@ class Connection(object):
         response_body = response.content
 
         try:
-            result = XMLParser(response_body)
+            result = self._parser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
-            raise ClientError('Could not parse XML response: {!r}'.format(exc))
+            raise ClientError('Could not parse response: {!r}'.format(exc))
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise
@@ -100,10 +105,10 @@ class Connection(object):
         response_body = response.content
 
         try:
-            result = XMLParser(response_body)
+            result = self._parser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
-            raise ClientError('Could not parse XML response: {!r}'.format(exc))
+            raise ClientError('Could not parse response: {!r}'.format(exc))
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise
