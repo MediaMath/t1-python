@@ -32,7 +32,7 @@ class Report(Connection):
     }
 
     def __init__(self, session, report=None, properties=None, **kwargs):
-        super(Report, self).__init__(_create_session=False, **kwargs)
+        super(Report, self).__init__(**kwargs)
         self.session = session
         self.parameters = {}
 

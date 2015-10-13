@@ -6,6 +6,7 @@ from requests import Session
 from requests.utils import default_user_agent
 from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
 from .errors import ClientError, ParserException
+from requests_oauthlib import OAuth2Session
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
@@ -23,7 +24,8 @@ class Connection(object):
                  environment='production',
                  api_base=None,
                  json=False,
-                 _create_session=True):
+                 client_secret=None,
+                 _create_session=False):
         """Sets up Requests Session to be used for all connections to T1.
 
         :param environment: str to look up API Base to use. e.g. 'production'
@@ -33,16 +35,15 @@ class Connection(object):
         :param _create_session: bool flag to create a Requests Session.
         Should only be used for initial T1 instantiation.
         """
-
-        if api_base is None:
+        if api_base is not None:
+            Connection.__setattr__(self, 'api_base', api_base)
+        else:
             try:
                 Connection.__setattr__(self, 'api_base',
                                        API_BASES[environment])
             except KeyError:
                 raise ClientError("Environment: {!r}, does not exist."
                                   .format(environment))
-        else:
-            Connection.__setattr__(self, 'api_base', api_base)
 
         Connection.__setattr__(self, 'json', json)
 
@@ -56,6 +57,66 @@ class Connection(object):
             self.session.headers['User-Agent'] = _generate_user_agent()
             if json:
                 self.session.headers['Accept'] = ACCEPT_HEADERS['json']
+
+    def _create_session(self, auth_type, auth):
+        pass
+
+    def _auth_cookie(self, username, password, api_key):
+        """Authenticate by generating a session cookie.
+
+        The traditional way of authenticating by making a POST request to /login
+        endpoint and storing the returned session cookie.
+        """
+        user, _ = self._post(PATHS['mgmt'], 'login', data={
+            'user': username,
+            'password': password,
+            'api_key': api_key,
+        })
+        self._check_session(user=user)
+
+    def _auth_session_id(self, session_id, api_key, expires=None):
+        """Authenticate using a passed-in session ID.
+
+        This is the only real method for apps not doing their own login; for
+        instance, apps in T1 are expected to take in a passed sesssion ID and
+        authenticate using that. Hopefully with OAuth2 this should fade away.
+        """
+        from time import time
+        self.session.cookies.set(
+            name='adama_session',
+            value=session_id,
+            domain=self.api_base,
+            expires=(expires or int(time() + 86400)),
+        )
+        self._check_session()
+
+    def _auth_basic(self, username, password, api_key):
+        """Authenticate using HTTP basic auth. DEPRECATED.
+
+        Will be removed in a future version.
+        """
+        self.session.auth = ('{}|{}'.format(username, api_key), password)
+        self._check_session()
+
+    # these should be stored as instance vars, because they aren't specific
+    # to the user. Except for redirect_uri, because that gets saved as an
+    # instance var for the session
+    def authorization_url(self, api_key, client_secret, redirect_uri):
+        """Authenticate using OAuth2"""
+        base_url = '/'.join(['https:/', self.api_base, PATHS['oauth2']])
+        self.session = OAuth2Session(client_id=api_key,
+                                     redirect_uri=redirect_uri,
+                                     auto_refresh_url=(base_url + '/token'))
+        return self.session.authorization_url(base_url + '/authorize')
+
+    def fetch_token(self, code):
+        token_url = '/'.join(['https:/',
+                              self.api_base,
+                              PATHS['oauth2'],
+                              'token'])
+        token = self.session.fetch_token(token_url, code=code,
+                                         client_secret=client_secret)
+        return token
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.

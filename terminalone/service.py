@@ -172,6 +172,17 @@ CHILD_PATHS = {
 }
 
 
+def _detect_auth_method(username, password, session_id, api_key, client_secret):
+    if api_key is None:
+        raise ClientError('API Key is required!')
+    if username is not None and password is not None:
+        return 'cookie'
+    if session_id is not None:
+        return 'cookie'
+    if client_secret is not None:
+        return 'oauth2'
+
+
 class T1(Connection):
     """Service class for ALL other T1 entities, e.g.: t1 = T1(auth)
 
@@ -183,6 +194,7 @@ class T1(Connection):
                  username=None,
                  password=None,
                  api_key=None,
+                 client_secret=None,
                  auth_method=None,
                  session_id=None,
                  environment='production',
@@ -203,6 +215,10 @@ class T1(Connection):
         :param api_base: str API base. should be in format https://[url] without
             trailing slash, and including version.
         """
+        if auth_method is None:
+            auth_method = _detect_auth_method(username, password, session_id,
+                                              api_key, client_secret)
+
         self.username = username
         self.password = password
         self.api_key = api_key
@@ -252,6 +268,8 @@ class T1(Connection):
         """Authenticate using method given."""
         if auth_method == 'cookie':
             return self._auth_cookie(**kwargs)
+        elif auth_method == 'oauth2':
+            return self._auth_oauth()
         elif auth_method == 'basic':
             return self._auth_basic()
         else:
