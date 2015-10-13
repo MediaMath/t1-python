@@ -64,7 +64,9 @@ class Connection(object):
         """
         if user is None:
             user, _ = self._get(PATHS['mgmt'], 'session')
+
         user = next(user)
+        print(user)
         Connection.__setattr__(self, 'user_id',
                                int(user['id']))
         Connection.__setattr__(self, 'username',

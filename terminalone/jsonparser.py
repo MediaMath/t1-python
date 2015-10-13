@@ -21,6 +21,21 @@ STATUS_CODES = {
 }
 
 
+class FindData:
+    def __init__(self, data):
+        self.i = 0
+        self.json = data
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        try:
+            self.json = self.json['data']
+            return self.json
+        except KeyError:
+            raise StopIteration()
+
 class JSONParser(object):
     """Parses JSON response"""
 
@@ -36,10 +51,10 @@ class JSONParser(object):
 
         data = parsedData['data']
 
-        if (self.entity_count > 1):
-            self._parse_collection(data)
+        if type(data) == list:
+            self.entities = map(self.dictify_entity, data)
         else:
-            self.dictify_entity(data)
+            self.entities = map(self.dictify_entity, FindData(parsedData))
 
     def get_status(self, data, body):
         """Gets the status code of T1 XML.
@@ -77,14 +92,10 @@ class JSONParser(object):
                                        'error': error['message']}
         return errors
 
-    def _parse_collection(self, data):
-        """Iterate over collection (i.e. "entities" tag) and parse into dicts"""
-        for entity in data:
-            self.dictify_entity(entity)
 
-    def dictify_entity(self, entity):
+    def dictify_entity(self, entity_key):
         """Turn json entity into a dictionary"""
-        output = entity.copy()
+        output = entity_key.copy()
         # Hold relation objects in specific dict. T1Service instantiates the
         # correct classes.
         relations = {}
@@ -92,6 +103,7 @@ class JSONParser(object):
         if 'entity_type' in output:
             output['_type'] = output['entity_type']
             del output['entity_type']
+
         #for prop in entity:
             #if prop.tag == 'entity':  # Get parent entities recursively
             #    ent = self.dictify_entity(prop)
@@ -103,4 +115,4 @@ class JSONParser(object):
             #output[prop.attrib['name']] = prop.attrib['value']
         #if relations:
         #    output['relations'] = relations
-        #return output
+        return output
