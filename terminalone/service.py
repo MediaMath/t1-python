@@ -7,7 +7,8 @@ from .entity import Entity
 from .errors import ClientError
 from .models import *
 from .reports import Report
-from .utils import filters, PATHS
+from .utils import filters
+from .config import PATHS
 from .vendor import six
 
 CLASSES = {
