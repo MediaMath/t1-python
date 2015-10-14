@@ -93,9 +93,9 @@ class JSONParser(object):
         return errors
 
 
-    def dictify_entity(self, entity_key):
+    def dictify_entity(self, entity):
         """Turn json entity into a dictionary"""
-        output = entity_key.copy()
+        output = entity.copy()
         # Hold relation objects in specific dict. T1Service instantiates the
         # correct classes.
         relations = {}
@@ -104,15 +104,16 @@ class JSONParser(object):
             output['_type'] = output['entity_type']
             del output['entity_type']
 
-        #for prop in entity:
-            #if prop.tag == 'entity':  # Get parent entities recursively
-            #    ent = self.dictify_entity(prop)
-            #    if prop.attrib['rel'] == ent.get('_type'):
-            #        relations[prop.attrib['rel']] = ent
-            #    else:
-            #        relations.setdefault(prop.attrib['rel'], []).append(ent)
-            #else:
-            #output[prop.attrib['name']] = prop.attrib['value']
-        #if relations:
-        #    output['relations'] = relations
+        for key, val in output.iteritems():
+            # FIXME this will break if we introduce any other arrays
+            if type(val) == list:  # Get parent entities recursively
+                for child in val:
+                    ent = self.dictify_entity(child)
+                    if child['rel']  == ent['_type']:
+                        relations[child['rel']] = ent
+                    else:
+                        relations.setdefault(child['rel'], []).append(ent)
+
+        if relations:
+            output['relations'] = relations
         return output
