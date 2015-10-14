@@ -2,7 +2,7 @@
 """Provides base object for T1 data classes."""
 
 from __future__ import absolute_import, division
-from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
 from .config import PATHS
 from .connection import Connection
@@ -142,7 +142,14 @@ class Entity(Connection):
         """Convert ISO string time to datetime.datetime. No-op on datetimes"""
         if isinstance(dt_string, datetime):
             return dt_string
-        return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S")
+        try:
+            offset = int(dt_string[-5:])
+            dt_string=dt_string[:-5]
+        except:
+            offset = 0
+
+        delta = timedelta(hours = offset / 100)
+        return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S") + delta
 
     @staticmethod
     def _strft(dt_obj):

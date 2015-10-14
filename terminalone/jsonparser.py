@@ -40,21 +40,22 @@ class JSONParser(object):
     """Parses JSON response"""
 
     def __init__(self, body):
-        parsedData = json.loads(body)
+        self.status_code = False
+        parsed_data = json.loads(body)
 
-        self.get_status(parsedData, body)
+        self.get_status(parsed_data, body)
 
         try:
-            self.entity_count = parsedData['meta']['total_count']
+            self.entity_count = int(parsed_data['meta']['total_count'])
         except KeyError:
             self.entity_count = 1
 
-        data = parsedData['data']
+        data = parsed_data['data']
 
         if type(data) == list:
             self.entities = map(self.dictify_entity, data)
         else:
-            self.entities = map(self.dictify_entity, FindData(parsedData))
+            self.entities = map(self.dictify_entity, FindData(parsed_data))
 
     def get_status(self, data, body):
         """Gets the status code of T1 XML.
@@ -76,7 +77,6 @@ class JSONParser(object):
             self.status_code = True
             return
 
-        self.status_code = False
         if exc is True:
             message = self._parse_field_error(data)
             exc = ValidationError

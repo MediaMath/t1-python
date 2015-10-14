@@ -188,6 +188,7 @@ class T1(Connection):
         self._authenticated = False
         self._auth = (self.username, self.password, self.api_key)
         self.environment = environment
+        self.json = json
         super(T1, self).__init__(environment,
                                  api_base=api_base,
                                  json=json,
@@ -263,6 +264,7 @@ class T1(Connection):
                    environment=self.environment,
                    api_base=self.api_base,
                    properties=properties,
+                   json=self.json,
                    *args, **kwargs)
 
     def _return_class(self, ent_dict):

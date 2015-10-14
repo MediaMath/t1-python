@@ -12,7 +12,6 @@ API_BASE = 'api.mediamath.com'
 def setup(credentials):
     t1 = T1(auth_method='cookie',
             api_base=API_BASE,
-            json=True,
             **credentials)
 
     assert hasattr(t1, 'user_id'), 'No user ID present'
