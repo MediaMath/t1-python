@@ -144,11 +144,11 @@ class Entity(Connection):
             return dt_string
         try:
             offset = int(dt_string[-5:])
-            dt_string=dt_string[:-5]
+            dt_string = dt_string[:-5]
         except:
             offset = 0
 
-        delta = timedelta(hours = offset / 100)
+        delta = timedelta(hours=offset / 100)
         return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S") + delta
 
     @staticmethod

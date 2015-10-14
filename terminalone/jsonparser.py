@@ -36,6 +36,7 @@ class FindData:
         except KeyError:
             raise StopIteration()
 
+
 class JSONParser(object):
     """Parses JSON response"""
 
@@ -89,9 +90,8 @@ class JSONParser(object):
         errors = {}
         for error in data['errors']:
             errors[error['field']] = {'code': error['field-error'],
-                                       'error': error['message']}
+                                      'error': error['message']}
         return errors
-
 
     def dictify_entity(self, entity):
         """Turn json entity into a dictionary"""
@@ -99,7 +99,7 @@ class JSONParser(object):
         # Hold relation objects in specific dict. T1Service instantiates the
         # correct classes.
         relations = {}
-        #for legacy/compatibility reasons with existing Entity code.
+        # for legacy/compatibility reasons with existing Entity code.
         if 'entity_type' in output:
             output['_type'] = output['entity_type']
             del output['entity_type']
@@ -109,7 +109,7 @@ class JSONParser(object):
             if type(val) == list:  # Get parent entities recursively
                 for child in val:
                     ent = self.dictify_entity(child)
-                    if child['rel']  == ent['_type']:
+                    if child['rel'] == ent['_type']:
                         relations[child['rel']] = ent
                     else:
                         relations.setdefault(child['rel'], []).append(ent)

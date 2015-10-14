@@ -10,6 +10,7 @@ from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
 
+
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
                                           ua=default_user_agent())
@@ -54,7 +55,6 @@ class Connection(object):
             self.session.headers['User-Agent'] = _generate_user_agent()
             if json:
                 self.session.headers['Accept'] = ACCEPT_HEADERS['json']
-
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
