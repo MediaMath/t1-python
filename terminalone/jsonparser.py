@@ -21,17 +21,18 @@ STATUS_CODES = {
 }
 
 
-class FindData:
-    def __init__(self, data):
+class FindKey:
+    def __init__(self, data, key):
         self.i = 0
         self.json = data
+        self.key = key
 
     def __iter__(self):
         return self
 
     def next(self):
         try:
-            self.json = self.json['data']
+            self.json = self.json[self.key]
             return self.json
         except KeyError:
             raise StopIteration()
@@ -54,9 +55,13 @@ class JSONParser(object):
         data = parsed_data['data']
 
         if type(data) == list:
-            self.entities = map(self.dictify_entity, data)
+            self.entities = map(self.process_entity, data)
+
         else:
-            self.entities = map(self.dictify_entity, FindData(parsed_data))
+            if data.get('permissions') is not None:
+                self.entities = self._parse_permissions(data['permissions'])
+            else:
+                self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
 
     def get_status(self, data, body):
         """Gets the status code of T1 XML.
@@ -84,6 +89,27 @@ class JSONParser(object):
 
         raise exc(status_code, message)
 
+    def _parse_permissions(self, permissions):
+        """Iterate over permissions and parse into dicts"""
+        entity_root = permissions.get('entities')
+        organization, agency, advertiser = None, None, None
+        if entity_root:
+            advertiser = self.process_permission(entity_root.get('advertiser'), 'advertiser')
+            agency = self.process_permission(entity_root.get('agency'), 'agency')
+            organization = self.process_permission(entity_root.get('organization'), 'organization')
+
+        flags = self.process_permission(permissions.get('flags'), 'flags')
+        flags.update({
+            '_type': 'permission',
+            'advertiser': advertiser,
+            'agency': agency,
+            'organization': organization,
+        })
+
+        # There will only be one instance here.
+        # But the caller expects an iterator, so make a list of it
+        return [flags, ]
+
     @staticmethod
     def _parse_field_error(data):
         """Iterate over field errors and parse into dicts"""
@@ -93,7 +119,7 @@ class JSONParser(object):
                                       'error': error['message']}
         return errors
 
-    def dictify_entity(self, entity):
+    def process_entity(self, entity):
         """Turn json entity into a dictionary"""
         output = entity.copy()
         # Hold relation objects in specific dict. T1Service instantiates the
@@ -108,7 +134,7 @@ class JSONParser(object):
             # FIXME this will break if we introduce any other arrays
             if type(val) == list:  # Get parent entities recursively
                 for child in val:
-                    ent = self.dictify_entity(child)
+                    ent = self.process_entity(child)
                     if child['rel'] == ent['_type']:
                         relations[child['rel']] = ent
                     else:
@@ -116,4 +142,18 @@ class JSONParser(object):
 
         if relations:
             output['relations'] = relations
+        return output
+
+    @staticmethod
+    def process_permission(permission, type):
+        if not permission:
+            return
+        output = {}
+        print(permission)
+        permission = permission[0]
+        for access in permission['access']:
+            if type == 'flags':
+                output[access['type']] = access['value']
+            else:
+                output[access['id']] = access['name']
         return output
