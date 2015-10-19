@@ -37,7 +37,7 @@ class Connection(object):
         if api_base is None:
             try:
                 Connection.__setattr__(self, 'api_base',
-                                       Connection.API_BASES[environment])
+                                       API_BASES[environment])
             except KeyError:
                 raise ClientError("Environment: {!r}, does not exist."
                                   .format(environment))

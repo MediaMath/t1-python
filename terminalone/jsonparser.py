@@ -52,13 +52,17 @@ class JSONParser(object):
         except KeyError:
             self.entity_count = 1
 
-        data = parsed_data['data']
+        data = parsed_data.get('data')
 
         if type(data) == list:
             self.entities = map(self.process_entity, data)
 
         else:
-            if data.get('permissions') is not None:
+            if parsed_data.get('include') is not None or \
+                    parsed_data.get('exclude') is not None or \
+                    parsed_data.get('enabled') is not None:
+                self._parse_target_dimensions(parsed_data)
+            elif data.get('permissions') is not None:
                 self.entities = self._parse_permissions(data['permissions'])
             else:
                 self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
@@ -86,8 +90,7 @@ class JSONParser(object):
         if exc is True:
             message = self._parse_field_error(data)
             exc = ValidationError
-
-        raise exc(status_code, message)
+            raise exc(status_code, message)
 
     def _parse_permissions(self, permissions):
         """Iterate over permissions and parse into dicts"""
@@ -110,6 +113,27 @@ class JSONParser(object):
         # But the caller expects an iterator, so make a list of it
         return [flags, ]
 
+    def _parse_target_dimensions(self, data):
+        """Iterate over target dimensions and parse into dicts"""
+        exclude = data.get('exclude', {})
+        include = data.get('include', {})
+        exclude_entities = exclude.get('entities')
+        include_entities = include.get('entities')
+        if include_entities is not None:
+            include_list = map(self.process_entity, include_entities[0].get('entity', []))
+        else:
+            include_list = []
+        if exclude_entities is not None:
+            exclude_list = map(self.process_entity, exclude_entities[0].get('entity', []))
+        else:
+            exclude_list = []
+        self.entity_count = 1
+        self.entities = [{
+            '_type': 'target_dimension',
+            'exclude': exclude_list,
+            'include': include_list,
+        }]
+
     @staticmethod
     def _parse_field_error(data):
         """Iterate over field errors and parse into dicts"""
@@ -131,7 +155,7 @@ class JSONParser(object):
             del output['entity_type']
 
         for key, val in output.iteritems():
-            # FIXME this will break if we introduce any other arrays
+            # FIXME this isn't the correct thing to do..
             if type(val) == list:  # Get parent entities recursively
                 for child in val:
                     ent = self.process_entity(child)
@@ -149,7 +173,6 @@ class JSONParser(object):
         if not permission:
             return
         output = {}
-        print(permission)
         permission = permission[0]
         for access in permission['access']:
             if type == 'flags':
