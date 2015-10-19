@@ -209,69 +209,50 @@ class T1(Connection):
         :param session_id: str API-provided prior session cookie.
             For instance, if you have a session ID provided by browser cookie,
             you can use that to authenticate a server-side connection.
-        :param auth_method: enum('cookie', 'basic') Method for authentication.
+        :param auth_method: enum('cookie', 'basic, oauth2')
+            Method for authentication.
         :param environment: str to look up API Base to use. e.g. 'production'
             for https://api.mediamath.com/api/v2.0
         :param api_base: str API base. should be in format https://[url] without
             trailing slash, and including version.
         """
+        if 'redirect_uri' in kwargs:
+            self.redirect_uri = kwargs.pop('redirect_uri')
+        super(T1, self).__init__(environment,
+                                 api_base=api_base,
+                                 json=json,
+                                 _create_session=True,
+                                 **kwargs)
+
         if auth_method is None:
             auth_method = _detect_auth_method(username, password, session_id,
                                               api_key, client_secret)
 
-        self.username = username
-        self.password = password
-        self.api_key = api_key
         self._authenticated = False
-        self._auth = (self.username, self.password, self.api_key)
+        self._auth = (username, password, api_key, client_secret)
         self.environment = environment
         self.json = json
-        super(T1, self).__init__(environment,
-                                 api_base=api_base,
-                                 json=json,
-                                 **kwargs)
-        if auth_method is not None:
-            self.authenticate(auth_method, session_id=session_id, **kwargs)
-        elif session_id is not None:
-            self.authenticate('cookie', session_id=session_id, **kwargs)
+        self.session.params = {'api_key': api_key}
 
-    def _auth_cookie(self, session_id=None, **kwargs):
-        """Authenticate using session cookie. If session ID is given, use that."""
-        user = None
-        if session_id is not None:
-            # Set adama_session cookie
-            from time import time
-            self.session.cookies.set(
-                name='adama_session',
-                value=session_id,
-                domain=self.api_base,
-                expires=kwargs.get('expires', int(time() + 86400)),
-            )
+        if auth_method != 'oauth2':
+            self.authenticate(auth_method, session_id=session_id)
         else:
-            user, _ = super(T1, self)._post(PATHS['mgmt'], 'login', data={
-                'user': self.username,
-                'password': self.password,
-                'api_key': self.api_key,
-            })
+            self.client_secret = client_secret
 
-        self._check_session(user=user)
-        self._authenticated = True
-
-    def _auth_basic(self):
-        """Authenticate using basic auth. DEPRECATED"""
-        self.session.auth = ('{}|{}'.format(self.username, self.api_key),
-                             self.password)
-        self._check_session()
-        self._authenticated = True
+    def authorization_url(self):
+        return super(T1, self).authorization_url(self._auth[2])
 
     def authenticate(self, auth_method, **kwargs):
         """Authenticate using method given."""
         if auth_method == 'cookie':
-            return self._auth_cookie(**kwargs)
+            s_id = kwargs.get('session_id')
+            if s_id is not None:
+                return super(T1, self)._auth_session_id(s_id, self._auth[2])
+            return super(T1, self)._auth_cookie(*self._auth[:3])
         elif auth_method == 'oauth2':
             return self._auth_oauth()
         elif auth_method == 'basic':
-            return self._auth_basic()
+            return super(T1, self)._auth_basic(*self._auth[:3])
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
