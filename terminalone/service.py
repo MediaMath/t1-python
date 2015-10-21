@@ -2,6 +2,7 @@
 """Provides service object for T1."""
 
 from __future__ import absolute_import, division
+from itertools import chain
 from .connection import Connection
 from .entity import Entity
 from .errors import ClientError
@@ -456,9 +457,14 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        # Frankly this is a bit of a hack around the fact that not all feeds
-        # return a 'count' attribute, so the ent_count is unreliable
-        if ent_count == 1 or (entity is not None and child is None):
+        passed_ents = []
+        for i in xrange(2):
+            try:
+                passed_ents.append(next(entities))
+            except StopIteration:
+                break
+        entities = chain(iter(passed_ents), entities)
+        if len(passed_ents) == 1:
             return self._return_class(next(entities), child, child_id, entity, collection)
         else:
             ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
