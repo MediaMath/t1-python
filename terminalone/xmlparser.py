@@ -2,6 +2,7 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
+from terminalone.exceptions import ParserException
 
 try:
     from itertools import imap
@@ -15,7 +16,7 @@ from .errors import (T1Error, APIError, ClientError, ValidationError,
 
 ParseError = ET.ParseError
 
-# Map known status.code repsonses to Exceptions. 'ok' signifies no exception,
+# Map known status.code responses to Exceptions. 'ok' signifies no exception,
 # so that is None. 'invalid' can have many errors and needs
 # an additional level of parsing, while the others can be instantiated directly.
 STATUS_CODES = {
@@ -33,7 +34,11 @@ class XMLParser(object):
     """Parses XML response"""
 
     def __init__(self, xml):
-        result = ET.fromstring(xml)
+        try:
+            result = ET.fromstring(xml)
+        except ParseError as e:
+            raise ParserException(e)
+
         self.get_status(result, xml)
 
         def xfind(haystack, needle):

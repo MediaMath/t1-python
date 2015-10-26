@@ -7,6 +7,7 @@ from requests.utils import default_user_agent
 from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
 from .errors import ClientError
 from .metadata import __version__
+from terminalone.exceptions import ParserException
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
 
@@ -85,9 +86,9 @@ class Connection(object):
 
         try:
             result = self._parser(response_body)
-        except ParseError as exc:
+        except ParserException as exc:
             Connection.__setattr__(self, 'response', response)
-            raise ClientError('Could not parse response: {!r}'.format(exc))
+            raise ClientError('Could not parse response: {!r}'.format(exc.caught))
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise

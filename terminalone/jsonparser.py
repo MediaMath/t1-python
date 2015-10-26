@@ -6,10 +6,12 @@ import json
 
 from .errors import (T1Error, APIError, ClientError, ValidationError,
                      AuthRequiredError, NotFoundError)
+from terminalone.exceptions import ParserException
 
-# Map known status.code repsonses to Exceptions. 'ok' signifies no exception,
+# Map known status.code responses to Exceptions. 'ok' signifies no exception,
 # so that is None. 'invalid' can have many errors and needs
 # an additional level of parsing, while the others can be instantiated directly.
+
 STATUS_CODES = {
     'ok': None,
     'invalid': True,
@@ -43,7 +45,10 @@ class JSONParser(object):
 
     def __init__(self, body):
         self.status_code = False
-        parsed_data = json.loads(body)
+        try:
+            parsed_data = json.loads(body)
+        except ValueError as e:
+            raise ParserException(e)
 
         self.get_status(parsed_data, body)
 
@@ -68,7 +73,7 @@ class JSONParser(object):
                 self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
 
     def get_status(self, data, body):
-        """Gets the status code of T1 XML.
+        """Gets the status code of T1 JSON.
 
         If code is valid, returns None; otherwise raises the appropriate Error.
         """
