@@ -5,6 +5,7 @@ from . import filters
 from .compose import compose
 from .credentials import credentials
 from .suppressed import suppress
+from .fixedoffset import FixedOffset
 
 # PMP-D relies on a models import. If any of the models rely on any of these
 # utils, importing from models will cause a circular import. So, make sure
