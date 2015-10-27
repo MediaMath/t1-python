@@ -4,23 +4,7 @@
 from __future__ import absolute_import
 import json
 
-from .errors import (T1Error, APIError, ClientError, ValidationError,
-                     AuthRequiredError, NotFoundError)
-from terminalone.exceptions import ParserException
-
-# Map known status.code responses to Exceptions. 'ok' signifies no exception,
-# so that is None. 'invalid' can have many errors and needs
-# an additional level of parsing, while the others can be instantiated directly.
-
-STATUS_CODES = {
-    'ok': None,
-    'invalid': True,
-    'not_found': NotFoundError,
-    'auth_required': AuthRequiredError,
-    'auth_error': AuthRequiredError,
-    'error': APIError,
-    'bad_request': ClientError,
-}
+from .errors import (T1Error, ValidationError, ParserException, STATUS_CODES)
 
 
 class FindKey:
@@ -62,15 +46,16 @@ class JSONParser(object):
         if type(data) == list:
             self.entities = map(self.process_entity, data)
 
+        elif parsed_data.get('include') is not None or \
+                parsed_data.get('exclude') is not None or \
+                parsed_data.get('enabled') is not None:
+            self._parse_target_dimensions(parsed_data)
+
+        elif data.get('permissions') is not None:
+            self.entities = self._parse_permissions(data['permissions'])
+
         else:
-            if parsed_data.get('include') is not None or \
-                    parsed_data.get('exclude') is not None or \
-                    parsed_data.get('enabled') is not None:
-                self._parse_target_dimensions(parsed_data)
-            elif data.get('permissions') is not None:
-                self.entities = self._parse_permissions(data['permissions'])
-            else:
-                self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
+            self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
 
     def get_status(self, data, body):
         """Gets the status code of T1 JSON.
@@ -160,7 +145,8 @@ class JSONParser(object):
             del output['entity_type']
 
         for key, val in output.iteritems():
-            # FIXME this isn't the correct thing to do..
+            # FIXME this isn't the correct thing to do;
+            # however it's linked to an inconsistency in t1 json api - so fix when that's changed.
             if type(val) == list:  # Get parent entities recursively
                 for child in val:
                     ent = self.process_entity(child)

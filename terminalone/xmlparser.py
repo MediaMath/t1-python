@@ -2,7 +2,6 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
-from terminalone.exceptions import ParserException
 
 try:
     from itertools import imap
@@ -11,23 +10,9 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:  # Python 3
     import xml.etree.ElementTree as ET
-from .errors import (T1Error, APIError, ClientError, ValidationError,
-                     AuthRequiredError, NotFoundError)
+from .errors import (T1Error, ValidationError, ParserException, STATUS_CODES)
 
 ParseError = ET.ParseError
-
-# Map known status.code responses to Exceptions. 'ok' signifies no exception,
-# so that is None. 'invalid' can have many errors and needs
-# an additional level of parsing, while the others can be instantiated directly.
-STATUS_CODES = {
-    'ok': None,
-    'invalid': True,
-    'not_found': NotFoundError,
-    'auth_required': AuthRequiredError,
-    'auth_error': AuthRequiredError,
-    'error': APIError,
-    'bad_request': ClientError,
-}
 
 
 class XMLParser(object):

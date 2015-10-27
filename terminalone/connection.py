@@ -5,9 +5,8 @@ from __future__ import absolute_import
 from requests import Session
 from requests.utils import default_user_agent
 from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
-from .errors import ClientError
+from .errors import ClientError, ParserException
 from .metadata import __version__
-from terminalone.exceptions import ParserException
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
 
