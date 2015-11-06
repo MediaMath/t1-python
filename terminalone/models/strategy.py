@@ -185,8 +185,10 @@ class Strategy(Entity):
             data = self.properties.copy()
 
         if getattr(self, 'use_campaign_start', False) and 'start_date' in data:
+            self.properties.pop('start_date', None)
             data['start_date'] = None
         if getattr(self, 'use_campaign_end', False) and 'end_date' in data:
+            self.properties.pop('end_date', None)
             data['end_date'] = None
 
         super(Strategy, self).save(data=data, url=url)
