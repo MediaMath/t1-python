@@ -82,7 +82,11 @@ class Connection(object):
         """
         url = '/'.join(['https:/', self.api_base, path, rest])
         response = self.session.get(url, params=params, stream=True)
-        response_body = response.content
+
+        if self.json:
+            response_body = response.text
+        else:
+            response_body = response.content
 
         try:
             result = self._parser(response_body)
