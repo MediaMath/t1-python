@@ -10,30 +10,20 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:  # Python 3
     import xml.etree.ElementTree as ET
-from .errors import (T1Error, APIError, ClientError, ValidationError,
-                     AuthRequiredError, NotFoundError)
+from .errors import (T1Error, ValidationError, ParserException, STATUS_CODES)
 
 ParseError = ET.ParseError
-
-# Map known status.code repsonses to Exceptions. 'ok' signifies no exception,
-# so that is None. 'invalid' can have many errors and needs
-# an additional level of parsing, while the others can be instantiated directly.
-STATUS_CODES = {
-    'ok': None,
-    'invalid': True,
-    'not_found': NotFoundError,
-    'auth_required': AuthRequiredError,
-    'auth_error': AuthRequiredError,
-    'error': APIError,
-    'bad_request': ClientError,
-}
 
 
 class XMLParser(object):
     """Parses XML response"""
 
     def __init__(self, xml):
-        result = ET.fromstring(xml)
+        try:
+            result = ET.fromstring(xml)
+        except ParseError as e:
+            raise ParserException(e)
+
         self.get_status(result, xml)
 
         def xfind(haystack, needle):

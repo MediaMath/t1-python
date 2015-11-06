@@ -7,7 +7,8 @@ from .entity import Entity
 from .errors import ClientError
 from .models import *
 from .reports import Report
-from .utils import filters, PATHS
+from .utils import filters
+from .config import PATHS
 from .vendor import six
 
 CLASSES = {
@@ -165,6 +166,7 @@ class T1(Connection):
                  session_id=None,
                  environment='production',
                  api_base=None,
+                 json=False,
                  **kwargs):
         """Set up session for main service object.
 
@@ -186,7 +188,11 @@ class T1(Connection):
         self._authenticated = False
         self._auth = (self.username, self.password, self.api_key)
         self.environment = environment
-        super(T1, self).__init__(environment, api_base=api_base, **kwargs)
+        self.json = json
+        super(T1, self).__init__(environment,
+                                 api_base=api_base,
+                                 json=json,
+                                 **kwargs)
         if auth_method is not None:
             self.authenticate(auth_method, session_id=session_id, **kwargs)
         elif session_id is not None:
@@ -258,6 +264,7 @@ class T1(Connection):
                    environment=self.environment,
                    api_base=self.api_base,
                    properties=properties,
+                   json=self.json,
                    *args, **kwargs)
 
     def _return_class(self, ent_dict):

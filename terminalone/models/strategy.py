@@ -3,8 +3,9 @@
 
 from __future__ import absolute_import
 import re
+from ..config import PATHS
 from ..entity import Entity
-from ..utils import PATHS, suppress
+from ..utils import suppress
 
 PIXEL_PATTERN = re.compile(r'\[(\d+)\]')
 OPERATOR_PATTERN = re.compile(r'(AND|OR)')
