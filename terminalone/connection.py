@@ -19,21 +19,34 @@ def _generate_user_agent(name='t1-python'):
 
 class Connection(object):
     """Base connection object for TerminalOne session"""
+    VALID_ENVS = frozenset(['production', 'qa'])
+    API_BASES = {
+        'production': 'api.mediamath.com',
+    }
+    SESSIONS = {
+        'cookie': Session,
+        'oauth2': OAuth2Session,
+    }
+    user_agent = _generate_user_agent()
 
     def __init__(self,
                  environment='production',
                  api_base=None,
                  json=False,
-                 client_secret=None,
+                 auth_config=None,
                  _create_session=False):
         """Sets up Requests Session to be used for all connections to T1.
 
         :param environment: str to look up API Base to use. e.g. 'production'
-        for https://api.mediamath.com/api/v2.0
-        :param api_base: str API domain. should be the qualified domain name without
-        trailing slash. e.g. "api.mediamath.com".
+            for https://api.mediamath.com/api/v2.0
+        :param api_base: str API domain. should be the qualified domain name
+            without trailing slash. e.g. "api.mediamath.com".
+        :param auth_config: dict set of auth config parameters:
+            "method" required argument. Determines session handler.
+            "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
+            "cookie" => "username", "password", "api_key"
         :param _create_session: bool flag to create a Requests Session.
-        Should only be used for initial T1 instantiation.
+            Should only be used for initial T1 instantiation.
         """
         if api_base is not None:
             Connection.__setattr__(self, 'api_base', api_base)
@@ -52,14 +65,34 @@ class Connection(object):
         else:
             Connection.__setattr__(self, '_parser', XMLParser)
 
+        Connection.__setattr__(self, 'config', auth_config)
         if _create_session:
-            Connection.__setattr__(self, 'session', Session())
-            self.session.headers['User-Agent'] = _generate_user_agent()
-            if json:
-                self.session.headers['Accept'] = ACCEPT_HEADERS['json']
+            self._create_session()
 
-    def _create_session(self, auth_type, auth):
-        pass
+    def _oauth2_session(self, **kwargs):
+        refresh_url = '/'.join(['https:/', self.api_base,
+                                PATHS['oauth2'], 'token'])
+        refresh_kwargs = {'client_id': self.config['api_key'],
+                          'client_secret': self.config['client_secret']}
+        session = OAuth2Session(
+            client_id=self.config['api_key'],
+            auto_refresh_url=refresh_url,
+            auto_refresh_kwargs=refresh_kwargs,
+            **kwargs,
+        )
+        session.headers['User-Agent'] = self.user_agent
+        session.params = {'api_key': self.config['api_key']}
+
+    def _create_session(self):
+        method = self.config['method']
+        if method != 'oauth2':
+            session = Session()
+            session.headers['User-Agent'] = self.user_agent
+            session.params = {'api_key': self.config['api_key']}
+        else:
+            session = self._oauth2_session(self.config)
+
+        Connection.__setattr__(self, 'session', session)
 
     def _auth_cookie(self, username, password, api_key):
         """Authenticate by generating a session cookie.
@@ -101,26 +134,32 @@ class Connection(object):
     # these should be stored as instance vars, because they aren't specific
     # to the user. Except for redirect_uri, because that gets saved as an
     # instance var for the session
-    def authorization_url(self, api_key, redirect_uri=None):
+    def authorization_url(self, redirect_uri=None):
         """Authenticate using OAuth2"""
-        base_url = '/'.join(['https:/', self.api_base, PATHS['oauth2']])
-        if redirect_uri is None:
-            if not hasattr(self, 'redirect_uri'):
-                raise ClientError('Redirect URI not provided!')
-            else:
-                redirect_uri = self.redirect_uri
-        self.session = OAuth2Session(client_id=api_key,
-                                     redirect_uri=redirect_uri,
-                                     auto_refresh_url=(base_url + '/token'))
-        return self.session.authorization_url(base_url + '/authorize')
+        auth_url = '/'.join(['https:/', self.api_base,
+                             PATHS['oauth2'], 'authorize'])
+        if (redirect_uri is None and
+            self.auth_config.get('redirect_uri') is None):
+            raise ClientError('Redirect URI not provided!')
 
-    def fetch_token(self, code):
+        session = self._oauth2_session(redirect_uri=redirect_uri)
+        return session.authorization_url(auth_url)
+
+    def fetch_token(self, state=None, code=None,
+                    authorization_response_url=None, return_session=False):
         token_url = '/'.join(['https:/',
                               self.api_base,
                               PATHS['oauth2'],
                               'token'])
-        token = self.session.fetch_token(token_url, code=code,
-                                         client_secret=self.client_secret)
+        session = self._oauth2_session(state=state)
+        token = session.fetch_token(
+            token_url,
+            code=code,
+            authorization_response=authorization_response_url,
+            client_secret=self.auth_config['client_secret']
+        )
+        if return_session:
+            return session
         return token
 
     def _check_session(self, user=None):

@@ -172,9 +172,12 @@ CHILD_PATHS = {
 }
 
 
-def _detect_auth_method(username, password, session_id, api_key, client_secret):
+def _detect_auth_method(username, password, session_id,
+                        api_key, client_secret, token):
     if api_key is None:
         raise ClientError('API Key is required!')
+    if token is not None:
+        return 'oauth2'
     if username is not None and password is not None:
         return 'cookie'
     if session_id is not None:
@@ -200,6 +203,9 @@ class T1(Connection):
                  environment='production',
                  api_base=None,
                  json=False,
+                 redirect_uri=None,
+                 token=None,
+                 token_udpater=None,
                  **kwargs):
         """Set up session for main service object.
 
@@ -216,43 +222,55 @@ class T1(Connection):
         :param api_base: str API base. should be in format https://[url] without
             trailing slash, and including version.
         """
-        if 'redirect_uri' in kwargs:
-            self.redirect_uri = kwargs.pop('redirect_uri')
-        super(T1, self).__init__(environment,
-                                 api_base=api_base,
-                                 json=json,
-                                 _create_session=True,
-                                 **kwargs)
-
+        self.auth_config = {}
         if auth_method is None:
             auth_method = _detect_auth_method(username, password, session_id,
-                                              api_key, client_secret)
+                                              api_key, client_secret, token)
+        self.auth_config['method'] = auth_method
+
+        if auth_method == 'oauth2':
+            self.auth_config.update({
+                'api_key': api_key,
+                'client_secret': client_secret,
+                'redirect_uri': redirect_uri,
+                'token_udpater': token_udpater,
+            })
+        else:
+            self.auth_config.update({
+                'username': username,
+                'password': password,
+                'api_key': api_key,
+            })
+
+        super(T1, self).__init__(environment, api_base=api_base,
+                                 auth_config=self.auth_config,
+                                 _create_session=True, **kwargs)
 
         self._authenticated = False
         self._auth = (username, password, api_key, client_secret)
         self.environment = environment
         self.json = json
-        self.session.params = {'api_key': api_key}
+        self.api_key = api_key
 
         if auth_method != 'oauth2':
             self.authenticate(auth_method, session_id=session_id)
-        else:
-            self.client_secret = client_secret
-
-    def authorization_url(self):
-        return super(T1, self).authorization_url(self._auth[2])
 
     def authenticate(self, auth_method, **kwargs):
         """Authenticate using method given."""
         if auth_method == 'cookie':
-            s_id = kwargs.get('session_id')
-            if s_id is not None:
-                return super(T1, self)._auth_session_id(s_id, self._auth[2])
-            return super(T1, self)._auth_cookie(*self._auth[:3])
-        elif auth_method == 'oauth2':
-            return self._auth_oauth()
+            session_id = kwargs.get('session_id')
+            if session_id is not None:
+                return super(T1, self)._auth_session_id(
+                    session_id,
+                    self.auth_config['api_key']
+                )
+            return super(T1, self)._auth_cookie(self.auth_config['username'],
+                                                self.auth_config['password'],
+                                                self.auth_config['api_key'])
         elif auth_method == 'basic':
-            return super(T1, self)._auth_basic(*self._auth[:3])
+            return super(T1, self)._auth_basic(self.auth_config['username'],
+                                                self.auth_config['password'],
+                                                self.auth_config['api_key'])
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
