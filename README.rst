@@ -121,8 +121,8 @@ Entity and collection retrieval. Parameters:
 ``T1.get``\ (*collection*, *entity*\ =\ ``None``, *child*\ =\ ``None``,
 *limit*\ =\ ``None``, *include*\ =\ ``None``, *full*\ =\ ``None``,
 *page\_limit*\ =\ ``100``, *page\_offset*\ =\ ``0``,
-*sort\_by*\ =\ ``"id"``, *get\_all*\ =\ ``False``, *query*\ =\ ``None``,
-*count*\ =\ ``False``)
+*sort\_by*\ =\ ``"id"``, *get\_all*\ =\ ``False``, *parent*\ \ ``None``,
+*query*\ =\ ``None``, *count*\ =\ ``False``)
 
 -  *collection*: T1 collection, e.g. ``"advertisers"``
 -  *entity*: Integer ID of entity being retrieved from T1
@@ -159,6 +159,8 @@ Entity and collection retrieval. Parameters:
 -  *sort\_by*: sort order. Default ``"id"``. e.g. ``"-id"``, ``"name"``
 -  *get\_all*: Whether to retrieve all results for a query or just a
    single page. Mutually exclusive with *page\_limit*/*page\_offset*
+-  *parent*: Only return entities with this ``parent_id``. Used for
+   ``audience_segments``.
 -  *query*: Search parameters. *Note*: it's much simpler to use ``find``
    instead of ``get``, allowing ``find`` to construct the query.
 -  *count*: bool return the number of entities as a second parameter
