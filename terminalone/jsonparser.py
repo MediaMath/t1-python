@@ -5,6 +5,7 @@ from __future__ import absolute_import
 import json
 
 from .errors import (T1Error, ValidationError, ParserException, STATUS_CODES)
+from terminalone.vendor import six
 
 
 class FindKey:
@@ -16,12 +17,15 @@ class FindKey:
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         try:
             self.json = self.json[self.key]
             return self.json
         except KeyError:
             raise StopIteration()
+
+    def next(self):
+        return self.__next__()
 
 
 class JSONParser(object):
@@ -142,9 +146,8 @@ class JSONParser(object):
         # for legacy/compatibility reasons with existing Entity code.
         if 'entity_type' in output:
             output['_type'] = output['entity_type']
-            del output['entity_type']
 
-        for key, val in output.iteritems():
+        for key, val in six.iteritems(output):
             # FIXME this isn't the correct thing to do;
             # however it's linked to an inconsistency in t1 json api - so fix when that's changed.
             if type(val) == list:  # Get parent entities recursively

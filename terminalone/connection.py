@@ -45,6 +45,7 @@ class Connection(object):
             Connection.__setattr__(self, 'api_base', api_base)
 
         Connection.__setattr__(self, 'json', json)
+
         if json:
             Connection.__setattr__(self, '_parser', JSONParser)
         else:
@@ -103,7 +104,11 @@ class Connection(object):
 
         url = '/'.join(['https:/', self.api_base, path, rest])
         response = self.session.post(url, data=data, stream=True)
-        response_body = response.content
+
+        if self.json:
+            response_body = response.text
+        else:
+            response_body = response.content
 
         try:
             result = self._parser(response_body)
