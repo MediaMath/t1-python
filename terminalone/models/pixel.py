@@ -32,3 +32,12 @@ class ChildPixel(Entity):
 
     def __init__(self, session, properties=None, **kwargs):
         super(ChildPixel, self).__init__(session, properties, **kwargs)
+
+    def remove(self):
+        """Remove the pixel from the container."""
+        url = '/'.join([self.collection,
+                        str(self.id),
+                        'delete'])
+        self._post(PATHS['mgmt'], rest=url, data={'version': self.version})
+        for item in list(self.properties.keys()):
+            del self.properties[item]

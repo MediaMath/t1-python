@@ -155,9 +155,14 @@ class Entity(Connection):
         return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=FixedOffset(offset))
 
     @staticmethod
-    def _strft(dt_obj):
+    def _strft(dt_obj, null_on_none=False):
         """Convert datetime.datetime to ISO string"""
-        return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        try:
+            return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        except AttributeError:
+            if dt_obj is None and null_on_none:
+                return ""
+            raise
 
     def _validate_read(self, data):
         """Convert XML strings to Python objects"""
