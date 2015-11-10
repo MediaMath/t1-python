@@ -13,10 +13,10 @@ class T1Error(Exception):
     server (validation errors, login errors, etc). Sets code and message attributes.
     """
 
-    def __init__(self, code, message):
+    def __init__(self, code, content):
         self.code = code
-        self.message = message
-        super(T1Error, self).__init__(message)
+        self.message = content
+        super(T1Error, self).__init__(content)
 
     def __str__(self):
         return repr('Unknown Error. Code: {code}. Message: {msg}'
@@ -30,8 +30,8 @@ class ClientError(T1Error):
     attempting to send data that doesn't match an API object, etc.
     """
 
-    def __init__(self, message):
-        super(ClientError, self).__init__(None, message)
+    def __init__(self, content, code=None):
+        super(ClientError, self).__init__(code, content)
 
     def __str__(self):
         return repr(self.message)
@@ -56,11 +56,11 @@ class AuthRequiredError(APIError):
 
 
 class ValidationError(APIError):
-    """Raised on validatoion error on POST"""
+    """Raised on validation error on POST"""
 
-    def __init__(self, code, errors):
+    def __init__(self, code, content):
         msg_list = ['{} (code: {}): {}'.format(error, val['code'], val['error'])
-                    for (error, val) in six.iteritems(errors)]
+                    for (error, val) in six.iteritems(content)]
         messages = [code] + msg_list
         messages = '\n'.join(messages)
         super(ValidationError, self).__init__(code, messages)
@@ -81,8 +81,8 @@ class LoginError(T1Error):
     Logins are defined in the config file, and need to be kept up-to-date.
     """
 
-    def __init__(self, code, message, credentials):
-        super(LoginError, self).__init__(code, message)
+    def __init__(self, code, content, credentials):
+        super(LoginError, self).__init__(code, content)
         self.credentials = credentials
 
     def __str__(self):

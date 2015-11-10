@@ -84,7 +84,7 @@ class JSONParser(object):
         if exc is True:
             message = self._parse_field_error(data)
             exc = ValidationError
-            raise exc(status_code, message)
+            raise exc(code=status_code, content=message)
 
     def _parse_permissions(self, permissions):
         """Iterate over permissions and parse into dicts"""
