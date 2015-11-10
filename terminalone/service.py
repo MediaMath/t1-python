@@ -7,7 +7,8 @@ from .entity import Entity
 from .errors import ClientError
 from .models import *
 from .reports import Report
-from .utils import filters, PATHS
+from .utils import filters
+from .config import PATHS
 from .vendor import six
 
 CLASSES = {
@@ -165,6 +166,7 @@ class T1(Connection):
                  session_id=None,
                  environment='production',
                  api_base=None,
+                 json=False,
                  **kwargs):
         """Set up session for main service object.
 
@@ -186,7 +188,11 @@ class T1(Connection):
         self._authenticated = False
         self._auth = (self.username, self.password, self.api_key)
         self.environment = environment
-        super(T1, self).__init__(environment, api_base=api_base, **kwargs)
+        self.json = json
+        super(T1, self).__init__(environment,
+                                 api_base=api_base,
+                                 json=json,
+                                 **kwargs)
         if auth_method is not None:
             self.authenticate(auth_method, session_id=session_id, **kwargs)
         elif session_id is not None:
@@ -258,6 +264,7 @@ class T1(Connection):
                    environment=self.environment,
                    api_base=self.api_base,
                    properties=properties,
+                   json=self.json,
                    *args, **kwargs)
 
     def _return_class(self, ent_dict):
@@ -282,7 +289,7 @@ class T1(Connection):
 
     @staticmethod
     def _construct_params(entity, include, full, page_limit,
-                          page_offset, sort_by, query):
+                          page_offset, sort_by, parent, query):
         """Construct URL params"""
         if entity is not None:
             params = {}
@@ -290,6 +297,7 @@ class T1(Connection):
             params = {'page_limit': page_limit,
                       'page_offset': page_offset,
                       'sort_by': sort_by,
+                      'parent': parent,
                       'q': query, }
 
         # include can be either a string (e.g. 'advertiser'),
@@ -371,6 +379,7 @@ class T1(Connection):
             page_offset=0,
             sort_by='id',
             get_all=False,
+            parent=None,
             query=None,
             count=False,
             _url=None,
@@ -390,6 +399,7 @@ class T1(Connection):
         :param page_offset: int offset for results returned.
         :param sort_by: str sort order. Default "id". e.g. "-id", "name"
         :param get_all: bool whether to retrieve all results for a query or just a single page
+        :param parent: only return entities with this parent id
         :param query: str search parameter. Invoked by `find`
         :param count: bool return the number of entities as a second parameter
         :param _url: str shortcut to bypass URL determination.
@@ -417,6 +427,7 @@ class T1(Connection):
                                 include=include,
                                 full=full,
                                 sort_by=sort_by,
+                                parent=parent,
                                 query=query,
                                 count=count,
                                 _url=_url)
@@ -428,7 +439,7 @@ class T1(Connection):
 
         if _params is None:
             _params = self._construct_params(entity, include, full, page_limit,
-                                             page_offset, sort_by, query)
+                                             page_offset, sort_by, parent, query)
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
         if entity is not None:
@@ -467,7 +478,8 @@ class T1(Connection):
         """
         _, num_recs = super(T1, self)._get(PATHS['mgmt'], kwargs['_url'], params={
             'page_limit': 1,
-            'q': kwargs.get('query'),
+            'parent': kwargs.get('parent'),
+            'q': kwargs.get('query')
         })
 
         if kwargs.get('count'):
@@ -482,6 +494,7 @@ class T1(Connection):
                            full=kwargs.get('full'),
                            page_offset=page_offset,
                            sort_by=kwargs.get('sort_by'),
+                           parent=kwargs.get('parent'),
                            query=kwargs.get('query'),
                            get_all=False)
             for item in gen:

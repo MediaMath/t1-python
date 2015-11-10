@@ -2,9 +2,11 @@
 """Provides strategy object."""
 
 from __future__ import absolute_import
+from functools import partial
 import re
+from ..config import PATHS
 from ..entity import Entity
-from ..utils import PATHS, suppress
+from ..utils import suppress
 
 PIXEL_PATTERN = re.compile(r'\[(\d+)\]')
 OPERATOR_PATTERN = re.compile(r'(AND|OR)')
@@ -81,7 +83,7 @@ class Strategy(Entity):
         'audience_segment_exclude_op': _aud_seg_exc,
         'audience_segment_include_op': _aud_seg_inc,
         'bid_price_is_media_only': int,
-        'end_date': Entity._strft,
+        'end_date': partial(Entity._strft, null_on_none=True),
         'frequency_interval': _freq_int,
         'frequency_type': _freq_type,
         'goal_type': _goal_type,
@@ -95,7 +97,7 @@ class Strategy(Entity):
         'run_on_streaming': int,
         'site_restriction_transparent_urls': int,
         'site_selectiveness': _site_selec,
-        'start_date': Entity._strft,
+        'start_date': partial(Entity._strft, null_on_none=True),
         'status': int,
         'supply_type': _supply_type,
         'type': _type,
@@ -182,10 +184,12 @@ class Strategy(Entity):
         if data is None:
             data = self.properties.copy()
 
-        if getattr(self, 'use_campaign_start', False):
-            data.pop('start_date', None)
-        if getattr(self, 'use_campaign_end', False):
-            data.pop('end_date', None)
+        if getattr(self, 'use_campaign_start', False) and 'start_date' in data:
+            self.properties.pop('start_date', None)
+            data['start_date'] = None
+        if getattr(self, 'use_campaign_end', False) and 'end_date' in data:
+            self.properties.pop('end_date', None)
+            data['end_date'] = None
 
         super(Strategy, self).save(data=data, url=url)
 

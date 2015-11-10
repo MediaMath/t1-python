@@ -3,9 +3,10 @@
 
 from __future__ import absolute_import, division
 import csv
+from .config import PATHS
 from .connection import Connection
 from .errors import ClientError, T1Error
-from .utils import compose, PATHS
+from .utils import compose
 from .vendor import six
 from .vendor.six.moves.urllib.parse import unquote, urlencode
 from .xmlparser import ParseError, XMLParser

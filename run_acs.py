@@ -9,9 +9,10 @@ API_BASE = 'api.mediamath.com'
 
 # TODO make real unit tests out of this
 
-def setup(credentials):
+def setup(credentials, use_json):
     t1 = T1(auth_method='cookie',
             api_base=API_BASE,
+            json=use_json,
             **credentials)
 
     assert hasattr(t1, 'user_id'), 'No user ID present'
@@ -140,6 +141,11 @@ def test_permissions(t1):
     assert p._type == 'permission', 'Expected permission entity, got: %r' % p
 
 
+def test_target_dimensions(t1):
+    t = t1.get('strategies', 151940, child='region')
+    assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t
+
+
 def test_picard_meta(t1):
     r = t1.new('report')
     md = r.metadata
@@ -176,17 +182,26 @@ def main():
         test_include_plural,
         test_include_multi,
         test_find,
+        test_target_dimensions,
         test_permissions,
         test_picard_meta,
         test_report_meta,
     ]
 
-    t1 = setup(credentials())
+    t1 = setup(credentials(), False)
+    print('running XML tests')
     for test in tests:
         test(t1)
         print("Passed test for {}".format(test.__name__.replace('test_', '')))
-    else:
-        print("Passed all tests!")
+    print("Passed all XML tests!")
+
+    t1 = setup(credentials(), True)
+
+    print('running json tests')
+    for test in tests:
+        test(t1)
+        print("Passed test for {}".format(test.__name__.replace('test_', '')))
+    print("Passed all json tests!")
 
 
 if __name__ == '__main__':

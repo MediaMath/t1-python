@@ -2,11 +2,12 @@
 """Provides base object for T1 data classes."""
 
 from __future__ import absolute_import, division
-from datetime import datetime
+from datetime import datetime, timedelta
 import warnings
+from .config import PATHS
 from .connection import Connection
 from .errors import ClientError
-from .utils import PATHS
+from terminalone.utils import FixedOffset
 from .vendor import six
 
 
@@ -142,12 +143,26 @@ class Entity(Connection):
         """Convert ISO string time to datetime.datetime. No-op on datetimes"""
         if isinstance(dt_string, datetime):
             return dt_string
-        return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S")
+        if dt_string[-5] == '-' or dt_string[-5] == '+':
+            offset_str = dt_string[-5:]
+            dt_string = dt_string[:-5]
+            offset = int(offset_str[-4:-2]) * 60 + int(offset_str[-2:])
+            if offset_str[0] == "-":
+                offset = -offset
+        else:
+            offset = 0
+
+        return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=FixedOffset(offset))
 
     @staticmethod
-    def _strft(dt_obj):
+    def _strft(dt_obj, null_on_none=False):
         """Convert datetime.datetime to ISO string"""
-        return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        try:
+            return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        except AttributeError:
+            if dt_obj is None and null_on_none:
+                return ""
+            raise
 
     def _validate_read(self, data):
         """Convert XML strings to Python objects"""

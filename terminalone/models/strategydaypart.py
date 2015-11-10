@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 from ..entity import Entity
+from ..config import PATHS
 
 
 class StrategyDayPart(Entity):
@@ -32,3 +33,12 @@ class StrategyDayPart(Entity):
 
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyDayPart, self).__init__(session, properties, **kwargs)
+
+    def remove(self):
+        """Unassign the strategy_day_part from the strategy."""
+        url = '/'.join([self.collection,
+                        str(self.id),
+                        'delete'])
+        self._post(PATHS['mgmt'], rest=url, data={'version': self.version})
+        for item in list(self.properties.keys()):
+            del self.properties[item]

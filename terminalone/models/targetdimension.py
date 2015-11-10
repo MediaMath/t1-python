@@ -3,10 +3,10 @@
 
 from __future__ import absolute_import
 import warnings
+from ..config import PATHS
 from ..errors import ClientError
 from ..entity import Entity, SubEntity
 from .targetvalue import TargetValue
-from ..utils import PATHS
 
 
 class TargetDimension(SubEntity):
