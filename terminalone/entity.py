@@ -223,6 +223,11 @@ class Entity(Connection):
         for key, value in six.iteritems(entity):
             setattr(self, key, value)
 
+    def is_property(self, prop):
+        if prop in self._pull:
+            return True
+        return False
+
     def set(self, properties):
         """Set properties for object from given dict of properties.
 
