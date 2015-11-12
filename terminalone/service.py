@@ -205,7 +205,7 @@ class T1(Connection):
                  json=False,
                  redirect_uri=None,
                  token=None,
-                 token_udpater=None,
+                 token_updater=None,
                  **kwargs):
         """Set up session for main service object.
 
@@ -222,28 +222,28 @@ class T1(Connection):
         :param api_base: str API base. should be in format https://[url] without
             trailing slash, and including version.
         """
-        self.auth_config = {}
+        self.auth_params = {}
         if auth_method is None:
             auth_method = _detect_auth_method(username, password, session_id,
                                               api_key, client_secret, token)
-        self.auth_config['method'] = auth_method
+        self.auth_params['method'] = auth_method
+        self.auth_params['api_key'] = api_key
 
         if auth_method == 'oauth2':
-            self.auth_config.update({
-                'api_key': api_key,
+            self.auth_params.update({
                 'client_secret': client_secret,
                 'redirect_uri': redirect_uri,
-                'token_udpater': token_udpater,
+                'token': token,
+                'token_updater': token_updater,
             })
         else:
-            self.auth_config.update({
+            self.auth_params.update({
                 'username': username,
                 'password': password,
-                'api_key': api_key,
             })
 
         super(T1, self).__init__(environment, api_base=api_base,
-                                 auth_config=self.auth_config,
+                                 auth_params=self.auth_params,
                                  _create_session=True, **kwargs)
 
         self._authenticated = False
@@ -262,15 +262,15 @@ class T1(Connection):
             if session_id is not None:
                 return super(T1, self)._auth_session_id(
                     session_id,
-                    self.auth_config['api_key']
+                    self.auth_params['api_key']
                 )
-            return super(T1, self)._auth_cookie(self.auth_config['username'],
-                                                self.auth_config['password'],
-                                                self.auth_config['api_key'])
+            return super(T1, self)._auth_cookie(self.auth_params['username'],
+                                                self.auth_params['password'],
+                                                self.auth_params['api_key'])
         elif auth_method == 'basic':
-            return super(T1, self)._auth_basic(self.auth_config['username'],
-                                                self.auth_config['password'],
-                                                self.auth_config['api_key'])
+            return super(T1, self)._auth_basic(self.auth_params['username'],
+                                                self.auth_params['password'],
+                                                self.auth_params['api_key'])
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 

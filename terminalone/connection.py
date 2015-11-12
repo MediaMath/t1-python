@@ -33,7 +33,7 @@ class Connection(object):
                  environment='production',
                  api_base=None,
                  json=False,
-                 auth_config=None,
+                 auth_params=None,
                  _create_session=False):
         """Sets up Requests Session to be used for all connections to T1.
 
@@ -41,7 +41,7 @@ class Connection(object):
             for https://api.mediamath.com/api/v2.0
         :param api_base: str API domain. should be the qualified domain name
             without trailing slash. e.g. "api.mediamath.com".
-        :param auth_config: dict set of auth config parameters:
+        :param auth_params: dict set of auth parameters:
             "method" required argument. Determines session handler.
             "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
             "cookie" => "username", "password", "api_key"
@@ -65,32 +65,35 @@ class Connection(object):
         else:
             Connection.__setattr__(self, '_parser', XMLParser)
 
-        Connection.__setattr__(self, 'config', auth_config)
+        Connection.__setattr__(self, 'auth_params', auth_params)
         if _create_session:
             self._create_session()
 
     def _oauth2_session(self, **kwargs):
         refresh_url = '/'.join(['https:/', self.api_base,
                                 PATHS['oauth2'], 'token'])
-        refresh_kwargs = {'client_id': self.config['api_key'],
-                          'client_secret': self.config['client_secret']}
+        refresh_kwargs = {'client_id': self.auth_params['api_key'],
+                          'client_secret': self.auth_params['client_secret']}
         session = OAuth2Session(
-            client_id=self.config['api_key'],
+            client_id=self.auth_params['api_key'],
             auto_refresh_url=refresh_url,
             auto_refresh_kwargs=refresh_kwargs,
-            **kwargs,
+            token=self.auth_params['token'],
+            token_updater=self.auth_params['token_updater'],
+            **kwargs
         )
         session.headers['User-Agent'] = self.user_agent
-        session.params = {'api_key': self.config['api_key']}
+        session.params = {'api_key': self.auth_params['api_key']}
+        return session
 
     def _create_session(self):
-        method = self.config['method']
-        if method != 'oauth2':
+        method = self.auth_params['method']
+        if method == 'oauth2':
+            session = self._oauth2_session()
+        else:
             session = Session()
             session.headers['User-Agent'] = self.user_agent
-            session.params = {'api_key': self.config['api_key']}
-        else:
-            session = self._oauth2_session(self.config)
+            session.params = {'api_key': self.auth_params['api_key']}
 
         Connection.__setattr__(self, 'session', session)
 
@@ -138,15 +141,17 @@ class Connection(object):
         """Authenticate using OAuth2"""
         auth_url = '/'.join(['https:/', self.api_base,
                              PATHS['oauth2'], 'authorize'])
-        if (redirect_uri is None and
-            self.auth_config.get('redirect_uri') is None):
-            raise ClientError('Redirect URI not provided!')
+        if redirect_uri is None:
+            try:
+                redirect_uri = self.auth_params['redirect_uri']
+            except KeyError:
+                raise ClientError('Redirect URI not provided!')
 
         session = self._oauth2_session(redirect_uri=redirect_uri)
         return session.authorization_url(auth_url)
 
     def fetch_token(self, state=None, code=None,
-                    authorization_response_url=None, return_session=False):
+                    authorization_response_url=None, set_session=False):
         token_url = '/'.join(['https:/',
                               self.api_base,
                               PATHS['oauth2'],
@@ -156,10 +161,10 @@ class Connection(object):
             token_url,
             code=code,
             authorization_response=authorization_response_url,
-            client_secret=self.auth_config['client_secret']
+            client_secret=self.auth_params['client_secret']
         )
-        if return_session:
-            return session
+        if set_session:
+            Connection.__setattr__(self, 'session', session)
         return token
 
     def _check_session(self, user=None):
