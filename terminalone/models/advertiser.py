@@ -9,6 +9,7 @@ class Advertiser(Entity):
     """docstring for Advertiser"""
     collection = 'advertisers'
     resource = 'advertiser'
+    _dmp_settings = Entity._enum({'disabled', 'inherits'}, 'inherits')
     _relations = {
         'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
     }
@@ -22,6 +23,7 @@ class Advertiser(Entity):
         'billing_contact_id': int,
         'created_on': Entity._strpt,
         'domain': None,
+        'dmp_enabled': None,
         'id': int,
         'minimize_multi_ads': Entity._int_to_bool,
         'name': None,
@@ -36,6 +38,8 @@ class Advertiser(Entity):
         'allow_x_strat_optimization': int,
         'minimize_multi_ads': int,
         'status': int,
+        'dmp_enabled': _dmp_settings,
+
     })
 
     def __init__(self, session, properties=None, **kwargs):
