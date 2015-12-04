@@ -72,8 +72,7 @@ class XMLParser(object):
         if exc is True:
             message = self._parse_field_error(xmlresult)
             exc = ValidationError
-
-        raise exc(status_code, message)
+        raise exc(code=status_code, content=message)
 
     def _parse_entities(self, ent_root):
         """Iterate over entities and parse them into dictionaries"""
