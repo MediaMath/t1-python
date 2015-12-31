@@ -2,7 +2,6 @@ from __future__ import print_function
 from terminalone import T1, filters
 from terminalone.utils import credentials
 from terminalone.vendor import six
-
 REPORTS = []
 API_BASE = 'api.mediamath.com'
 
@@ -14,10 +13,13 @@ def setup(credentials, use_json):
             api_base=API_BASE,
             json=use_json,
             **credentials)
-
     assert hasattr(t1, 'user_id'), 'No user ID present'
     return t1
 
+t1 = setup(credentials(), False)
+perms = t1.get('users', 14011, child='permissions')
+perms.add_access('organization', 100048)
+perms.save()
 
 def test_session_id(t1):
     t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='cookie')

@@ -195,6 +195,7 @@ class Entity(Connection):
             push_fn = self._push.get(key, False)
 
             if self._conds_for_removal(key, update, push_fn):
+                six.print_('removing {}'.format(key))
                 del data[key]
                 continue
 
@@ -244,6 +245,7 @@ class Entity(Connection):
             data = self._validate_write(data)
         else:
             data = self._validate_write(self.properties)
+        six.print_(data)
         entity, _ = super(Entity, self)._post(PATHS['mgmt'], url, data=data)
         self._update_self(next(entity))
 
