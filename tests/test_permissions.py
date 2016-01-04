@@ -82,14 +82,15 @@ class TestPermissions(unittest.TestCase):
                       match_querystring=True)
 
         p = self.t1.get('users', 10000, child='permissions')
-        remove_ids = [6,7]
-        for id in remove_ids:
-            assert id in p.advertiser.keys(), 'Expected advertiser {} to be in access flags'.format(id)
+        remove_ids = [6, 7]
+
+        for ad_id in remove_ids:
+            assert ad_id in p.advertiser.keys(), 'Expected advertiser {} to be in access flags'.format(ad_id)
 
         p.remove_access('agency', 3)
-        for id in remove_ids:
-            assert id not in p.advertiser.keys(), 'child advertiser {} should have been removed but is still there'\
-                .format(id)
+        for ad_id in remove_ids:
+            assert ad_id not in p.advertiser.keys(), 'child advertiser {} should have been removed but is still there'\
+                .format(ad_id)
 
     @responses.activate
     def test_it_should_remove_child_agencies_and_advertisers_when_removing_organization(self):
@@ -118,4 +119,3 @@ class TestPermissions(unittest.TestCase):
         for agency_id in remove_agency_ids:
             assert agency_id not in p.agency.keys(), 'child agency {} should have been removed but is still there'\
                 .format(agency_id)
-
