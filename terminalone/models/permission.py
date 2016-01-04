@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from ..errors import ClientError
 from ..entity import SubEntity
+from ..vendor import six
 
 
 class Permission(SubEntity):
@@ -58,7 +59,7 @@ class Permission(SubEntity):
                 child_entity = entity_hierarchy[depth - 1]
                 parent_key = entity_access + '_id'
                 children_to_remove = []
-                for entity_id, entity in self.properties[child_entity].iteritems():
+                for entity_id, entity in six.iteritems(self.properties[child_entity]):
                     if entity[parent_key] == id_to_remove:
                         children_to_remove.append(entity_id)
                 for entity_id in children_to_remove:
