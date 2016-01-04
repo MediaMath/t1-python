@@ -35,21 +35,34 @@ class Permission(SubEntity):
         'advertiser_id': None,
         'agency_id': None,
         'organization_id': None,
-        }
+    }
 
     def __init__(self, session, properties=None, **kwargs):
         super(Permission, self).__init__(session, properties, **kwargs)
 
-    def _change_access(self, entity_access, entity_id, add):
-        if entity_access not in ['advertiser', 'agency', 'organization']:
-            raise ClientError('Must be one of advertiser, agency, organization!')
+    def _change_access(self, entity_access, id_to_remove, add):
+        entity_hierarchy = ['advertiser',
+                            'agency',
+                            'organization']
+        if entity_access not in entity_hierarchy:
+            raise ClientError('Must be one of {}!'.format(entity_hierarchy))
         if add:
-            placeholder_name = 'Placeholder for {} {} access'.format(entity_access, entity_id)
+            placeholder_name = 'Placeholder for {} {} access'.format(entity_access, id_to_remove)
             if self.properties[entity_access] is None:
                 self.properties[entity_access] = {}
-            self.properties[entity_access][entity_id] = placeholder_name
+            self.properties[entity_access][id_to_remove] = placeholder_name
         else:
-            self.properties[entity_access].pop(entity_id)
+            self.properties[entity_access].pop(id_to_remove)
+            depth = entity_hierarchy.index(entity_access)
+            if depth > 0:
+                child_entity = entity_hierarchy[depth - 1]
+                parent_key = entity_access + '_id'
+                children_to_remove = []
+                for entity_id, entity in self.properties[child_entity].iteritems():
+                    if entity[parent_key] == str(id_to_remove):
+                        children_to_remove.append(entity_id)
+                for entity_id in children_to_remove:
+                    self.remove_access(child_entity, entity_id)
 
     def add_access(self, entity_access, entity_id):
         self._change_access(entity_access, entity_id, True)
@@ -70,11 +83,8 @@ class Permission(SubEntity):
         data.pop('agency', None)
         data.pop('advertiser', None)
 
-        if self.properties['advertiser'] is not None:
-            data['advertiser_id'] = self.properties['advertiser'].keys()
-        if self.properties['agency'] is not None:
-            data['agency_id'] = self.properties['agency'].keys()
-        if self.properties['organization'] is not None:
-            data['organization_id'] = self.properties['organization'].keys()
-        print data
+        data['advertiser_id'] = self.properties['advertiser'].keys()
+        data['agency_id'] = self.properties['agency'].keys()
+        data['organization_id'] = self.properties['organization'].keys()
+
         return super(Permission, self).save(data=data, url=url)

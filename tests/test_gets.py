@@ -277,20 +277,6 @@ class TestGets(unittest.TestCase):
         assert good, 'Expected all results to start with "test", got: %r' % names
 
     @responses.activate
-    def test_permissions(self):
-        self.setup()
-        with open('tests/fixtures/permissions.xml') as f:
-            fixture = f.read()
-        responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/users/10000/permissions',
-                      body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
-
-        p = self.t1.get('users', 10000, child='permissions')
-        assert p._type == 'permission', 'Expected permission entity, got: %r' % p
-
-    @responses.activate
     def test_picard_meta(self):
         self.setup()
         with open('tests/fixtures/reports_meta.json') as f:
