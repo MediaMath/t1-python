@@ -59,7 +59,7 @@ class Permission(SubEntity):
                 parent_key = entity_access + '_id'
                 children_to_remove = []
                 for entity_id, entity in self.properties[child_entity].iteritems():
-                    if entity[parent_key] == str(id_to_remove):
+                    if entity[parent_key] == id_to_remove:
                         children_to_remove.append(entity_id)
                 for entity_id in children_to_remove:
                     self.remove_access(child_entity, entity_id)

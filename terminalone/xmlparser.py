@@ -162,7 +162,15 @@ class XMLParser(object):
                 output[prop.attrib['type']] = prop.attrib['value']
         else:
             for prop in entity:
-                output[int(prop.attrib['id'])] = XMLParser.dictify_entity(prop)
+                output[int(prop.attrib['id'])] = XMLParser.dictify_access_flag(prop)
+        return output
+
+    @staticmethod
+    def dictify_access_flag(flag):
+        output = flag.attrib
+        for key in output.keys():
+            if 'id' == key or key.endswith('_id'):
+                output[key] = int(output[key])
         return output
 
     @staticmethod
