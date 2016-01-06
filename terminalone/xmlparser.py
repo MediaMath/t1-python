@@ -128,8 +128,8 @@ class XMLParser(object):
                                        'error': attribs['error']}
         return errors
 
-    @staticmethod
-    def dictify_entity(entity):
+    @classmethod
+    def dictify_entity(cls, entity):
         """Turn XML entity into a dictionary"""
         output = entity.attrib
         # Hold relation objects in specific dict. T1Service instantiates the
@@ -140,7 +140,7 @@ class XMLParser(object):
             del output['type']
         for prop in entity:
             if prop.tag == 'entity':  # Get parent entities recursively
-                ent = XMLParser.dictify_entity(prop)
+                ent = cls.dictify_entity(prop)
                 if prop.attrib['rel'] == ent.get('_type'):
                     relations[prop.attrib['rel']] = ent
                 else:
@@ -151,8 +151,8 @@ class XMLParser(object):
             output['relations'] = relations
         return output
 
-    @classmethod
-    def dictify_permission(cls, entity):
+    @staticmethod
+    def dictify_permission(entity):
         """Turn XML permission into a dictionary"""
         if not entity:
             return
@@ -162,7 +162,7 @@ class XMLParser(object):
                 output[prop.attrib['type']] = prop.attrib['value']
         else:
             for prop in entity:
-                output[int(prop.attrib['id'])] = cls.dictify_access_flag(prop)
+                output[int(prop.attrib['id'])] = XMLParser.dictify_access_flag(prop)
         return output
 
     @staticmethod

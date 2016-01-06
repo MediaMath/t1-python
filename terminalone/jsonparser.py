@@ -137,8 +137,8 @@ class JSONParser(object):
                                       'error': error['message']}
         return errors
 
-    @staticmethod
-    def process_entity(entity):
+    @classmethod
+    def process_entity(cls, entity):
         """Turn json entity into a dictionary"""
         output = entity.copy()
         # Hold relation objects in specific dict. T1Service instantiates the
@@ -153,7 +153,7 @@ class JSONParser(object):
             # however it's linked to an inconsistency in t1 json api - so fix when that's changed.
             if type(val) == list:  # Get parent entities recursively
                 for child in val:
-                    ent = JSONParser.process_entity(child)
+                    ent = cls.process_entity(child)
                     if child['rel'] == ent['_type']:
                         relations[child['rel']] = ent
                     else:
@@ -163,8 +163,8 @@ class JSONParser(object):
             output['relations'] = relations
         return output
 
-    @classmethod
-    def process_permission(cls, permission, type):
+    @staticmethod
+    def process_permission(permission, type):
         if not permission:
             return
         output = {}
@@ -173,7 +173,7 @@ class JSONParser(object):
             if type == 'flags':
                 output[access['type']] = access['value']
             else:
-                output[int(access['id'])] = cls.dictify_access_flag(access)
+                output[int(access['id'])] = JSONParser.dictify_access_flag(access)
         return output
 
     @staticmethod
