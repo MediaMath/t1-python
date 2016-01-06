@@ -66,7 +66,7 @@ class TestPermissions(unittest.TestCase):
         remove_id = 6
         assert remove_id in p.advertiser.keys(), 'Expected advertiser {} to be in access flags'.format(remove_id)
 
-        p.remove_access('advertiser', 6)
+        p.remove('advertiser', 6)
         assert remove_id not in p.advertiser.keys(), 'advertiser {} should have been removed but is still there'\
             .format(remove_id)
 
@@ -87,7 +87,7 @@ class TestPermissions(unittest.TestCase):
         for ad_id in remove_ids:
             assert ad_id in p.advertiser.keys(), 'Expected advertiser {} to be in access flags'.format(ad_id)
 
-        p.remove_access('agency', 3)
+        p.remove('agency', 3)
         for ad_id in remove_ids:
             assert ad_id not in p.advertiser.keys(), 'child advertiser {} should have been removed but is still there'\
                 .format(ad_id)
@@ -111,7 +111,7 @@ class TestPermissions(unittest.TestCase):
         for agency_id in remove_agency_ids:
             assert agency_id in p.agency.keys(), 'Expected agency {} to be in access flags'.format(agency_id)
 
-        p.remove_access('organization', 2)
+        p.remove('organization', 2)
         for advertiser_id in remove_advertiser_ids:
             assert advertiser_id not in p.advertiser.keys(), 'child advertiser {} should have been removed but is still there'\
                 .format(advertiser_id)
@@ -119,3 +119,19 @@ class TestPermissions(unittest.TestCase):
         for agency_id in remove_agency_ids:
             assert agency_id not in p.agency.keys(), 'child agency {} should have been removed but is still there'\
                 .format(agency_id)
+
+    @responses.activate
+    def test_it_should_add_entity_ids_on_save(self):
+        self.setup()
+        with open('tests/fixtures/permissions.xml') as f:
+            fixture = f.read()
+        responses.add(responses.GET,
+                      'https://api.mediamath.com/api/v2.0/users/10000/permissions',
+                      body=fixture,
+                      content_type='application/xml',
+                      match_querystring=True)
+
+        p = self.t1.get('users', 10000, child='permissions')
+        p.add('organization', 10)
+        data = p._generate_save_data()
+        assert sorted(data['organization_id']) == [1, 2, 10], data['organization_id']

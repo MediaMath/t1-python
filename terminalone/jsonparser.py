@@ -163,8 +163,8 @@ class JSONParser(object):
             output['relations'] = relations
         return output
 
-    @staticmethod
-    def process_permission(permission, type):
+    @classmethod
+    def process_permission(cls, permission, type):
         if not permission:
             return
         output = {}
@@ -173,7 +173,7 @@ class JSONParser(object):
             if type == 'flags':
                 output[access['type']] = access['value']
             else:
-                output[int(access['id'])] = JSONParser.dictify_access_flag(access)
+                output[int(access['id'])] = cls.dictify_access_flag(access)
         return output
 
     @staticmethod

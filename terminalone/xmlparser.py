@@ -151,8 +151,8 @@ class XMLParser(object):
             output['relations'] = relations
         return output
 
-    @staticmethod
-    def dictify_permission(entity):
+    @classmethod
+    def dictify_permission(cls, entity):
         """Turn XML permission into a dictionary"""
         if not entity:
             return
@@ -162,7 +162,7 @@ class XMLParser(object):
                 output[prop.attrib['type']] = prop.attrib['value']
         else:
             for prop in entity:
-                output[int(prop.attrib['id'])] = XMLParser.dictify_access_flag(prop)
+                output[int(prop.attrib['id'])] = cls.dictify_access_flag(prop)
         return output
 
     @staticmethod
