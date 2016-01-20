@@ -128,7 +128,8 @@ class XMLParser(object):
                                        'error': attribs['error']}
         return errors
 
-    def dictify_entity(self, entity):
+    @classmethod
+    def dictify_entity(cls, entity):
         """Turn XML entity into a dictionary"""
         output = entity.attrib
         # Hold relation objects in specific dict. T1Service instantiates the
@@ -139,7 +140,7 @@ class XMLParser(object):
             del output['type']
         for prop in entity:
             if prop.tag == 'entity':  # Get parent entities recursively
-                ent = self.dictify_entity(prop)
+                ent = cls.dictify_entity(prop)
                 if prop.attrib['rel'] == ent.get('_type'):
                     relations[prop.attrib['rel']] = ent
                 else:
@@ -161,7 +162,15 @@ class XMLParser(object):
                 output[prop.attrib['type']] = prop.attrib['value']
         else:
             for prop in entity:
-                output[int(prop.attrib['id'])] = prop.attrib['name']
+                output[int(prop.attrib['id'])] = XMLParser.dictify_access_flag(prop)
+        return output
+
+    @staticmethod
+    def dictify_access_flag(flag):
+        output = flag.attrib
+        for key in output.keys():
+            if 'id' == key or key.endswith('_id'):
+                output[key] = int(output[key])
         return output
 
     @staticmethod

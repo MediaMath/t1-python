@@ -1,6 +1,24 @@
 <?xml version='1.0' ?>
 <result>
   <permissions>
+    <entities>
+      <advertiser>
+        <access name="Advertiser 6 under Agency 3" agency_id="3" dmp_enabled="enabled" id="6" value="w" />
+        <access name="Advertiser 7 under Agency 3" agency_id="3" dmp_enabled="enabled" id="7" value="w" />
+        <access name="Advertiser 8 under Agency 4" agency_id="4" dmp_enabled="enabled" id="8" value="w" />
+        <access name="Advertiser 9 under Agency 4" agency_id="4" dmp_enabled="enabled" id="9" value="w" />
+        <access name="Advertiser 10 under Agency 5" agency_id="5" dmp_enabled="enabled" id="10" value="w" />
+      </advertiser>
+      <agency>
+        <access name="Agency 3 under org 1" child_count="2" dmp_enabled="enabled" id="3" organization_id="1" value="w" />
+        <access name="Agency 4 under org 2" child_count="2" dmp_enabled="enabled" id="4" organization_id="2" value="w" />
+        <access name="Agency 5 under org 2" child_count="1" dmp_enabled="enabled" id="5" organization_id="2" value="w" />
+      </agency>
+      <organization>
+        <access name="Org 1" child_count="1" dmp_enabled="enabled" id="1" value="w" />
+        <access name="Org 2" child_count="2" dmp_enabled="enabled" id="2" value="w" />
+      </organization>
+    </entities>
     <flags>
       <access type="edit_data_definition" value="0" />
       <access type="view_data_definition" value="1" />
