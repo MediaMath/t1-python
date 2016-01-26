@@ -12,6 +12,7 @@ from .concept import Concept
 from .creativeapproval import CreativeApproval
 from .creative import Creative
 from .deal import Deal
+from .margin import Margin
 from .organization import Organization
 from .permission import Permission
 from .pixel import ChildPixel
@@ -49,6 +50,7 @@ __all__ = ['ACL',
            'Creative',
            'CreativeApproval',
            'Deal',
+           'Margin',
            'Organization',
            'Permission',
            'ChildPixel',

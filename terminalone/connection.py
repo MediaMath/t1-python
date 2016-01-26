@@ -9,6 +9,7 @@ from .errors import ClientError, ParserException
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
+from pprint import pprint
 
 
 def _generate_user_agent(name='t1-python'):
@@ -90,6 +91,9 @@ class Connection(object):
 
         try:
             result = self._parser(response_body)
+            #pprint (vars(result))
+            # print (iter(result.entities), result.entity_count)
+
         except ParserException as exc:
             Connection.__setattr__(self, 'response', response)
             raise ClientError('Could not parse response: {!r}'.format(exc.caught))
