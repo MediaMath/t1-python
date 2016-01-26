@@ -445,15 +445,28 @@ class T1(Connection):
                                              page_offset, sort_by, parent, query)
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
-        
         if entity is not None:
             # TODO: known bug here with iterator children.
             # For instance, if you get('strategies', 123, child='concepts'),
             # API returns a structure as if you just requested the concepts
             # but had that limit. This is new so whatever, just take the first
             # and be happy with it.
-            print ent_count
-            if ent_count == 1:
+            
+            # We make an exception here and always return a generator for 
+            # margins.
+            if 'margins' in _url:
+                return_obj = []
+                for ent in entities:
+                    if child is not None:
+                        if child_id is not None:
+                            ent['id'] = child_id
+                        ent['parent_id'] = entity
+                        ent['parent'] = collection
+                        return_obj.append(ent)
+
+                return self._gen_classes(return_obj)
+            
+            else:
                 entities = next(entities)
                 return_obj = []
                 if child is not None:
@@ -465,23 +478,8 @@ class T1(Connection):
                     entities['parent_id'] = entity
                     entities['parent'] = collection
                     return_obj.append(entities)
-                    # print self._return_class(entities)
-                return self._gen_classes(return_obj)
-            elif ent_count > 1:
-                return_obj = []
-                for ent in entities:
-                    if child is not None:
-                        # Child can be either a target dimension (with an ID) or
-                        # a bare child, like concepts or permissions. These should not
-                        # have an ID passed in.
-                        if child_id is not None:
-                            ent['id'] = child_id
-                        ent['parent_id'] = entity
-                        ent['parent'] = collection
-                        return_obj.append(ent)
+                return self._return_class(entities)
 
-                        # print self._return_class(entities)
-                return self._gen_classes(return_obj)
 
         ent_gen = self._gen_classes(entities)
         if count:
