@@ -452,8 +452,10 @@ class T1(Connection):
             # API returns a structure as if you just requested the concepts
             # but had that limit. This is new so whatever, just take the first
             # and be happy with it.
+            print ent_count
             if ent_count == 1:
                 entities = next(entities)
+                return_obj = []
                 if child is not None:
                     # Child can be either a target dimension (with an ID) or
                     # a bare child, like concepts or permissions. These should not
@@ -462,8 +464,9 @@ class T1(Connection):
                         entities['id'] = child_id
                     entities['parent_id'] = entity
                     entities['parent'] = collection
+                    return_obj.append(entities)
                     # print self._return_class(entities)
-                return self._return_class(entities)
+                return self._gen_classes(return_obj)
             elif ent_count > 1:
                 return_obj = []
                 for ent in entities:
