@@ -22,6 +22,7 @@ CLASSES = {
     'creatives': Creative,
     'creative_approvals': CreativeApproval,
     'deals': Deal,
+    'campaign_margins_calc': Margin,
     'organizations': Organization,
     'pixels': ChildPixel,
     'pixel_bundles': PixelBundle,
@@ -60,6 +61,7 @@ MODEL_PATHS = {
     Creative: 'creatives',
     CreativeApproval: 'atomic_creatives',
     Deal: 'deals',
+    Margin: 'campaign_margins_calc',
     Organization: 'organizations',
     ChildPixel: 'pixels',
     PixelBundle: 'pixel_bundles',
@@ -141,6 +143,7 @@ CHILD_PATHS = {
     'isp': ('target_dimensions', 3),
     'linear format': ('target_dimensions', 20),
     'mathselect250': ('target_dimensions', 8),
+    'margins': ('margins', 0),
     'os': ('target_dimensions', 5),
     'permission': ('permissions', 0),
     'permissions': ('permissions', 0),
@@ -448,16 +451,35 @@ class T1(Connection):
             # API returns a structure as if you just requested the concepts
             # but had that limit. This is new so whatever, just take the first
             # and be happy with it.
-            entities = next(entities)
-            if child is not None:
-                # Child can be either a target dimension (with an ID) or
-                # a bare child, like concepts or permissions. These should not
-                # have an ID passed in.
-                if child_id is not None:
-                    entities['id'] = child_id
-                entities['parent_id'] = entity
-                entities['parent'] = collection
-            return self._return_class(entities)
+            
+            # We make an exception here and always return a generator for 
+            # margins.
+            if 'margins' in _url:
+                return_obj = []
+                for ent in entities:
+                    if child is not None:
+                        if child_id is not None:
+                            ent['id'] = child_id
+                        ent['parent_id'] = entity
+                        ent['parent'] = collection
+                        return_obj.append(ent)
+
+                return self._gen_classes(return_obj)
+            
+            else:
+                entities = next(entities)
+                return_obj = []
+                if child is not None:
+                    # Child can be either a target dimension (with an ID) or
+                    # a bare child, like concepts or permissions. These should not
+                    # have an ID passed in.
+                    if child_id is not None:
+                        entities['id'] = child_id
+                    entities['parent_id'] = entity
+                    entities['parent'] = collection
+                    return_obj.append(entities)
+                return self._return_class(entities)
+
 
         ent_gen = self._gen_classes(entities)
         if count:

@@ -23,13 +23,15 @@ class XMLParser(object):
             result = ET.fromstring(xml)
         except ParseError as e:
             raise ParserException(e)
-
         self.get_status(result, xml)
 
         def xfind(haystack, needle):
             return haystack.find(needle) is not None
 
-        if xfind(result, 'entities'):
+        if "margin_pct" in xml:
+            self._parse_margin(result)
+        
+        elif xfind(result, 'entities'):
             self._parse_collection(result)
 
         elif xfind(result, 'entity'):
@@ -83,6 +85,19 @@ class XMLParser(object):
         root = result.find('entities')
         self.entity_count = int(root.get('count') or 0)
         self.entities = self._parse_entities(root)
+
+    def _parse_margin(self, result):
+        """Iterate over collection (i.e. "entities" tag) and parse into dicts"""
+        root = result.find('entities')
+        self.entity_count = 0
+        self._parse_margin_entities(root)
+    
+    def _parse_margin_entities(self, ent_root):
+        ent_root_list = []
+        for item in ent_root:
+            ent_root_list.append(self.dictify_entity(item))
+            self.entity_count += 1
+        self.entities = ent_root_list
 
     def _parse_target_dimensions(self, result):
         """Iterate over target dimensions and parse into dicts"""
