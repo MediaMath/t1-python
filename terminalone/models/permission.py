@@ -49,8 +49,8 @@ class Permission(SubEntity):
             raise ClientError('Must be one of {}!'.format(entity_hierarchy))
         if add:
             if self.properties[entity_access] is None:
-                self.properties[entity_access] = "placeholder"
-            self.properties[entity_access][id_to_change] = {}
+                self.properties[entity_access] = {}
+            self.properties[entity_access][id_to_change] = "placeholder"
         else:
             self.properties[entity_access].pop(id_to_change)
             depth = entity_hierarchy.index(entity_access)
@@ -86,7 +86,10 @@ class Permission(SubEntity):
         data.pop('organization', None)
         data.pop('agency', None)
         data.pop('advertiser', None)
-        data['advertiser_id'] = self.properties['advertiser'].keys()
-        data['agency_id'] = self.properties['agency'].keys()
-        data['organization_id'] = self.properties['organization'].keys()
+        if self.properties['advertiser'] is not None:
+            data['advertiser_id'] = self.properties['advertiser'].keys()
+        if self.properties['agency'] is not None:
+            data['agency_id'] = self.properties['agency'].keys()
+        if self.properties['organization'] is not None:
+            data['organization_id'] = self.properties['organization'].keys()
         return data

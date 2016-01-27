@@ -135,3 +135,20 @@ class TestPermissions(unittest.TestCase):
         p.add('organization', 10)
         data = p._generate_save_data()
         assert sorted(data['organization_id']) == [1, 2, 10], data['organization_id']
+
+    @responses.activate
+    def test_it_should_add_access_to_empty_permissions(self):
+        self.setup()
+        with open('tests/fixtures/permissions_none.xml') as f:
+            fixture = f.read()
+        responses.add(responses.GET,
+                      'https://api.mediamath.com/api/v2.0/users/10000/permissions',
+                      body=fixture,
+                      content_type='application/xml',
+                      match_querystring=True)
+
+        p = self.t1.get('users', 10000, child='permissions')
+        p.add('organization', 10)
+        data = p._generate_save_data()
+        assert sorted(data['organization_id']) == [10], data['organization_id']
+
