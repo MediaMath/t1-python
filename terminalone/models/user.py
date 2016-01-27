@@ -60,6 +60,9 @@ class User(Entity):
         'view_organizations': int,
     })
     _readonly = Entity._readonly.copy()
+    _readonly.update({
+        'last_login_on',
+    })
 
     def __init__(self, session, properties=None, **kwargs):
         super(User, self).__init__(session, properties, **kwargs)
