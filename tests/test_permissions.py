@@ -151,4 +151,3 @@ class TestPermissions(unittest.TestCase):
         p.add('organization', 10)
         data = p._generate_save_data()
         assert sorted(data['organization_id']) == [10], data['organization_id']
-
