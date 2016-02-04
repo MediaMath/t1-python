@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class ChildPixel(Entity):
-    """docstring for child pixel."""
+    """Child pixel (i.e. piggybacked) entity."""
     collection = 'pixels'
     resource = 'pixel'
     _relations = {

@@ -6,12 +6,13 @@ from ..entity import Entity
 
 
 class Pixel(Entity):
-    """docstring for Pixel"""
+    """Pixel entity, or entity_type == 'pixel_bundle'"""
     collection = 'pixel_bundles'
     resource = 'pixel_bundle',
     _relations = {
         'advertiser', 'agency', 'provider',
     }
+    _roi_fields = Entity._enum({'S1', 'S2', 'V1', 'V2'}, None)
     _pixel_types = Entity._enum({'creative', 'event', 'data', 'segment'},
                                 'event')
     _pricing = Entity._enum({'CPM', 'CPTS'}, 'CPM')
@@ -25,6 +26,8 @@ class Pixel(Entity):
         'cost_cpts': float,
         'cost_pct_cpm': float,
         'created_on': Entity._strpt,
+        'currency': None,
+        'currency_fixed': None,
         'eligible': Entity._int_to_bool,
         'external_identifier': None,
         'id': int,
@@ -33,6 +36,7 @@ class Pixel(Entity):
         'pixel_type': None,
         'pricing': None,
         'provider_id': int,
+        'revenue': None,
         'rmx_conversion_minutes': int,
         'rmx_conversion_type': None,
         'rmx_friendly': Entity._int_to_bool,
@@ -52,9 +56,11 @@ class Pixel(Entity):
     _push.update({
         'cost_cpm': Entity._none_to_empty,
         'cost_pct_cpm': Entity._none_to_empty,
+        'currency': _roi_fields,
         'eligible': int,
         'pixel_type': _pixel_types,
         'pricing': _pricing,
+        'revenue': _roi_fields,
         'rmx_conversion_type': _rmx_conv_types,
         'rmx_friendly': int,
         'rmx_merit': int,

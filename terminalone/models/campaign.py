@@ -6,9 +6,11 @@ from ..entity import Entity
 
 
 class Campaign(Entity):
-    """docstring for Campaign.
+    """Campaign entity.
 
-    When creating a new campaign, "zone_name" must be """
+    When creating a new campaign, "zone_name" must be set to the name, such as
+    America/New_York, rather than the code. A list of time zone names can be
+    found on the developer portal."""
     collection = 'campaigns'
     resource = 'campaign'
     _relations = {

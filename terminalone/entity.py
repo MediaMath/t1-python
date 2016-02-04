@@ -156,7 +156,21 @@ class Entity(Connection):
 
     @staticmethod
     def _strft(dt_obj, null_on_none=False):
-        """Convert datetime.datetime to ISO string"""
+        """Convert datetime.datetime to ISO string.
+
+        :param null_on_none: bool Occasionally, we will actually want to send an
+            empty string where a datetime would typically go. For instance, if a
+            strategy has an end_date set, but then wants to change to use
+            campaign end date, the POST will normally omit the end_date field
+            (because you cannot send it with use_campaign_end).
+            However, this will cause an error because there was an end_date set
+            previously. So, we need to send an empty string to indicate that it
+            should be nulled out. In cases like this, null_on_none should be set
+            to True in the entity's _push dict using a partial to make it a
+            single-argument function. See strategy.py
+        :raise AttributeError: if not provided a datetime
+        :return: str
+        """
         try:
             return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
         except AttributeError:

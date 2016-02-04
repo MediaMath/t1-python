@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class AdServer(Entity):
-    """docstring for AdServer."""
+    """Ad Server entity."""
     collection = 'ad_servers'
     resource = 'ad_server'
     _relations = set()

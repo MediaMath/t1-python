@@ -6,7 +6,10 @@ from ..entity import Entity
 
 
 class Creative(Entity):
-    """Provides creative entity."""
+    """Creative entity.
+
+    Rarely needed: you usually want AtomicCreative.
+    """
     collection = 'creatives'
     resource = 'creative'
     _relations = {

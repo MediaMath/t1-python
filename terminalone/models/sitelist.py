@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class SiteList(Entity):
-    """docstring for SiteList."""
+    """Site list entity."""
     collection = 'site_lists'
     resource = 'site_list'
     _relations = {

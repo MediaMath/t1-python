@@ -6,10 +6,13 @@ from ..entity import Entity
 
 
 class Advertiser(Entity):
-    """docstring for Advertiser"""
+    """Advertiser entity."""
     collection = 'advertisers'
     resource = 'advertiser'
     _dmp_settings = Entity._enum({'disabled', 'inherits'}, 'inherits')
+    _freq_int = Entity._enum({'hour', 'day', 'week', 'month', 'campaign',
+                              'not-applicable'}, 'not-applicable')
+    _freq_type = Entity._enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _relations = {
         'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
     }
@@ -24,6 +27,9 @@ class Advertiser(Entity):
         'created_on': Entity._strpt,
         'domain': None,
         'dmp_enabled': None,
+        'frequency_amount': int,
+        'frequency_interval': None,
+        'frequency_type': None,
         'id': int,
         'minimize_multi_ads': Entity._int_to_bool,
         'name': None,
@@ -36,6 +42,8 @@ class Advertiser(Entity):
     _push = _pull.copy()
     _push.update({
         'allow_x_strat_optimization': int,
+        'frequency_interval': _freq_int,
+        'frequency_type': _freq_type,
         'minimize_multi_ads': int,
         'status': int,
         'dmp_enabled': _dmp_settings,
