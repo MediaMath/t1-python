@@ -182,7 +182,8 @@ class Strategy(Entity):
 
         if data is None:
             data = self.properties.copy()
-            data.pixel_target_expr = self._serialize_target_expr()
+
+        data['pixel_target_expr'] = self._serialize_target_expr()
 
         if getattr(self, 'use_campaign_start', False) and 'start_date' in data:
             self.properties.pop('start_date', None)
