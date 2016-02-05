@@ -149,12 +149,12 @@ class JSONParser(object):
         for key, val in six.iteritems(output):
             if type(val) is dict and 'entity_type' in val:  # Get parent entities recursively
                 cls.process_related_entity(relations, val)
-            elif type(val) is list and 'entity_type' in cls.get_first(val, {}):
+            elif type(val) is list and 'entity_type' in next(iter(val), {}):
                 for child in val:
                     cls.process_related_entity(relations, child)
             # this is new as we are potentially returning multiple
             # currency types, but for now let's grab the first value
-            elif type(val) is list and 'currency_code' in cls.get_first(val, {}):
+            elif type(val) is list and 'currency_code' in next(iter(val), {}):
                 output[key] = val[0]['value']
 
         if relations:
@@ -190,9 +190,3 @@ class JSONParser(object):
                 output[key] = int(output[key])
         return output
 
-    @classmethod
-    def get_first(cls, iterable, default=None):
-        if iterable:
-            for item in iterable:
-                return item
-        return default
