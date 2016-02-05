@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from __future__ import print_function
 from terminalone import T1, filters
 from terminalone.utils import credentials
