@@ -50,10 +50,10 @@ class JSONParser(object):
         if type(data) == list:
             self.entities = map(self.process_entity, data)
 
-        elif parsed_data.get('include') is not None or \
-                parsed_data.get('exclude') is not None or \
-                parsed_data.get('enabled') is not None:
-            self._parse_target_dimensions(parsed_data)
+        elif data.get('include') is not None or \
+                data.get('exclude') is not None or \
+                data.get('enabled') is not None:
+            self._parse_target_dimensions(data)
 
         elif data.get('permissions') is not None:
             self.entities = self._parse_permissions(data['permissions'])
@@ -109,16 +109,14 @@ class JSONParser(object):
 
     def _parse_target_dimensions(self, data):
         """Iterate over target dimensions and parse into dicts"""
-        exclude = data.get('exclude', {})
-        include = data.get('include', {})
-        exclude_entities = exclude.get('entities')
-        include_entities = include.get('entities')
+        exclude_entities = data.get('exclude')
+        include_entities = data.get('include')
         if include_entities is not None:
-            include_list = map(self.process_entity, include_entities[0].get('entity', []))
+            include_list = map(self.process_entity, include_entities)
         else:
             include_list = []
         if exclude_entities is not None:
-            exclude_list = map(self.process_entity, exclude_entities[0].get('entity', []))
+            exclude_list = map(self.process_entity, exclude_entities)
         else:
             exclude_list = []
         self.entity_count = 1
@@ -149,19 +147,27 @@ class JSONParser(object):
             output['_type'] = output['entity_type']
 
         for key, val in six.iteritems(output):
-            # FIXME this isn't the correct thing to do;
-            # however it's linked to an inconsistency in t1 json api - so fix when that's changed.
-            if type(val) == list:  # Get parent entities recursively
+            if type(val) is dict and 'entity_type' in val:  # Get parent entities recursively
+                cls.process_related_entity(relations, val)
+            elif type(val) is list and 'entity_type' in next(iter(val), {}):
                 for child in val:
-                    ent = cls.process_entity(child)
-                    if child['rel'] == ent['_type']:
-                        relations[child['rel']] = ent
-                    else:
-                        relations.setdefault(child['rel'], []).append(ent)
+                    cls.process_related_entity(relations, child)
+            # this is new as we are potentially returning multiple
+            # currency types, but for now let's grab the first value
+            elif type(val) is list and 'currency_code' in next(iter(val), {}):
+                output[key] = val[0]['value']
 
         if relations:
             output['relations'] = relations
         return output
+
+    @classmethod
+    def process_related_entity(cls, relations, val):
+        ent = cls.process_entity(val)
+        if val['rel'] == ent['_type']:
+            relations[val['rel']] = ent
+        else:
+            relations.setdefault(val['rel'], []).append(ent)
 
     @staticmethod
     def process_permission(permission, type):
