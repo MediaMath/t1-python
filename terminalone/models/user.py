@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class User(Entity):
-    """docstring for User."""
+    """User entity."""
     collection = 'users'
     resource = 'user'
     _relations = {
@@ -21,8 +21,10 @@ class User(Entity):
         'active': Entity._int_to_bool,
         'created_on': Entity._strpt,
         'creator_id': int,
+        'edit_data_definition': Entity._int_to_bool,
         'edit_campaigns': Entity._int_to_bool,
         'edit_margins_and_performance': Entity._int_to_bool,
+        'edit_segments': Entity._int_to_bool,
         'fax': None,
         'first_name': None,
         'id': int,
@@ -44,25 +46,30 @@ class User(Entity):
         'updated_on': Entity._strpt,
         'username': None,
         'version': int,
+        'view_data_definition': Entity._int_to_bool,
+        'view_dmp_reports': Entity._int_to_bool,
         'view_organizations': Entity._int_to_bool,
+        'view_segments': Entity._int_to_bool,
     }
     _push = _pull.copy()
     _push.update({
         'access_internal_fees': int,
         'active': int,
         'edit_campaigns': int,
+        'edit_data_definition': int,
         'edit_margins_and_performance': int,
+        'edit_segments': int,
         'labs_enable_rmx': int,
         'link_ldap': int,
         'role': _role,
         'scope': _scope,
         'type': _type,
+        'view_data_definition': int,
+        'view_dmp_reports': int,
         'view_organizations': int,
+        'view_segments': int,
     })
-    _readonly = Entity._readonly.copy()
-    _readonly.update({
-        'last_login_on',
-    })
+    _readonly = Entity._readonly | {'last_login_on'}
 
     def __init__(self, session, properties=None, **kwargs):
         super(User, self).__init__(session, properties, **kwargs)

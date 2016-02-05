@@ -13,14 +13,13 @@ OPERATOR_PATTERN = re.compile(r'(AND|OR)')
 
 
 class Strategy(Entity):
-    """docstring for Strategy."""
+    """Strategy entity."""
     collection = 'strategies'
     resource = 'strategy'
     _relations = {
         'campaign', 'currency', 'time_zone',
     }
-    _aud_seg_exc = Entity._enum({'AND', 'OR'}, 'OR')
-    _aud_seg_inc = Entity._enum({'AND', 'OR'}, 'OR')
+    _aud_seg_ops = Entity._enum({'AND', 'OR'}, 'OR')
     _freq_int = Entity._enum({'hour', 'day', 'week', 'month', 'campaign',
                               'not-applicable'}, 'not-applicable')
     _freq_type = Entity._enum({'even', 'asap', 'no-limit'}, 'no-limit')
@@ -60,6 +59,7 @@ class Strategy(Entity):
         'pacing_interval': None,
         'pacing_type': None,
         'pixel_target_expr': None,
+        'roi_target': float,
         'run_on_all_exchanges': Entity._int_to_bool,
         'run_on_all_pmp': Entity._int_to_bool,
         'run_on_display': Entity._int_to_bool,
@@ -77,11 +77,12 @@ class Strategy(Entity):
         'use_mm_freq': Entity._int_to_bool,
         'use_optimization': Entity._int_to_bool,
         'version': int,
+        'zone_name': None,
     }
     _push = _pull.copy()
     _push.update({
-        'audience_segment_exclude_op': _aud_seg_exc,
-        'audience_segment_include_op': _aud_seg_inc,
+        'audience_segment_exclude_op': _aud_seg_ops,
+        'audience_segment_include_op': _aud_seg_ops,
         'bid_price_is_media_only': int,
         'end_date': partial(Entity._strft, null_on_none=True),
         'frequency_interval': _freq_int,
@@ -107,7 +108,7 @@ class Strategy(Entity):
         'use_optimization': int,
     })
 
-    _readonly = Entity._readonly | {'effective_goal_value', }
+    _readonly = Entity._readonly | {'effective_goal_value', 'zone_name'}
 
     def __init__(self, session, properties=None, **kwargs):
         super(Strategy, self).__init__(session, properties, **kwargs)

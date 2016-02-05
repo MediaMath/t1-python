@@ -6,7 +6,7 @@ from ..entity import Entity
 
 
 class Concept(Entity):
-    """docstring for Concept."""
+    """Concept entity."""
     collection = 'concepts'
     resource = 'concept'
     _relations = {

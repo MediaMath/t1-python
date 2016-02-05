@@ -18,12 +18,16 @@ class AtomicCreative(Entity):
                                 'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
                                 'TERMINALONE', 'MEDIAFORGE', 'OTHER'},
                                'OTHER')
+    _expands = Entity._enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU', 'RU'}, None)
     _expand_dir = Entity._default_empty('NONRESTRICTED')
     _expand_trig = Entity._enum({'AUTOMATIC', 'MOUSEOVER', 'CLICK'}, 'CLICK')
     _file_types = Entity._enum({'swf', 'gif', 'html5', 'jpg', 'jpeg', 'tif',
                                 'tiff', 'png', 'unknown', 'vast'}, 'unknown')
     _media_types = Entity._enum({'display', 'video', 'mobile'}, 'display')
-    _tag_types = Entity._enum({'SCRIPT', 'IFRAME', 'NOSCRIPT'}, 'NOSCRIPT')
+    _tag_types = Entity._enum({'IFRAME_SCRIPT_NOSCRIPT', 'IFRAME_SCRIPT',
+                               'IFRAME_NOSCRIPT', 'IFRAME_IMG',
+                               'SCRIPT_NOSCRIPT', 'SCRIPT', 'NOSCRIPT',
+                               'IFRAME', 'IMG'}, 'NOSCRIPT')
     _pull = {
         'advertiser_id': int,
         'ad_format': None,
@@ -40,6 +44,7 @@ class AtomicCreative(Entity):
         'creative_import_file_id': int,
         'edited_tag': None,
         'end_date': Entity._strpt,
+        'expand': None,
         'expansion_direction': None,
         'expansion_trigger': None,
         'external_identifier': None,
@@ -72,6 +77,7 @@ class AtomicCreative(Entity):
         'ad_format': _ad_formats,
         'ad_server_type': _ad_servers,
         'end_date': Entity._strft,
+        'expand': _expands,
         'expansion_direction': _expand_dir,
         'expansion_trigger': _expand_trig,
         'file_type': _file_types,
@@ -86,7 +92,7 @@ class AtomicCreative(Entity):
         'tag_type': _tag_types,
     })
     _readonly = Entity._readonly | {'t1as', 'built', 'approval_status',
-                                    'default_t1as_tag'}
+                                    'default_t1as_tag', 'rejected_reason'}
 
     def __init__(self, session, properties=None, **kwargs):
         super(AtomicCreative, self).__init__(session, properties, **kwargs)
