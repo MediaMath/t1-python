@@ -189,4 +189,3 @@ class JSONParser(object):
             if 'id' == key or key.endswith('_id'):
                 output[key] = int(output[key])
         return output
-
