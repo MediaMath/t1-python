@@ -11,6 +11,7 @@ class Organization(Entity):
     resource = 'organization'
     _relations = {
         'currency',
+        'seats',
     }
     _dmp_settings = Entity._enum({'disabled', 'enabled'}, 'disabled')
     _org_types = Entity._enum({'buyer', 'partner'}, 'buyer')

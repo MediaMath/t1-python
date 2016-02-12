@@ -20,6 +20,7 @@ from .pixelprovider import PixelProvider
 from .placementslot import PlacementSlot
 from .publisher import Publisher
 from .publishersite import PublisherSite
+from .seat import Seat
 from .sitelist import SiteList
 from .siteplacement import SitePlacement
 from .strategy import Strategy
@@ -58,6 +59,7 @@ __all__ = ['ACL',
            'PlacementSlot',
            'Publisher',
            'PublisherSite',
+           'Seat',
            'SiteList',
            'SitePlacement',
            'Strategy',
