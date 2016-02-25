@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides Pixel Bundles object for working with creatives."""
+"""Provides Pixel Bundle object for working with T1 pixels."""
 
 from __future__ import absolute_import
 from ..entity import Entity
