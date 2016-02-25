@@ -69,7 +69,13 @@ class User(Entity):
         'view_organizations': int,
         'view_segments': int,
     })
-    _readonly = Entity._readonly | {'last_login_on'}
+    _readonly = Entity._readonly | {
+        'last_login_on',
+        'password_reset_sent',
+        'password_reset_token',
+        'sso_auth_sent',
+        'sso_auth_token'
+    }
 
     def __init__(self, session, properties=None, **kwargs):
         super(User, self).__init__(session, properties, **kwargs)
