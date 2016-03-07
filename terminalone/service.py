@@ -458,21 +458,22 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        passed_ents = []
-        for i in xrange(2):
-            try:
-                passed_ents.append(next(entities))
-            except StopIteration:
-                break
-        entities = chain(iter(passed_ents), entities)
-        if len(passed_ents) == 1:
-            return self._return_class(next(entities), child, child_id, entity, collection)
+        if entity:
+            passed_ents = []
+            for i in six.moves.range(2):
+                try:
+                    passed_ents.append(next(entities))
+                except StopIteration:
+                    break
+            entities = chain(iter(passed_ents), entities)
+            if len(passed_ents) == 1:
+                return self._return_class(next(entities), child, child_id, entity, collection)
+
+        ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
+        if count:
+            return ent_gen, ent_count
         else:
-            ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
-            if count:
-                return ent_gen, ent_count
-            else:
-                return ent_gen
+            return ent_gen
 
     def get_all(self, collection, **kwargs):
         """Retrieves all entities in a collection. Has same signature as .get."""
