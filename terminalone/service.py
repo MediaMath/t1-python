@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division
 from itertools import chain
+from types import GeneratorType
 from .connection import Connection
 from .entity import Entity
 from .errors import ClientError
@@ -505,6 +506,8 @@ class T1(Connection):
                            parent=kwargs.get('parent'),
                            query=kwargs.get('query'),
                            get_all=False)
+            if not isinstance(gen, GeneratorType):
+                gen = iter([gen])
             for item in gen:
                 yield item
 
