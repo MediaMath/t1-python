@@ -526,4 +526,4 @@ For questions about either API workflow or this library, email
 Copyright
 ---------
 
-Copyright MediaMath 2015. All rights reserved.
+Copyright MediaMath 2015-2016. All rights reserved.

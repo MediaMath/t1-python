@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Compose functions like you're using functional programming"""
+"""Compose functions like you're using functional programming.
+
+See: https://mathieularose.com/function-composition-in-python/
+"""
 
 from functools import reduce
 
@@ -18,4 +21,4 @@ def compose(*functions):
     :param functions: functions to compose.
     :return: function
     """
-    return reduce(lambda f, g: lambda x: f(g(x)), functions)
+    return reduce(lambda f, g: lambda x: f(g(x)), functions, lambda x: x)
