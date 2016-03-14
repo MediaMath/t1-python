@@ -458,7 +458,7 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        if entity and not child:
+        if entity and (child == 'permissions' or not child):
             passed_ents = []
             for i in six.moves.range(2):
                 try:
