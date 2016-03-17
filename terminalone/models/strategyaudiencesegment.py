@@ -31,19 +31,6 @@ class StrategyAudienceSegment(Entity):
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyAudienceSegment, self).__init__(session, properties, **kwargs)
 
-    def save(self, data=None, url=None):
-        url = '/'.join(['strategies',
-                        str(self.parent_id),
-                        'audience_segments'])
-        data = {
-            'segments.1.id': str(self.audience_segment_id),
-            'segments.1.restriction': self.restriction,
-            'segments.1.group_identifier': self.group_identifier,
-            'exclude_op': 'OR',
-            'include_op': 'OR',
-        }
-        self._post(PATHS['mgmt'], rest=url, data=data)
-
     def remove(self):
         """Unassign the strategy audience segment from the strategy."""
         url = '/'.join(['strategies',

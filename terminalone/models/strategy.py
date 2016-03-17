@@ -164,6 +164,14 @@ class Strategy(Entity):
 
             # you can't get these values so we don't need to reset anything
 
+    def save_audiences(self, data):
+        url = self._construct_url(addl=['audience_segments', ])
+        entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+        self._update_self(next(entity))
+        self._deserialize_target_expr()
+        if 'relations' in self.properties:
+            del self.properties['relations']
+
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""
         include_bool = '] {} ['.format(self.pixel_target_expr['include']['operator'] or 'OR')
