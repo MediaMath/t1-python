@@ -17,15 +17,15 @@ class StrategyAudienceSegment(Entity):
     _pull = {
         'audience_segment_id': int,
         'created_on': Entity._strpt,
+        'group_identifier': None,
         'id': int,
+        'restriction': None,
         'strategy_id': int,
         'updated_on': Entity._strpt,
+        'user_cpm': float,
         'version': int,
     }
     _push = _pull.copy()
-    _push.update({
-        'status': int,
-    })
     _readonly = Entity._readonly | {'name', }
 
     def __init__(self, session, properties=None, **kwargs):
@@ -33,13 +33,12 @@ class StrategyAudienceSegment(Entity):
 
     def save(self, data=None, url=None):
         url = '/'.join(['strategies',
-                        str(self.strategy_id),
+                        str(self.parent_id),
                         'audience_segments'])
         data = {
             'segments.1.id': str(self.audience_segment_id),
             'segments.1.restriction': self.restriction,
             'segments.1.group_identifier': self.group_identifier,
-            'segments.1.operator': self.operator,
             'exclude_op': 'OR',
             'include_op': 'OR',
         }
@@ -48,13 +47,12 @@ class StrategyAudienceSegment(Entity):
     def remove(self):
         """Unassign the strategy audience segment from the strategy."""
         url = '/'.join(['strategies',
-                        str(self.strategy_id),
+                        str(self.parent_id),
                         'audience_segments'])
         data = {
             'segments.1.id': str(-1 * self.audience_segment_id),
             'segments.1.restriction': self.restriction,
             'segments.1.group_identifier': self.group_identifier,
-            'segments.1.operator': self.operator,
             'exclude_op': 'OR',
             'include_op': 'OR',
         }
