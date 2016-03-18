@@ -1,0 +1,32 @@
+<result called_on="2015-09-02 15:18:19.741047+00">
+    <entities start="0">
+        <entity name="Day Parts #512825" id="512825" type="strategy_day_part" version="1">
+            <prop name="strategy_id" value="941273"/>
+            <prop name="user_time" value="1"/>
+            <prop name="created_on" value="2015-09-02T14:56:53"/>
+            <prop name="updated_on" value="2015-09-02T14:58:34"/>
+            <prop name="start_hour" value="0"/>
+            <prop name="end_hour" value="15"/>
+            <prop name="days" value="WR"/>
+        </entity>
+        <entity name="Day Parts #512813" id="512813" type="strategy_day_part" version="1">
+            <prop name="strategy_id" value="941273"/>
+            <prop name="user_time" value="1"/>
+            <prop name="created_on" value="2015-09-02T14:42:09"/>
+            <prop name="updated_on" value="2015-09-02T14:46:53"/>
+            <prop name="start_hour" value="0"/>
+            <prop name="end_hour" value="23"/>
+            <prop name="days" value="MTF"/>
+        </entity>
+        <entity name="Day Parts #512878" id="512878" type="strategy_day_part" version="1">
+            <prop name="strategy_id" value="941273"/>
+            <prop name="user_time" value="1"/>
+            <prop name="created_on" value="2015-09-02T14:42:09"/>
+            <prop name="updated_on" value="2015-09-02T14:45:20"/>
+            <prop name="start_hour" value="0"/>
+            <prop name="end_hour" value="23"/>
+            <prop name="days" value="MFU"/>
+        </entity>
+    </entities>
+    <status code="ok"/>
+</result>
