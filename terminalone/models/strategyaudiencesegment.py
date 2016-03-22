@@ -7,7 +7,7 @@ from ..entity import Entity
 
 
 class StrategyAudienceSegment(Entity):
-    """docstring for StrategyAudienceSegment."""
+    """Object for strategy targeting third-party segments."""
     collection = 'strategy_audience_segments'
     resource = 'strategy_audience_segment'
     _relations = {
