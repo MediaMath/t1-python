@@ -19,6 +19,7 @@ class StrategyAudienceSegment(Entity):
         'created_on': Entity._strpt,
         'group_identifier': None,
         'id': int,
+        'operator': None,
         'restriction': None,
         'strategy_id': int,
         'updated_on': Entity._strpt,
