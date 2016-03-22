@@ -22,6 +22,7 @@ class StrategyAudienceSegment(Entity):
         'operator': None,
         'restriction': None,
         'strategy_id': int,
+        'type': None,
         'updated_on': Entity._strpt,
         'user_cpm': float,
         'version': int,
