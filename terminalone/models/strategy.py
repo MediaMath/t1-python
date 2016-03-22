@@ -168,6 +168,10 @@ class Strategy(Entity):
         url = self._construct_url(addl=['audience_segments', ])
         entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
 
+    def save_targeting_segments(self, data):
+        url = self._construct_url(addl=['targeting_segments', ])
+        entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""
         include_bool = '] {} ['.format(self.pixel_target_expr['include']['operator'] or 'OR')

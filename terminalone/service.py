@@ -44,6 +44,7 @@ CLASSES = {
     'strategy_day_parts': StrategyDayPart,
     'strategy_domain_restrictions': StrategyDomain,
     'strategy_supply_sources': StrategySupplySource,
+    'strategy_targeting_segments': StrategyTargetingSegment,
     'supply_sources': SupplySource,
     'target_dimensions': TargetDimension,
     'target_values': TargetValue,
@@ -87,6 +88,7 @@ MODEL_PATHS = {
     StrategyDayPart: 'strategy_day_parts',
     StrategyDomain: 'strategy_domain_restrictions',
     StrategySupplySource: 'strategy_supply_sources',
+    StrategyTargetingSegment: 'strategy_targeting_segments',
     SupplySource: 'supply_sources',
     TargetDimension: 'target_dimensions',
     TargetValue: 'target_values',
@@ -129,6 +131,7 @@ SINGULAR = {
     'strategy_day_part': StrategyDayPart,
     'strategy_domain_restriction': StrategyDomain,
     'strategy_supply_source': StrategySupplySource,
+    'strategy_targeting_segment': StrategyTargetingSegment,
     'supply_source': SupplySource,
     'target_dimension': TargetDimension,
     'target_value': TargetValue,
@@ -165,6 +168,7 @@ CHILD_PATHS = {
     'region': ('target_dimensions', 7),
     'safety': ('target_dimensions', 15),
     'supplies': ('supplies', 0),
+    'targeting_segments': ('targeting_segments', 0),
 }
 
 
