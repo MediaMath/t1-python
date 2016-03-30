@@ -2,6 +2,8 @@
 """Provides target value object."""
 
 from __future__ import absolute_import
+
+from terminalone import t1types
 from ..errors import ClientError
 from ..entity import Entity
 
@@ -20,7 +22,7 @@ class TargetValue(Entity):
         'code': None,
         'dimension_code': None,
         'id': int,
-        'is_targetable': Entity._int_to_bool,
+        'is_targetable': t1types.int_to_bool,
         'name': None,
         'target_dimension_id': int,
         'value': int,

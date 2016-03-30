@@ -2,6 +2,7 @@
 """Provides concept object."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -14,11 +15,11 @@ class Concept(Entity):
     }
     _pull = {
         'advertiser_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
         'name': None,
-        'status': Entity._int_to_bool,
-        'updated_on': Entity._strpt,
+        'status': t1types.int_to_bool,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

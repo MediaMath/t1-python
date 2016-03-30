@@ -2,6 +2,7 @@
 """Provides vendor_domain object."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -15,11 +16,11 @@ class VendorDomain(Entity):
         'vendor_pixel_domains',
     }
     _pull = {
-        'allow_subdomain_match': Entity._int_to_bool,
-        'created_on': Entity._strpt,
+        'allow_subdomain_match': t1types.int_to_bool,
+        'created_on': t1types.strpt,
         'domain': None,
         'id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'vendor_id': int,
         'version': int,
     }

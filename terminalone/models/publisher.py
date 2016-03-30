@@ -2,6 +2,7 @@
 """Provides publisher object."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -15,11 +16,11 @@ class Publisher(Entity):
         'site',
     }
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
         'name': None,
         'organization_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull

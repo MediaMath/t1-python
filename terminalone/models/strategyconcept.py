@@ -2,6 +2,8 @@
 """Provides strategy concept object."""
 
 from __future__ import absolute_import
+
+from terminalone import t1types
 from ..config import PATHS
 from ..entity import Entity
 
@@ -16,11 +18,11 @@ class StrategyConcept(Entity):
     }
     _pull = {
         'concept_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'strategy_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

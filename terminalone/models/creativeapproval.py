@@ -2,6 +2,8 @@
 """Provides Creative Approval object for working with creatives."""
 
 from __future__ import absolute_import
+
+from terminalone import t1types
 from ..errors import ClientError
 from ..entity import Entity
 
@@ -14,13 +16,13 @@ class CreativeApproval(Entity):
         'additional_detail': None,
         'approval_status': None,
         'atomic_creative_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'creative_import_file_id': int,
         'external_identifier': None,
         'id': int,
         'rejected_reason': None,
         'supply_source_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 

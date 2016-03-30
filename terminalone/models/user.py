@@ -2,6 +2,7 @@
 """Provides user object."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -12,44 +13,44 @@ class User(Entity):
     _relations = {
         'creator',
     }
-    _role = Entity._enum({'ADMIN', 'MANAGER', 'REPORTER'}, 'REPORTER')
-    _scope = Entity._enum({'GLOBAL', 'SELECT'}, 'SELECT')
-    _type = Entity._enum({'INTERNAL', 'AGENCY', 'VPAN', 'ADVERTISER'},
+    _role = t1types.enum({'ADMIN', 'MANAGER', 'REPORTER'}, 'REPORTER')
+    _scope = t1types.enum({'GLOBAL', 'SELECT'}, 'SELECT')
+    _type = t1types.enum({'INTERNAL', 'AGENCY', 'VPAN', 'ADVERTISER'},
                          'ADVERTISER')
     _pull = {
-        'access_internal_fees': Entity._int_to_bool,
-        'active': Entity._int_to_bool,
-        'created_on': Entity._strpt,
+        'access_internal_fees': t1types.int_to_bool,
+        'active': t1types.int_to_bool,
+        'created_on': t1types.strpt,
         'creator_id': int,
-        'edit_data_definition': Entity._int_to_bool,
-        'edit_campaigns': Entity._int_to_bool,
-        'edit_margins_and_performance': Entity._int_to_bool,
-        'edit_segments': Entity._int_to_bool,
+        'edit_data_definition': t1types.int_to_bool,
+        'edit_campaigns': t1types.int_to_bool,
+        'edit_margins_and_performance': t1types.int_to_bool,
+        'edit_segments': t1types.int_to_bool,
         'fax': None,
         'first_name': None,
         'id': int,
-        'labs_enable_rmx': Entity._int_to_bool,
-        'last_login_on': Entity._strpt,
+        'labs_enable_rmx': t1types.int_to_bool,
+        'last_login_on': t1types.strpt,
         'last_name': None,
-        'link_ldap': Entity._int_to_bool,
+        'link_ldap': t1types.int_to_bool,
         'mobile': None,
         'password': None,
-        'password_reset_sent': Entity._strpt,
+        'password_reset_sent': t1types.strpt,
         'password_reset_token': None,
         'phone': None,
         'role': None,
         'scope': None,
-        'sso_auth_sent': Entity._strpt,
+        'sso_auth_sent': t1types.strpt,
         'sso_auth_token': None,
         'title': None,
         'type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'username': None,
         'version': int,
-        'view_data_definition': Entity._int_to_bool,
-        'view_dmp_reports': Entity._int_to_bool,
-        'view_organizations': Entity._int_to_bool,
-        'view_segments': Entity._int_to_bool,
+        'view_data_definition': t1types.int_to_bool,
+        'view_dmp_reports': t1types.int_to_bool,
+        'view_organizations': t1types.int_to_bool,
+        'view_segments': t1types.int_to_bool,
     }
     _push = _pull.copy()
     _push.update({

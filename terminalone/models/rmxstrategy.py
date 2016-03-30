@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 from warnings import warn
+from terminalone import t1types
 from ..entity import Entity
 from ..errors import ClientError
 
@@ -19,7 +20,7 @@ class RMXStrategy(Entity):
         'budget_type': None,
         'cpa_pixel_bundle_id': int,
         'cpa_pixel_type': None,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'dynamic_pricing_option': None,
         'id': int,
         'imp_budget': float,
@@ -37,9 +38,9 @@ class RMXStrategy(Entity):
         'roi_cpc_target_ctr_type': None,
         'roi_modifier': float,
         'roi_targets': None,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'strategy_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 

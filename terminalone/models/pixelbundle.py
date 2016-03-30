@@ -2,6 +2,7 @@
 """Provides Pixel Bundle object for working with T1 pixels."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -12,12 +13,12 @@ class Pixel(Entity):
     _relations = {
         'advertiser', 'agency', 'provider',
     }
-    _roi_fields = Entity._enum({'S1', 'S2', 'V1', 'V2'}, None)
-    _pixel_types = Entity._enum({'creative', 'event', 'data', 'segment'},
+    _roi_fields = t1types.enum({'S1', 'S2', 'V1', 'V2'}, None)
+    _pixel_types = t1types.enum({'creative', 'event', 'data', 'segment'},
                                 'event')
-    _pricing = Entity._enum({'CPM', 'CPTS'}, 'CPM')
-    _rmx_conv_types = Entity._enum({'one', 'variable'}, 'one')
-    _tag_types = Entity._enum({'dfa', 'uat', 'image', 'iframe', 'js'},
+    _pricing = t1types.enum({'CPM', 'CPTS'}, 'CPM')
+    _rmx_conv_types = t1types.enum({'one', 'variable'}, 'one')
+    _tag_types = t1types.enum({'dfa', 'uat', 'image', 'iframe', 'js'},
                               'image')
     _pull = {
         'advertiser_id': int,
@@ -25,10 +26,10 @@ class Pixel(Entity):
         'cost_cpm': float,
         'cost_cpts': float,
         'cost_pct_cpm': float,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'currency': None,
         'currency_fixed': None,
-        'eligible': Entity._int_to_bool,
+        'eligible': t1types.int_to_bool,
         'external_identifier': None,
         'id': int,
         'keywords': None,
@@ -39,23 +40,23 @@ class Pixel(Entity):
         'revenue': None,
         'rmx_conversion_minutes': int,
         'rmx_conversion_type': None,
-        'rmx_friendly': Entity._int_to_bool,
-        'rmx_merit': Entity._int_to_bool,
+        'rmx_friendly': t1types.int_to_bool,
+        'rmx_merit': t1types.int_to_bool,
         'rmx_pc_window_minutes': int,
         'rmx_pv_window_minutes': int,
         'segment_op': None,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'tag_type': None,
         'tags': None,
         'type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 
     _push = _pull.copy()
     _push.update({
-        'cost_cpm': Entity._none_to_empty,
-        'cost_pct_cpm': Entity._none_to_empty,
+        'cost_cpm': t1types.none_to_empty,
+        'cost_pct_cpm': t1types.none_to_empty,
         'currency': _roi_fields,
         'eligible': int,
         'pixel_type': _pixel_types,

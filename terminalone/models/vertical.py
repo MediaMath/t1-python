@@ -2,6 +2,7 @@
 """Provides vertical object."""
 
 from __future__ import absolute_import
+from terminalone import t1types
 from ..entity import Entity
 
 
@@ -16,8 +17,8 @@ class Vertical(Entity):
     _pull = {
         'id': int,
         'name': None,
-        'created_on': Entity._strpt,
-        'updated_on': Entity._strpt,
+        'created_on': t1types.strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 

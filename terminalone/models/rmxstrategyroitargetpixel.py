@@ -5,6 +5,7 @@ DEPRECATED: new entities should not be made.
 
 from __future__ import absolute_import
 from warnings import warn
+from terminalone import t1types
 from ..entity import Entity
 from ..errors import ClientError
 
@@ -19,14 +20,14 @@ class RMXStrategyROITargetPixel(Entity):
         'pixel_bundle', 'rmx_strategy'
     }
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
         'pixel_bundle_id': int,
         'price': float,
         'rmx_pixel_type': None,
         'rmx_strategy_id': int,
-        'status': Entity._int_to_bool,
-        'updated_on': Entity._strpt,
+        'status': t1types.int_to_bool,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 
