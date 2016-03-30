@@ -1,0 +1,21 @@
+<?xml version='1.0' ?>
+<result called_on="2016-03-30 13:24:59.735885+00">
+    <entities count="54190" start="0">
+        <entity name="advertiser 1" id="1" type="advertiser" version="0">
+            <prop name="agency_id" value="300"/>
+            <prop name="name" value="advertiser 1"/>
+            <prop name="vertical_id" value="12"/>
+            <prop name="ad_server_id" value="2"/>
+            <prop name="allow_x_strat_optimization" value="0"/>
+            <prop name="status" value="1"/>
+            <prop name="created_on" value="2015-08-21T15:28:53"/>
+            <prop name="updated_on" value="2015-08-21T15:28:53"/>
+            <prop name="domain" value="www.insidehook.com"/>
+            <prop name="minimize_multi_ads" value="0"/>
+            <prop name="frequency_type" value="no-limit"/>
+            <prop name="frequency_interval" value="not-applicable"/>
+            <prop name="dmp_enabled" value="inherits"/>
+        </entity>
+    </entities>
+    <status code="ok"/>
+</result>

@@ -1,0 +1,16 @@
+<?xml version='1.0' ?>
+<result>
+    <enabled active="0" />
+    <include>
+        <entities target_op="OR">
+            <entity name="United States" id="251" type="target_value">
+                <prop name="target_dimension_id" value="7" />
+                <prop name="name" value="United States" />
+                <prop name="value" value="60231" />
+                <prop name="code" value="us" />
+                <prop name="is_targetable" value="1" />
+            </entity>
+        </entities>
+    </include>
+    <status code="ok" />
+</result>
