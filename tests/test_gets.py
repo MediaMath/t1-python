@@ -2,6 +2,8 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import unittest
+
+import io
 import responses
 import requests
 from .requests_patch import patched_extract_cookies_to_jar
@@ -310,14 +312,14 @@ class TestGets(unittest.TestCase):
     @responses.activate
     def test_picard_report(self):
         self.setup()
-        with open('tests/fixtures/performance.csv') as f:
+        with open('tests/fixtures/performance.csv', "rt") as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/reporting/v1/std/performance?'
                       'filter=organization_id%3D100048&time_window=yesterday'
                       '&time_rollup=all&dimensions=campaign_name',
                       body=fixture,
-                      content_type='application/csv',
+                      content_type='text/csv; charset=UTF-8',
                       match_querystring=True)
         with open('tests/fixtures/reports_meta.json') as f:
             fixture = f.read()
