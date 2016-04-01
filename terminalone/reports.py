@@ -131,11 +131,20 @@ class Report(Connection):
         iter_ = self._get(self.report,
                           params=params).iter_lines(decode_unicode=True)
 
+        # python 2.7's csv module isn't very well behaved with CSV so we pass in our own handler
+        def utf_8_encoder(unicode_csv_data):
+            import sys
+            for line in unicode_csv_data:
+                if sys.version_info > (3, 0):
+                    yield line
+                else:
+                    yield line.encode('utf-8')
+
         if as_dict:
-            reader = csv.DictReader(iter_)
+            reader = csv.DictReader(utf_8_encoder(iter_))
             headers = reader.fieldnames
         else:
-            reader = csv.reader(iter_)
+            reader = csv.reader(utf_8_encoder(iter_))
             headers = next(reader)
 
         return headers, reader

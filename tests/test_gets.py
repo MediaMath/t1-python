@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 import unittest
 
-import io
 import responses
 import requests
 from .requests_patch import patched_extract_cookies_to_jar
