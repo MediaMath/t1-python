@@ -123,7 +123,7 @@ class TestGets(unittest.TestCase):
         self.setup()
         with open('tests/fixtures/advertisers.xml') as f:
             advertisers = f.read()
-        with open('tests/fixtures/advertiser.xml') as f:
+        with open('tests/fixtures/advertisers_limit_1.xml') as f:
             advertiser = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/advertisers?page_limit=1&page_offset=0&sort_by=id',
@@ -304,5 +304,16 @@ class TestGets(unittest.TestCase):
         r = self.t1.new('report')
         md = r.metadata
         assert hasattr(md, 'keys'), 'Expected mapping structure, got: %r' % type(md)
-
         assert 'reports' in md, 'Expected overall metadata, got: %r' % md
+
+    @responses.activate
+    def test_target_dimensions(self):
+        self.setup()
+        with open('tests/fixtures/target_dimensions.xml') as f:
+            fixture = f.read()
+        responses.add(responses.GET,
+                      'https://api.mediamath.com/api/v2.0/strategies/151940/target_dimensions/7',
+                      body=fixture,
+                      content_type='application/xml')
+        t = self.t1.get('strategies', 151940, child='region')
+        assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t

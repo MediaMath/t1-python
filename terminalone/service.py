@@ -458,16 +458,8 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        if entity and (child == 'permissions' or not child):
-            passed_ents = []
-            for i in six.moves.range(2):
-                try:
-                    passed_ents.append(next(entities))
-                except StopIteration:
-                    break
-            entities = chain(iter(passed_ents), entities)
-            if len(passed_ents) == 1:
-                return self._return_class(next(entities), child, child_id, entity, collection)
+        if ent_count == 1:
+            return self._return_class(next(entities), child, child_id, entity, collection)
 
         ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
         if count:
