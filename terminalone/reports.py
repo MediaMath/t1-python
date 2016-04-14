@@ -11,10 +11,10 @@ from .vendor import six
 from .vendor.six.moves.urllib.parse import unquote, urlencode
 from .xmlparser import ParseError, XMLParser
 
-if six.PY2:
-    decode = False
-else:
+if six.PY3:
     decode = True
+else:
+    decode = False
 
 class Report(Connection):
     """Object for pulling reports"""
