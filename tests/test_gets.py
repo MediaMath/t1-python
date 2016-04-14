@@ -2,6 +2,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import unittest
+
 import responses
 import requests
 from .requests_patch import patched_extract_cookies_to_jar
@@ -180,7 +181,7 @@ class TestGets(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/agency.organization=100001'
                       '?full=pixel_bundle&page_limit=1&page_offset=0&sort_by=id',
-                      body=open('tests/fixtures/data_pixel_bundle_full.xml').read(),
+                      body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
@@ -317,3 +318,40 @@ class TestGets(unittest.TestCase):
                       content_type='application/xml')
         t = self.t1.get('strategies', 151940, child='region')
         assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t
+
+    @responses.activate
+    def test_picard_report(self):
+        self.setup()
+        with open('tests/fixtures/performance.csv', "rt") as f:
+            fixture = f.read()
+        responses.add(responses.GET,
+                      'https://api.mediamath.com/reporting/v1/std/performance?'
+                      'filter=organization_id%3D100048&time_window=yesterday'
+                      '&time_rollup=all&dimensions=campaign_name',
+                      body=fixture,
+                      content_type='text/csv; charset=UTF-8',
+                      match_querystring=True)
+        with open('tests/fixtures/reports_meta.json') as f:
+            fixture = f.read()
+        responses.add(responses.GET,
+                      'https://api.mediamath.com/reporting/v1/std/meta',
+                      body=fixture,
+                      content_type='application/json',
+                      match_querystring=True)
+
+        r = self.t1.new('report')
+        report = self.t1.new("report", r.report_uri("performance"))
+        reportOpts = {
+            'dimensions': ['campaign_name'],
+            'filter': {'organization_id': 100048},
+            'time_rollup': 'all',
+            'time_window': 'yesterday',
+            'precision': 2
+        }
+        report.set(reportOpts)
+
+        headers, data = report.get()
+
+        assert 'start_date' in headers, 'expected start_date field in headers'
+        for line in data:
+            assert isinstance(line, (list, tuple)), 'expected a list'

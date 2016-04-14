@@ -11,6 +11,10 @@ from .vendor import six
 from .vendor.six.moves.urllib.parse import unquote, urlencode
 from .xmlparser import ParseError, XMLParser
 
+if six.PY2:
+    decode = False
+else:
+    decode = True
 
 class Report(Connection):
     """Object for pulling reports"""
@@ -129,7 +133,7 @@ class Report(Connection):
                 params[key] = value
 
         iter_ = self._get(self.report,
-                          params=params).iter_lines(decode_unicode=True)
+                          params=params).iter_lines(decode_unicode=decode)
 
         if as_dict:
             reader = csv.DictReader(iter_)
