@@ -35,6 +35,7 @@ CLASSES = {
     'site_lists': SiteList,
     'site_placements': SitePlacement,
     'strategies': Strategy,
+    'strategy_audience_segments': StrategyAudienceSegment,
     'strategy_concepts': StrategyConcept,
     'strategy_day_parts': StrategyDayPart,
     'strategy_domain_restrictions': StrategyDomain,
@@ -74,6 +75,7 @@ MODEL_PATHS = {
     SiteList: 'site_lists',
     SitePlacement: 'site_placements',
     Strategy: 'strategies',
+    StrategyAudienceSegment: 'strategy_audience_segments',
     StrategyConcept: 'strategy_concepts',
     StrategyDayPart: 'strategy_day_parts',
     StrategyDomain: 'strategy_domain_restrictions',
@@ -113,6 +115,7 @@ SINGULAR = {
     'site_list': SiteList,
     'site_placement': SitePlacement,
     'strategy': Strategy,
+    'strategy_audience_segment': StrategyAudienceSegment,
     'strategy_concept': StrategyConcept,
     'strategy_day_part': StrategyDayPart,
     'strategy_domain_restriction': StrategyDomain,
@@ -132,6 +135,7 @@ SINGULAR = {
 }
 CHILD_PATHS = {
     'acl': ('acl', 0),
+    'audience_segments': ('audience_segments', 0),
     'audio': ('target_dimensions', 22),
     'browser': ('target_dimensions', 4),
     'channels': ('target_dimensions', 16),

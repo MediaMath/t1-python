@@ -24,6 +24,7 @@ from .seat import Seat
 from .sitelist import SiteList
 from .siteplacement import SitePlacement
 from .strategy import Strategy
+from .strategyaudiencesegment import StrategyAudienceSegment
 from .strategyconcept import StrategyConcept
 from .strategydaypart import StrategyDayPart
 from .strategydomain import StrategyDomain
@@ -63,6 +64,7 @@ __all__ = ['ACL',
            'SiteList',
            'SitePlacement',
            'Strategy',
+           'StrategyAudienceSegment',
            'StrategyConcept',
            'StrategyDayPart',
            'StrategyDomain',
