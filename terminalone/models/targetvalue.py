@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides region object."""
+"""Provides target value object."""
 
 from __future__ import absolute_import
 from ..errors import ClientError
@@ -7,7 +7,7 @@ from ..entity import Entity
 
 
 class TargetValue(Entity):
-    """docstring for TargetValue."""
+    """Target value value and target value count entities"""
     collection = 'target_values'
     resource = 'target_value'
     _relations = {
@@ -16,7 +16,9 @@ class TargetValue(Entity):
 
     _pull = {
         '_type': None,
+        'child_count': int,
         'code': None,
+        'dimension_code': None,
         'id': int,
         'is_targetable': Entity._int_to_bool,
         'name': None,
