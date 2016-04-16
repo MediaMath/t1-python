@@ -16,6 +16,7 @@ if six.PY3:
 else:
     decode = False
 
+
 class Report(Connection):
     """Object for pulling reports"""
     _fields = {
