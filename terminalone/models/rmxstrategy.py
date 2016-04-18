@@ -2,6 +2,7 @@
 """Provides RMX Strategy object. DEPRECATED: new entities should not be made."""
 
 from __future__ import absolute_import
+from warnings import warn
 from ..entity import Entity
 from ..errors import ClientError
 
@@ -43,6 +44,13 @@ class RMXStrategy(Entity):
     }
 
     def __init__(self, session, properties=None, **kwargs):
+        if properties is None:
+            # stacklevel=3 means that the line that called t1.new will be
+            # shown to the user. stacklevel=2 will just show the initialization,
+            # not the line that called for the instantiation.
+            warn('Deprecated entity: this entity is only included for certain '
+                 'strategies that automatically include it. New instances '
+                 'should not be created.', UserWarning, stacklevel=3)
         super(RMXStrategy, self).__init__(session, properties, **kwargs)
 
     def save(self, *args, **kwargs):

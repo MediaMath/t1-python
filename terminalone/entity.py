@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import, division
 from datetime import datetime, timedelta
-import warnings
+from warnings import warn
 from .config import PATHS
 from .connection import Connection
 from .errors import ClientError
@@ -58,9 +58,9 @@ class Entity(Connection):
 
     def __getitem__(self, attribute):
         """DEPRECATED way of retrieving properties like with dictionary"""
-        warnings.warn(('Accessing entity like a dictionary will be deprecated; '
-                       'please discontinue use.'),
-                      DeprecationWarning, stacklevel=2)
+        warn('Accessing entity like a dictionary will be removed: '
+             'please discontinue use.',
+             DeprecationWarning, stacklevel=2)
         if attribute in self.properties:
             return self.properties[attribute]
         else:
@@ -68,9 +68,9 @@ class Entity(Connection):
 
     def __setitem__(self, attribute, value):
         """DEPRECATED way of setting properties like with dictionary"""
-        warnings.warn(('Accessing entity like a dictionary will be deprecated; '
-                       'please discontinue use.'),
-                      DeprecationWarning, stacklevel=2)
+        warn('Accessing entity like a dictionary will be removed: '
+             'please discontinue use.',
+             DeprecationWarning, stacklevel=2)
         self.properties[attribute] = self._pull[attribute](value)
 
     def __getattr__(self, attribute):
