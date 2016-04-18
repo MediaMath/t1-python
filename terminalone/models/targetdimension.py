@@ -2,7 +2,7 @@
 """Provides target dimension object."""
 
 from __future__ import absolute_import
-import warnings
+from warnings import warn
 from ..config import PATHS
 from ..errors import ClientError
 from ..entity import Entity, SubEntity
@@ -47,8 +47,8 @@ class TargetDimension(SubEntity):
         data: optional dict of properties
         """
         if 'obj' in kwargs:
-            warnings.warn('The obj flag is deprecated; discontinue use.',
-                          DeprecationWarning, stacklevel=2)
+            warn('The obj flag is deprecated: please discontinue use.',
+                 DeprecationWarning, stacklevel=2)
         if data is None:
             data = {}
 

@@ -20,6 +20,8 @@ from .pixelprovider import PixelProvider
 from .placementslot import PlacementSlot
 from .publisher import Publisher
 from .publishersite import PublisherSite
+from .rmxstrategy import RMXStrategy
+from .rmxstrategyroitargetpixel import RMXStrategyROITargetPixel
 from .seat import Seat
 from .sitelist import SiteList
 from .siteplacement import SitePlacement
@@ -60,6 +62,8 @@ __all__ = ['ACL',
            'PlacementSlot',
            'Publisher',
            'PublisherSite',
+           'RMXStrategy',
+           'RMXStrategyROITargetPixel',
            'Seat',
            'SiteList',
            'SitePlacement',
