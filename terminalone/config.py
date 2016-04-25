@@ -15,4 +15,5 @@ PATHS = {
     'mgmt': 'api/v2.0',
     'reports': 'reporting/v1/std',
     'uniques': 'uniques/v1',
+    'oauth2': 'oauth2/v1.0',
 }

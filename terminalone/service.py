@@ -269,8 +269,8 @@ class T1(Connection):
                                                 self.auth_params['api_key'])
         elif auth_method == 'basic':
             return super(T1, self)._auth_basic(self.auth_params['username'],
-                                                self.auth_params['password'],
-                                                self.auth_params['api_key'])
+                                               self.auth_params['password'],
+                                               self.auth_params['api_key'])
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 

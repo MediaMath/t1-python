@@ -84,6 +84,8 @@ class Connection(object):
         )
         session.headers['User-Agent'] = self.user_agent
         session.params = {'api_key': self.auth_params['api_key']}
+        if self.json:
+            self.session.headers['Accept'] = ACCEPT_HEADERS['json']
         return session
 
     def _create_session(self):
@@ -94,6 +96,8 @@ class Connection(object):
             session = Session()
             session.headers['User-Agent'] = self.user_agent
             session.params = {'api_key': self.auth_params['api_key']}
+            if self.json:
+                self.session.headers['Accept'] = ACCEPT_HEADERS['json']
 
         Connection.__setattr__(self, 'session', session)
 
@@ -206,7 +210,6 @@ class Connection(object):
         response = self.session.post(url, data=data, stream=True)
         return self._parse_response(response)
 
-
     def _parse_response(self, response):
         if self.json:
             response_body = response.text
@@ -222,4 +225,3 @@ class Connection(object):
             Connection.__setattr__(self, 'response', response)
             raise
         return iter(result.entities), result.entity_count
-
