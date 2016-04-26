@@ -4,9 +4,9 @@
 from __future__ import absolute_import
 from requests import Session
 from requests.utils import default_user_agent
+from requests_oauthlib import OAuth2Session
 from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
 from .errors import ClientError, ParserException
-from requests_oauthlib import OAuth2Session
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser

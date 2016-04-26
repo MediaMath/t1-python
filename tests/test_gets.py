@@ -127,12 +127,14 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/advertisers_limit_1.xml') as f:
             advertiser = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/advertisers?page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/advertisers?'
+                      'api_key=api_key&page_limit=1&page_offset=0&sort_by=id',
                       body=advertisers,
                       content_type='application/xml',
                       match_querystring=True)
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/advertisers?full=%2A&page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/advertisers?api_key='
+                      'api_key&full=%2A&page_limit=1&page_offset=0&sort_by=id',
                       body=advertiser,
                       content_type='application/xml',
                       match_querystring=True)
@@ -159,7 +161,8 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/atomic_creatives_with_creative_approvals.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/atomic_creatives/1000?with=creative_approvals',
+                      'https://api.mediamath.com/api/v2.0/atomic_creatives/1000'
+                      '?api_key=api_key&with=creative_approvals',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -172,15 +175,17 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/data_pixel_bundle_full.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
-                      '?full=pixel_bundle&page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
+                      'advertiser=29?api_key=api_key&full=pixel_bundle'
+                      '&page_limit=1&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
 
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/agency.organization=100001'
-                      '?full=pixel_bundle&page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
+                      'agency.organization=100001?api_key=api_key&full='
+                      'pixel_bundle&page_limit=1&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -199,8 +204,9 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/pixel_bundle_with_advertiser.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
-                      '?with=advertiser&full=%2A&page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
+                      'advertiser=29?api_key=api_key&with=advertiser&full=%2A'
+                      '&page_limit=1&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -216,8 +222,9 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/pixel_bundle_with_advertiser_agency.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/advertiser=29'
-                      '?with=advertiser%2Cagency&full=%2A&page_limit=1&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
+                      'advertiser=29?api_key=api_key&with=advertiser%2Cagency'
+                      '&full=%2A&page_limit=1&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -233,8 +240,9 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/campaigns_with_strategies.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/campaigns/limit/advertiser=29'
-                      '?page_limit=1&with=strategies&page_offset=0&sort_by=id',
+                      'https://api.mediamath.com/api/v2.0/campaigns/limit/'
+                      'advertiser=29?api_key=api_key&page_limit=1'
+                      '&with=strategies&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -251,8 +259,9 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/atomic_creatives_with_advertiser_concept.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/api/v2.0/atomic_creatives/limit/advertiser=29'
-                      '?with=advertiser&with=concept&full=%2A&page_limit=1&page_offset=0&sort_by=-concept_id',
+                      'https://api.mediamath.com/api/v2.0/atomic_creatives/limit/'
+                      'advertiser=29?api_key=api_key&with=advertiser&with=concept'
+                      '&full=%2A&page_limit=1&page_offset=0&sort_by=-concept_id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -270,13 +279,15 @@ class TestGets(unittest.TestCase):
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles'
-                      '?q=%289991%2C9992%2C9993%29&page_limit=100&page_offset=0&sort_by=id',
+                      '?api_key=api_key&q=%289991%2C9992%2C9993%29&page_limit='
+                      '100&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/campaigns'
-                      '?q=name%3D%3Atest%2A&page_limit=5&page_offset=0&sort_by=id',
+                      '?api_key=api_key&q=name%3D%3Atest%2A&page_limit=5'
+                      '&page_offset=0&sort_by=id',
                       body=fixture,
                       content_type='application/xml',
                       match_querystring=True)
@@ -298,7 +309,8 @@ class TestGets(unittest.TestCase):
         with open('tests/fixtures/reports_meta.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/reporting/v1/std/meta',
+                      'https://api.mediamath.com/reporting/v1/std/meta'
+                      '?api_key=api_key',
                       body=fixture,
                       content_type='application/json',
                       match_querystring=True)
@@ -326,15 +338,17 @@ class TestGets(unittest.TestCase):
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/reporting/v1/std/performance?'
-                      'filter=organization_id%3D100048&time_window=yesterday'
-                      '&time_rollup=all&dimensions=campaign_name',
+                      'api_key=api_key&filter=organization_id%3D100048'
+                      '&time_window=yesterday&time_rollup=all'
+                      '&dimensions=campaign_name',
                       body=fixture,
                       content_type='text/csv; charset=UTF-8',
                       match_querystring=True)
         with open('tests/fixtures/reports_meta.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
-                      'https://api.mediamath.com/reporting/v1/std/meta',
+                      'https://api.mediamath.com/reporting/v1/std/meta'
+                      '?api_key=api_key',
                       body=fixture,
                       content_type='application/json',
                       match_querystring=True)

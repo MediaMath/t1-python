@@ -44,8 +44,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         assert p._type == 'permission', 'Expected permission entity, got: {}'.format(p._type)
@@ -59,8 +58,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         remove_id = 6
@@ -78,8 +76,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         remove_ids = [6, 7]
@@ -100,8 +97,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         remove_advertiser_ids = [8, 9, 10]
@@ -128,8 +124,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         p.add('organization', 10)
@@ -144,8 +139,7 @@ class TestPermissions(unittest.TestCase):
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
                       body=fixture,
-                      content_type='application/xml',
-                      match_querystring=True)
+                      content_type='application/xml')
 
         p = self.t1.get('users', 10000, child='permissions')
         p.add('organization', 10)

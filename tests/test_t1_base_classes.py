@@ -16,7 +16,7 @@ requests.sessions.extract_cookies_to_jar = patched_extract_cookies_to_jar
 requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
 
 
-class TestT1Login(unittest.TestCase):
+class TestCookieLogin(unittest.TestCase):
     """docstring for TestT1Login"""
 
     @responses.activate
