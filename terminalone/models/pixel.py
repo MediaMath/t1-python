@@ -2,7 +2,7 @@
 """Provides child pixel object. This is *distinct* from PixelBundle; please see the documentation"""
 
 from __future__ import absolute_import
-from terminalone import t1types
+from .. import t1types
 from ..entity import Entity
 
 

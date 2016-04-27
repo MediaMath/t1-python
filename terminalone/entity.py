@@ -2,7 +2,6 @@
 """Provides base object for T1 data classes."""
 
 from __future__ import absolute_import, division
-
 from warnings import warn
 from .config import PATHS
 from .connection import Connection

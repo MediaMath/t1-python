@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-from terminalone import t1types
+from .. import t1types
 from ..errors import ClientError
 from ..entity import Entity
 

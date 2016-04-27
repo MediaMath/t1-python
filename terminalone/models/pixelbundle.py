@@ -2,7 +2,7 @@
 """Provides Pixel Bundle object for working with T1 pixels."""
 
 from __future__ import absolute_import
-from terminalone import t1types
+from .. import t1types
 from ..entity import Entity
 
 

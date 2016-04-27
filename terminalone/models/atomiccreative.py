@@ -2,7 +2,7 @@
 """Provides Atomic Creative object for working with creatives."""
 
 from __future__ import absolute_import
-from terminalone import t1types
+from .. import t1types
 from ..entity import Entity
 
 

@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from functools import partial
 import re
 
-from terminalone import t1types
+from .. import t1types
 from ..config import PATHS
 from ..entity import Entity
 from ..utils import suppress

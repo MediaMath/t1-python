@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 from datetime import datetime
 
-from terminalone import t1types
+from .. import t1types
 from ..entity import Entity
 from ..vendor import six
 
