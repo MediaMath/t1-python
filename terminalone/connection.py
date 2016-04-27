@@ -19,14 +19,6 @@ def _generate_user_agent(name='t1-python'):
 
 class Connection(object):
     """Base connection object for TerminalOne session"""
-    VALID_ENVS = frozenset(['production', 'qa'])
-    API_BASES = {
-        'production': 'api.mediamath.com',
-    }
-    SESSIONS = {
-        'cookie': Session,
-        'oauth2': OAuth2Session,
-    }
     user_agent = _generate_user_agent()
 
     def __init__(self,

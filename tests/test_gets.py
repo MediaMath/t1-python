@@ -1,16 +1,12 @@
-from __future__ import print_function
 from __future__ import absolute_import
-
 import unittest
-
 import responses
 import requests
 from .requests_patch import patched_extract_cookies_to_jar
-
 from terminalone import T1, filters
 
 mock_credentials = {
-    'username': 'user;',
+    'username': 'user',
     'password': 'password',
     'api_key': 'api_key',
 }
@@ -22,7 +18,8 @@ requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
 
 
 class TestGets(unittest.TestCase):
-    def setup(self):
+    @responses.activate
+    def setUp(self):
         """set up test fixtures"""
         with open('tests/fixtures/session.xml') as f:
             fixture = f.read()
@@ -39,7 +36,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_collection(self):
-        self.setup()
         with open('tests/fixtures/advertisers.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers',
@@ -52,7 +48,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_counts(self):
-        self.setup()
         with open('tests/fixtures/advertisers.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers',
@@ -66,7 +61,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_all(self):
-        self.setup()
         with open('tests/fixtures/organizations.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/organizations',
@@ -80,7 +74,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_strategy_day_parts(self):
-        self.setup()
         with open('tests/fixtures/strategy_day_parts.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/strategies/941273/day_parts',
@@ -95,7 +88,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_entity_get_save(self):
-        self.setup()
         with open('tests/fixtures/advertiser.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers/1',
@@ -121,7 +113,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_full(self):
-        self.setup()
         with open('tests/fixtures/advertisers.xml') as f:
             advertisers = f.read()
         with open('tests/fixtures/advertisers_limit_1.xml') as f:
@@ -157,7 +148,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_creative_approval(self):
-        self.setup()
         with open('tests/fixtures/atomic_creatives_with_creative_approvals.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -171,7 +161,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_limit(self):
-        self.setup()
         with open('tests/fixtures/data_pixel_bundle_full.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -200,7 +189,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include(self):
-        self.setup()
         with open('tests/fixtures/pixel_bundle_with_advertiser.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -218,7 +206,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_traversals(self):
-        self.setup()
         with open('tests/fixtures/pixel_bundle_with_advertiser_agency.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -236,7 +223,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_plural(self):
-        self.setup()
         with open('tests/fixtures/campaigns_with_strategies.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -255,7 +241,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_multi(self):
-        self.setup()
         with open('tests/fixtures/atomic_creatives_with_advertiser_concept.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -274,7 +259,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_find(self):
-        self.setup()
         with open('tests/fixtures/pixel_bundles.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -305,7 +289,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_picard_meta(self):
-        self.setup()
         with open('tests/fixtures/reports_meta.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -321,7 +304,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_target_dimensions(self):
-        self.setup()
         with open('tests/fixtures/target_dimensions.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -333,7 +315,6 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_picard_report(self):
-        self.setup()
         with open('tests/fixtures/performance.csv', "rt") as f:
             fixture = f.read()
         responses.add(responses.GET,
@@ -355,14 +336,14 @@ class TestGets(unittest.TestCase):
 
         r = self.t1.new('report')
         report = self.t1.new("report", r.report_uri("performance"))
-        reportOpts = {
+        report_opts = {
             'dimensions': ['campaign_name'],
             'filter': {'organization_id': 100048},
             'time_rollup': 'all',
             'time_window': 'yesterday',
             'precision': 2
         }
-        report.set(reportOpts)
+        report.set(report_opts)
 
         headers, data = report.get()
 
