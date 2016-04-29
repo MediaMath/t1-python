@@ -7,7 +7,7 @@ from ..entity import Entity
 
 
 class StrategyTargetingSegment(Entity):
-    """docstring for StrategyTargetingSegment."""
+    """Object for strategy contextual targeting provided by third-party vendors."""
     collection = 'strategy_targeting_segments'
     resource = 'strategy_targeting_segment'
     _relations = {
@@ -27,11 +27,12 @@ class StrategyTargetingSegment(Entity):
         'user_cpm': float,
         'version': int,
     }
-    _push = _pull.copy()
-    _readonly = Entity._readonly | {'name', }
 
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyTargetingSegment, self).__init__(session, properties, **kwargs)
+
+    def save(self, *args, **kwargs):
+        raise ClientError('This object is not editable.')
 
     def remove(self):
         """Unassign the strategy targeting segment from the strategy."""
