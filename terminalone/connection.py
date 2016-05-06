@@ -33,6 +33,9 @@ class Connection(object):
             for https://api.mediamath.com/api/v2.0
         :param api_base: str API domain. should be the qualified domain name
             without trailing slash. e.g. "api.mediamath.com".
+        :param json: bool use JSON header for serialization. Currently
+            for internal experimentation, JSON will become the default in a
+            future version.
         :param auth_params: dict set of auth parameters:
             "method" required argument. Determines session handler.
             "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
