@@ -21,7 +21,10 @@ packages = [
     'terminalone.vendor',
 ]
 
-requirements = ['requests>=2.3.0']
+requirements = [
+    'requests>=2.3.0',
+    'requests-oauthlib>=0.5.0',
+]
 
 setup(
     name='TerminalOne',

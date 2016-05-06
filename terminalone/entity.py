@@ -32,8 +32,8 @@ class Entity(Connection):
         :param kwargs: additional kwargs to pass to Connection
         """
 
-        # __setattr__ is overridden below. So, to set self.properties as an empty
-        # dict, we need to use the built-in __setattr__ method; thus, super()
+        # __setattr__ is overridden below. So to set self.properties as an empty
+        # dict, we need to use the built-in __setattr__ method
         super(Entity, self).__init__(_create_session=False, **kwargs)
         super(Entity, self).__setattr__('session', session)
         if properties is None:
