@@ -92,7 +92,7 @@ class Connection(object):
             session.headers['User-Agent'] = self.user_agent
             session.params = {'api_key': self.auth_params['api_key']}
             if self.json:
-                self.session.headers['Accept'] = ACCEPT_HEADERS['json']
+                session.headers['Accept'] = ACCEPT_HEADERS['json']
 
         Connection.__setattr__(self, 'session', session)
 

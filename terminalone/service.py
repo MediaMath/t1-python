@@ -257,6 +257,7 @@ class T1(Connection):
             })
 
         super(T1, self).__init__(environment, api_base=api_base,
+                                 json=json,
                                  auth_params=self.auth_params,
                                  _create_session=True, **kwargs)
 
