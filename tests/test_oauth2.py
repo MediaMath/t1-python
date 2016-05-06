@@ -130,7 +130,6 @@ class TestOAuth2Login(unittest.TestCase):
         now = time()
         token.update({
             'expiration_time': int(now) - 1,
-            'expires_in': 3600,
             'expires_at': now - 1,
         })
 
