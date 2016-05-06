@@ -2,7 +2,6 @@
 """Provides target value object."""
 
 from __future__ import absolute_import
-
 from .. import t1types
 from ..errors import ClientError
 from ..entity import Entity

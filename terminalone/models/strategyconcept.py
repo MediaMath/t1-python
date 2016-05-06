@@ -2,7 +2,6 @@
 """Provides strategy concept object."""
 
 from __future__ import absolute_import
-
 from .. import t1types
 from ..config import PATHS
 from ..entity import Entity

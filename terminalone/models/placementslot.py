@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 from datetime import datetime
-
 from .. import t1types
 from ..entity import Entity
 from ..vendor import six

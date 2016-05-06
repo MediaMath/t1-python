@@ -2,7 +2,6 @@
 """Provides deal object for PMP-E and Global Deals."""
 
 from __future__ import absolute_import
-
 from .. import t1types
 from ..entity import Entity
 
