@@ -2,6 +2,7 @@
 """Provides strategy domain restriction object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -12,14 +13,14 @@ class StrategyDomain(Entity):
     _relations = {
         'strategy',
     }
-    _restrictions = Entity._enum({'INCLUDE', 'EXCLUDE'}, '')
+    _restrictions = t1types.enum({'INCLUDE', 'EXCLUDE'}, '')
     _pull = {
-        'created_at': Entity._strpt,
+        'created_at': t1types.strpt,
         'domain': None,
         'id': int,
         'restriction': None,
         'strategy_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

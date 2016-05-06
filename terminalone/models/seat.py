@@ -2,6 +2,7 @@
 """Provides seat object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -12,19 +13,19 @@ class Seat(Entity):
     _relations = {
         'advertiser',
     }
-    _rmx_units = Entity._enum({'CPM', 'PCT_MEDIA'}, 'PCT_MEDIA')
+    _rmx_units = t1types.enum({'CPM', 'PCT_MEDIA'}, 'PCT_MEDIA')
     _pull = {
-        'bill_media_to_client': Entity._int_to_bool,
-        'created_on': Entity._strpt,
+        'bill_media_to_client': t1types.int_to_bool,
+        'created_on': t1types.strpt,
         'id': int,
         'organization_id': int,
         'rmx_exchange_cost_cpm': float,
         'rmx_exchange_cost_pct': float,
         'rmx_exchange_cost_unit': None,
         'seat_identifier': None,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'supply_source_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

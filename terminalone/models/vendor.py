@@ -2,6 +2,7 @@
 """Provides vendor object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -13,27 +14,27 @@ class Vendor(Entity):
         'vendor_contracts',
         'vendor_domains',
     }
-    # _rate_card_types = Entity._enum({'CPM', 'FIXED'}, None)
-    _vendor_types = Entity._enum({'AD_SERVER', 'AD_VERIFICATION', 'CONTEXTUAL',
+    # _rate_card_types = t1types.enum({'CPM', 'FIXED'}, None)
+    _vendor_types = t1types.enum({'AD_SERVER', 'AD_VERIFICATION', 'CONTEXTUAL',
                                   'DATA', 'DSP', 'DYNAMIC_CREATIVE', 'NETWORK',
                                   'OBA_COMPLIANCE', 'OTHER', 'PIXEL_TRACKING',
                                   'RICH_MEDIA', 'SURVEY'}, 'OTHER')
     _pull = {
-        'adx_approved': Entity._int_to_bool,
-        'adx_declaration_required': Entity._int_to_bool,
-        'adx_ssl_approved': Entity._int_to_bool,
+        'adx_approved': t1types.int_to_bool,
+        'adx_declaration_required': t1types.int_to_bool,
+        'adx_ssl_approved': t1types.int_to_bool,
         'adx_vendor_identifier': None,
-        'adx_video_approved': Entity._int_to_bool,
-        'adx_video_ssl_approved': Entity._int_to_bool,
-        'created_on': Entity._strpt,
+        'adx_video_approved': t1types.int_to_bool,
+        'adx_video_ssl_approved': t1types.int_to_bool,
+        'created_on': t1types.strpt,
         'description': None,
         'id': int,
-        'is_eligible': Entity._int_to_bool,
-        'mm_contract_available': Entity._int_to_bool,
+        'is_eligible': t1types.int_to_bool,
+        'mm_contract_available': t1types.int_to_bool,
         'name': None,
         'rate_card_price': float,
         'rate_card_type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'vendor_type': None,
         'version': int,
         'wholesale_price': float,

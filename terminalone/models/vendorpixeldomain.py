@@ -2,6 +2,7 @@
 """Provides vendor_pixel_domain object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -15,7 +16,7 @@ class VendorPixelDomain(Entity):
         'vendor_pixel',
     }
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'domain': None,
         'id': int,
         'vendor_domain_id': int,

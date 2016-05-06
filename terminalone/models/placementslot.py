@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 from datetime import datetime
+from .. import t1types
 from ..entity import Entity
 from ..vendor import six
 
@@ -36,24 +37,24 @@ class PlacementSlot(Entity):
         'start_date': datetime(2012, 10, 1, 0, 0, 0),
         'volume_unit': 'impressions',
     }
-    _auction_types = Entity._enum({'FIRST_PRICED', 'SECOND_PRICED'},
+    _auction_types = t1types.enum({'FIRST_PRICED', 'SECOND_PRICED'},
                                   'FIRST_PRICED')
-    _price_types = Entity._enum({'CPM', }, 'CPM')
-    _frequency_intervals = Entity._enum({'hour', 'day', 'week', 'month',
+    _price_types = t1types.enum({'CPM', }, 'CPM')
+    _frequency_intervals = t1types.enum({'hour', 'day', 'week', 'month',
                                          'campaign', 'not-applicable'},
                                         'not-applicable')
-    _frequency_types = Entity._enum({'even', 'asap', 'no-limit'}, 'no-limit')
-    _volume_units = Entity._enum({'impressions', }, 'impressions')
+    _frequency_types = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
+    _volume_units = t1types.enum({'impressions', }, 'impressions')
     _pull = {
         'ad_slot': int,
-        'allow_remnant': Entity._int_to_bool,
+        'allow_remnant': t1types.int_to_bool,
         'auction_type': None,
         'budget': float,
         'buy_price': float,
         'buy_price_type': None,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'description': None,
-        'end_date': Entity._strpt,
+        'end_date': t1types.strpt,
         'est_volume': float,
         'frequency_amount': int,
         'frequency_interval': None,
@@ -65,8 +66,8 @@ class PlacementSlot(Entity):
         'sell_price': float,
         'sell_price_type': None,
         'site_placement_id': int,
-        'start_date': Entity._strpt,
-        'updated_on': Entity._strpt,
+        'start_date': t1types.strpt,
+        'updated_on': t1types.strpt,
         'version': int,
         'volume_unit': None,
         'width': int,

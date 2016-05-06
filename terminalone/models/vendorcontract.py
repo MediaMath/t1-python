@@ -2,6 +2,7 @@
 """Provides vendor_contract object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -15,12 +16,12 @@ class VendorContract(Entity):
     }
     _pull = {
         'campaign_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
         'price': float,
         'rate_card_type': None,
-        'updated_on': Entity._strpt,
-        'use_mm_contract': Entity._int_to_bool,
+        'updated_on': t1types.strpt,
+        'use_mm_contract': t1types.int_to_bool,
         'vendor_id': int,
         'version': int,
     }

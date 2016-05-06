@@ -3,7 +3,9 @@
 
 from __future__ import absolute_import
 from ..config import PATHS
+from .. import t1types
 from ..entity import Entity
+from ..errors import ClientError
 
 
 class StrategyTargetingSegment(Entity):
@@ -15,7 +17,7 @@ class StrategyTargetingSegment(Entity):
         'strategy',
     }
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'group_identifier': None,
         'id': int,
         'operator': None,
@@ -23,7 +25,7 @@ class StrategyTargetingSegment(Entity):
         'strategy_id': int,
         'targeting_segment_id': int,
         'type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'user_cpm': float,
         'version': int,
     }

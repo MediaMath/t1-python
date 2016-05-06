@@ -2,6 +2,7 @@
 """Provides creative object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -21,9 +22,9 @@ class Creative(Entity):
     }
     _pull = {
         'atomic_creative_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'id': int,
-        'last_modified': Entity._strpt,
+        'last_modified': t1types.strpt,
         'tag': None,
         'tag_type': None,
         'version': int,

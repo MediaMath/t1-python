@@ -2,6 +2,7 @@
 """Provides site list object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -12,16 +13,16 @@ class SiteList(Entity):
     _relations = {
         'organization',
     }
-    _restrictions = Entity._enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
+    _restrictions = t1types.enum({'INCLUDE', 'EXCLUDE'}, 'EXCLUDE')
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'filename': None,
         'id': int,
         'name': None,
         'organization_id': int,
         'restriction': None,
-        'status': Entity._int_to_bool,
-        'updated_on': Entity._strpt,
+        'status': t1types.int_to_bool,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from functools import partial
 import re
+from .. import t1types
 from ..config import PATHS
 from ..entity import Entity
 from ..utils import suppress
@@ -19,31 +20,31 @@ class Strategy(Entity):
     _relations = {
         'campaign', 'currency', 'time_zone',
     }
-    _aud_seg_ops = Entity._enum({'AND', 'OR'}, 'OR')
-    _freq_int = Entity._enum({'hour', 'day', 'week', 'month', 'campaign',
+    _aud_seg_ops = t1types.enum({'AND', 'OR'}, 'OR')
+    _freq_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                               'not-applicable'}, 'not-applicable')
-    _freq_type = Entity._enum({'even', 'asap', 'no-limit'}, 'no-limit')
-    _goal_type = Entity._enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
+    _freq_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
+    _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
                               'cpc')
-    _media_type = Entity._enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
-    _pac_int = Entity._enum({'hour', 'day'}, 'day')
-    _pac_type = Entity._enum({'even', 'asap'}, 'even')
-    _site_selec = Entity._enum({'MATHSELECT_250', 'EXCLUDE_UGC', 'ALL',
+    _media_type = t1types.enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
+    _pac_int = t1types.enum({'hour', 'day'}, 'day')
+    _pac_type = t1types.enum({'even', 'asap'}, 'even')
+    _site_selec = t1types.enum({'MATHSELECT_250', 'EXCLUDE_UGC', 'ALL',
                                 'REDUCED'}, 'REDUCED')
-    _supply_type = Entity._enum({'RTB', 'RMX_API', 'T1_RMX'}, 'RTB')
-    _type = Entity._enum({'REM', 'GBO', 'AUD'}, 'GBO')
+    _supply_type = t1types.enum({'RTB', 'RMX_API', 'T1_RMX'}, 'RTB')
+    _type = t1types.enum({'REM', 'GBO', 'AUD'}, 'GBO')
 
     _pull = {
         'audience_segment_exclude_op': None,
         'audience_segment_include_op': None,
         'bid_aggresiveness': float,
-        'bid_price_is_media_only': Entity._int_to_bool,
+        'bid_price_is_media_only': t1types.int_to_bool,
         'budget': float,
         'campaign_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'description': None,
         'effective_goal_value': float,
-        'end_date': Entity._strpt,
+        'end_date': t1types.strpt,
         'feature_compatibility': None,
         'frequency_amount': int,
         'frequency_interval': None,
@@ -60,22 +61,22 @@ class Strategy(Entity):
         'pacing_type': None,
         'pixel_target_expr': None,
         'roi_target': float,
-        'run_on_all_exchanges': Entity._int_to_bool,
-        'run_on_all_pmp': Entity._int_to_bool,
-        'run_on_display': Entity._int_to_bool,
-        'run_on_mobile': Entity._int_to_bool,
-        'run_on_streaming': Entity._int_to_bool,
-        'site_restriction_transparent_urls': Entity._int_to_bool,
+        'run_on_all_exchanges': t1types.int_to_bool,
+        'run_on_all_pmp': t1types.int_to_bool,
+        'run_on_display': t1types.int_to_bool,
+        'run_on_mobile': t1types.int_to_bool,
+        'run_on_streaming': t1types.int_to_bool,
+        'site_restriction_transparent_urls': t1types.int_to_bool,
         'site_selectiveness': None,
-        'start_date': Entity._strpt,
-        'status': Entity._int_to_bool,
+        'start_date': t1types.strpt,
+        'status': t1types.int_to_bool,
         'supply_type': None,
         'type': None,
-        'updated_on': Entity._strpt,
-        'use_campaign_end': Entity._int_to_bool,
-        'use_campaign_start': Entity._int_to_bool,
-        'use_mm_freq': Entity._int_to_bool,
-        'use_optimization': Entity._int_to_bool,
+        'updated_on': t1types.strpt,
+        'use_campaign_end': t1types.int_to_bool,
+        'use_campaign_start': t1types.int_to_bool,
+        'use_mm_freq': t1types.int_to_bool,
+        'use_optimization': t1types.int_to_bool,
         'version': int,
         'zone_name': None,
     }
@@ -84,7 +85,7 @@ class Strategy(Entity):
         'audience_segment_exclude_op': _aud_seg_ops,
         'audience_segment_include_op': _aud_seg_ops,
         'bid_price_is_media_only': int,
-        'end_date': partial(Entity._strft, null_on_none=True),
+        'end_date': partial(t1types.strft, null_on_none=True),
         'frequency_interval': _freq_int,
         'frequency_type': _freq_type,
         'goal_type': _goal_type,
@@ -98,7 +99,7 @@ class Strategy(Entity):
         'run_on_streaming': int,
         'site_restriction_transparent_urls': int,
         'site_selectiveness': _site_selec,
-        'start_date': partial(Entity._strft, null_on_none=True),
+        'start_date': partial(t1types.strft, null_on_none=True),
         'status': int,
         'supply_type': _supply_type,
         'type': _type,

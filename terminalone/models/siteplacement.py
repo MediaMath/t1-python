@@ -2,6 +2,7 @@
 """Provides site_placement object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -13,12 +14,12 @@ class SitePlacement(Entity):
         'publisher',
         'placement',
     }
-    _deal_sources = Entity._enum({'USER', 'INTERNAL'}, 'USER')
-    _media_types = Entity._enum({'display', 'video', 'mobile'}, 'display')
-    _pmp_types = Entity._enum({'DIRECT', 'PREMIUM'}, 'DIRECT')
+    _deal_sources = t1types.enum({'USER', 'INTERNAL'}, 'USER')
+    _media_types = t1types.enum({'display', 'video', 'mobile'}, 'display')
+    _pmp_types = t1types.enum({'DIRECT', 'PREMIUM'}, 'DIRECT')
     _pull = {
-        'bill_media_to_client': Entity._int_to_bool,
-        'created_on': Entity._strpt,
+        'bill_media_to_client': t1types.int_to_bool,
+        'created_on': t1types.strpt,
         'deal_source': None,
         'display_text': None,
         'id': int,
@@ -26,7 +27,7 @@ class SitePlacement(Entity):
         'name': None,
         'pmp_type': None,
         'publisher_site_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

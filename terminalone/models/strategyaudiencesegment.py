@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 from ..config import PATHS
+from .. import t1types
 from ..entity import Entity
 
 
@@ -16,14 +17,14 @@ class StrategyAudienceSegment(Entity):
     }
     _pull = {
         'audience_segment_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'group_identifier': None,
         'id': int,
         'operator': None,
         'restriction': None,
         'strategy_id': int,
         'type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'user_cpm': float,
         'version': int,
     }

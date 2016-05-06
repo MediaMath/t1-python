@@ -2,12 +2,10 @@
 """Provides base object for T1 data classes."""
 
 from __future__ import absolute_import, division
-from datetime import datetime, timedelta
 from warnings import warn
 from .config import PATHS
 from .connection import Connection
 from .errors import ClientError
-from terminalone.utils import FixedOffset
 from .vendor import six
 
 
@@ -81,7 +79,14 @@ class Entity(Connection):
 
     def __setattr__(self, attribute, value):
         if self._pull.get(attribute) is not None:
-            self.properties[attribute] = self._pull[attribute](value)
+            try:
+                self.properties[attribute] = self._pull[attribute](value)
+            except ValueError:
+                raise ClientError('key {} is invalid: must be of type {}'
+                                  .format(attribute, self._pull[attribute]))
+            except TypeError as e:
+                raise ClientError('key {} is invalid: {}'
+                                  .format(attribute, e.message))
         else:
             self.properties[attribute] = value
 
@@ -98,85 +103,6 @@ class Entity(Connection):
     def __setstate__(self, state):
         """Custom unpickling. TODO"""
         return super(Entity, self).__setstate__(state)
-
-    @staticmethod
-    def _int_to_bool(value):
-        """Convert integer string {"0","1"} to its corresponding bool"""
-        return bool(int(value))
-
-    @staticmethod
-    def _none_to_empty(val):
-        """Convert None to empty string.
-
-        Necessary for fields that are required POST but have no logical value.
-        """
-        if val is None:
-            return ""
-        return val
-
-    @staticmethod
-    def _enum(all_vars, default):
-        """Check input against accepted set or return a default."""
-
-        def get_value(test_value):
-            if test_value in all_vars:
-                return test_value
-            else:
-                return default
-
-        return get_value
-
-    @staticmethod
-    def _default_empty(default):
-        """Check an input against its falsy value or return a default."""
-
-        def get_value(test_value):
-            if test_value:
-                return test_value
-            else:
-                return default
-
-        return get_value
-
-    @staticmethod
-    def _strpt(dt_string):
-        """Convert ISO string time to datetime.datetime. No-op on datetimes"""
-        if isinstance(dt_string, datetime):
-            return dt_string
-        if dt_string[-5] == '-' or dt_string[-5] == '+':
-            offset_str = dt_string[-5:]
-            dt_string = dt_string[:-5]
-            offset = int(offset_str[-4:-2]) * 60 + int(offset_str[-2:])
-            if offset_str[0] == "-":
-                offset = -offset
-        else:
-            offset = 0
-
-        return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=FixedOffset(offset))
-
-    @staticmethod
-    def _strft(dt_obj, null_on_none=False):
-        """Convert datetime.datetime to ISO string.
-
-        :param null_on_none: bool Occasionally, we will actually want to send an
-            empty string where a datetime would typically go. For instance, if a
-            strategy has an end_date set, but then wants to change to use
-            campaign end date, the POST will normally omit the end_date field
-            (because you cannot send it with use_campaign_end).
-            However, this will cause an error because there was an end_date set
-            previously. So, we need to send an empty string to indicate that it
-            should be nulled out. In cases like this, null_on_none should be set
-            to True in the entity's _push dict using a partial to make it a
-            single-argument function. See strategy.py
-        :raise AttributeError: if not provided a datetime
-        :return: str
-        """
-        try:
-            return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
-        except AttributeError:
-            if dt_obj is None and null_on_none:
-                return ""
-            raise
 
     def _validate_read(self, data):
         """Convert XML strings to Python objects"""
@@ -213,7 +139,14 @@ class Entity(Connection):
                 continue
 
             if push_fn is not None:
-                data[key] = self._push[key](value)
+                try:
+                    data[key] = self._push[key](value)
+                except ValueError:
+                    raise ClientError('key {} is invalid: must be of type {}'
+                                      .format(key, self._push[key]))
+                except TypeError as e:
+                    raise ClientError('key {} is invalid: {}'
+                                      .format(key, e.message))
             else:
                 data[key] = value
         return data

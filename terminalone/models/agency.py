@@ -2,6 +2,7 @@
 """Provides agency object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -13,21 +14,21 @@ class Agency(Entity):
         'organization', 'billing_contact', 'sales_contact',
         'traffic_contact',
     }
-    _dmp_settings = Entity._enum({'disabled', 'inherits'}, 'inherits')
+    _dmp_settings = t1types.enum({'disabled', 'inherits'}, 'inherits')
     _pull = {
-        'allow_x_adv_optimization': Entity._int_to_bool,
-        'allow_x_adv_pixels': Entity._int_to_bool,
+        'allow_x_adv_optimization': t1types.int_to_bool,
+        'allow_x_adv_pixels': t1types.int_to_bool,
         'billing_contact_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'dmp_enabled': None,
         'id': int,
         'logo': None,
         'name': None,
         'organization_id': int,
         'sales_contact_id': int,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'traffic_contact_id': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

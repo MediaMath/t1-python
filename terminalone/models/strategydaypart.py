@@ -2,6 +2,7 @@
 """Provides strategy day part object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 from ..config import PATHS
 
@@ -14,15 +15,15 @@ class StrategyDayPart(Entity):
         'strategy',
     }
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'days': None,
         'end_hour': int,
         'id': int,
         'start_hour': int,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'strategy_id': int,
-        'udpated_on': Entity._strpt,
-        'user_time': Entity._int_to_bool,
+        'udpated_on': t1types.strpt,
+        'user_time': t1types.int_to_bool,
         'version': int,
     }
     _push = _pull.copy()

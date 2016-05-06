@@ -2,6 +2,7 @@
 """Provides child pixel object. This is *distinct* from PixelBundle; please see the documentation"""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -12,16 +13,16 @@ class ChildPixel(Entity):
     _relations = {
         'pixel_bundle',
     }
-    _pixel_types = Entity._enum({'creative', 'event', 'data'}, None)
+    _pixel_types = t1types.enum({'creative', 'event', 'data'}, None)
     _pull = {
         'bundle_id': int,
-        'created_on': Entity._strpt,
-        'distributed': Entity._int_to_bool,
+        'created_on': t1types.strpt,
+        'distributed': t1types.int_to_bool,
         'id': int,
         'pixel_type': None,
         'supply_source_id': int,
         'tag': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

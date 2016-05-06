@@ -2,6 +2,7 @@
 """Provides vendor_pixel object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -13,15 +14,15 @@ class VendorPixel(Entity):
         'creative',
         'vendor_pixel_domains',
     }
-    _set_bys = Entity._enum({'SYSTEM', 'USER'}, 'USER')
+    _set_bys = t1types.enum({'SYSTEM', 'USER'}, 'USER')
     _pull = {
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'creative_id': int,
         'id': int,
         'set_by': None,
         'tag': None,
         'tag_type': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
     _push = _pull.copy()

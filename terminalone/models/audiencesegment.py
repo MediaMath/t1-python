@@ -2,6 +2,7 @@
 """Provides audience segment object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -15,10 +16,10 @@ class AudienceSegment(Entity):
     }
     _pull = {
         'audience_vendor_id': int,
-        'buyable': Entity._int_to_bool,
+        'buyable': t1types.int_to_bool,
         'child_count': int,
         'code': None,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'full_path': None,
         'id': int,
         'name': None,
@@ -27,7 +28,7 @@ class AudienceSegment(Entity):
         'wholesale_cpm': float,
         'tag': None,
         'uniques': int,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'version': int,
     }
 

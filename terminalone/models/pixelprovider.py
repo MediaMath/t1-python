@@ -2,6 +2,7 @@
 """Provides pixel provider object."""
 
 from __future__ import absolute_import
+from .. import t1types
 from ..entity import Entity
 
 
@@ -9,20 +10,20 @@ class PixelProvider(Entity):
     """docstring for pixel provider."""
     collection = 'pixel_providers'
     resource = 'pixel_provider'
-    _executors = Entity._enum({'MEDIAMATH', 'UDI'}, 'UDI')
+    _executors = t1types.enum({'MEDIAMATH', 'UDI'}, 'UDI')
     _relations = {
         'agency',
         'vendor',
     }
     _pull = {
         'agency_id': int,
-        'created_on': Entity._strpt,
+        'created_on': t1types.strpt,
         'execution_by': None,
         'id': int,
         'name': None,
-        'status': Entity._int_to_bool,
+        'status': t1types.int_to_bool,
         'taxonomy_file': None,
-        'updated_on': Entity._strpt,
+        'updated_on': t1types.strpt,
         'vendor_id': int,
         'version': int,
     }
