@@ -13,7 +13,7 @@ class AtomicCreative(Entity):
     _relations = {
         'advertiser', 'concept', 'creative_approvals', 'creatives',
     }
-    _ad_formats = t1types.enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'},
+    _ad_formats = t1types.enum({'DISPLAY', 'EXPANDABLE', 'MOBILE', 'FBX'},
                                'DISPLAY')
     _ad_servers = t1types.enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
                                 'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
