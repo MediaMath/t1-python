@@ -13,11 +13,12 @@ class AtomicCreative(Entity):
     _relations = {
         'advertiser', 'concept', 'creative_approvals', 'creatives',
     }
-    _ad_formats = t1types.enum({'DISPLAY', 'EXPANDABLE', 'MOBILE'},
+    _ad_formats = t1types.enum({'DISPLAY', 'EXPANDABLE', 'MOBILE', 'FBX'},
                                'DISPLAY')
     _ad_servers = t1types.enum({'ATLAS', 'DART', 'EYEWONDER', 'MEDIAMIND',
                                 'MEDIAPLEX', 'POINTROLL', 'YIELD_MANAGER',
-                                'TERMINALONE', 'MEDIAFORGE', 'OTHER'},
+                                'TERMINALONE', 'MEDIAFORGE', 'OTHER',
+                                'TERMINALONESZ'},
                                'OTHER')
     _expands = t1types.enum({'L', 'R', 'U', 'D', 'LD', 'RD', 'LU', 'RU'}, None)
     _expand_dir = t1types.default_empty('NONRESTRICTED')
