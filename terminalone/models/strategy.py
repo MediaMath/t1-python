@@ -37,7 +37,7 @@ class Strategy(Entity):
     _pull = {
         'audience_segment_exclude_op': None,
         'audience_segment_include_op': None,
-        'bid_aggresiveness': float,
+        'bid_aggressiveness': float,
         'bid_price_is_media_only': t1types.int_to_bool,
         'budget': float,
         'campaign_id': int,

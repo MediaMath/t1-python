@@ -27,7 +27,7 @@ class Organization(Entity):
         'contact_name': None,
         'country': None,
         'created_on': t1types.strpt,
-        'curency_code': None,
+        'currency_code': None,
         'dmp_enabled': None,
         'id': int,
         'mm_contact_name': None,
