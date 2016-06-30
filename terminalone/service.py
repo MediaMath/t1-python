@@ -506,7 +506,9 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        if ent_count == 1:
+        if ent_count == 1 and entity is not None and (
+                child == 'permissions' or child is None or (
+                child_id is not None and child_id != 0)):
             return self._return_class(next(entities), child, child_id, entity, collection)
 
         ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
