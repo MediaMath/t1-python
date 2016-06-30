@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Provides configuration data"""
 
-VALID_ENVS = frozenset(['production', 'qa'])
+VALID_ENVS = frozenset(['production', 'qa', 'sandbox'])
 
 API_BASES = {
     'production': 'api.mediamath.com',
+    'sandbox': 't1sandbox.mediamath.com',
 }
 
 ACCEPT_HEADERS = {
