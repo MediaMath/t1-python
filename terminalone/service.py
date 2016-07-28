@@ -506,14 +506,17 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        if ent_count == 1:
-            return self._return_class(next(entities), child, child_id, entity, collection)
-
-        ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
-        if count:
-            return ent_gen, ent_count
+        if ent_count == 1 and entity is not None and (
+                child == 'permissions' or child is None or (
+                child_id is not None and child_id != 0)):
+            ent_resp = self._return_class(next(entities), child, child_id, entity, collection)
         else:
-            return ent_gen
+            ent_resp = self._gen_classes(entities, child, child_id, entity, collection)
+
+        if count:
+            return ent_resp, ent_count
+        else:
+            return ent_resp
 
     def get_all(self, collection, **kwargs):
         """Retrieves all entities in a collection. Has same signature as .get."""
