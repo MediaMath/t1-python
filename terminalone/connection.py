@@ -175,7 +175,6 @@ class Connection(object):
         if user is None:
             user, _ = self._get(PATHS['mgmt'], 'session')
 
-        user = next(user)
         Connection.__setattr__(self, 'user_id',
                                int(user['id']))
         Connection.__setattr__(self, 'username',
@@ -219,4 +218,4 @@ class Connection(object):
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise
-        return iter(result.entities), result.entity_count
+        return result.entities, result.entity_count
