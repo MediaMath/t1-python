@@ -3,7 +3,11 @@
 
 from __future__ import absolute_import
 import json
-
+try:
+    from itertools import imap
+    map = imap
+except ImportError:
+    pass
 from .errors import (T1Error, ValidationError, ParserException, STATUS_CODES)
 from terminalone.vendor import six
 
@@ -53,13 +57,14 @@ class JSONParser(object):
         elif data.get('include') is not None or \
                 data.get('exclude') is not None or \
                 data.get('enabled') is not None:
-            self._parse_target_dimensions(data)
+            self.entities = self._parse_target_dimensions(data)
 
         elif data.get('permissions') is not None:
             self.entities = self._parse_permissions(data['permissions'])
 
         else:
-            self.entities = map(self.process_entity, FindKey(parsed_data, 'data'))
+            self.entities = next(map(self.process_entity,
+                                     FindKey(parsed_data, 'data')))
 
     def get_status(self, data, body):
         """Gets the status code of T1 JSON.
@@ -103,9 +108,7 @@ class JSONParser(object):
             'organization': organization,
         })
 
-        # There will only be one instance here.
-        # But the caller expects an iterator, so make a list of it
-        return [flags, ]
+        return flags
 
     def _parse_target_dimensions(self, data):
         """Iterate over target dimensions and parse into dicts"""
@@ -120,11 +123,11 @@ class JSONParser(object):
         else:
             exclude_list = []
         self.entity_count = 1
-        self.entities = [{
+        return {
             '_type': 'target_dimension',
             'exclude': exclude_list,
             'include': include_list,
-        }]
+        }
 
     @staticmethod
     def _parse_field_error(data):

@@ -192,7 +192,7 @@ class Entity(Connection):
         else:
             data = self._validate_write(self.properties)
         entity, _ = super(Entity, self)._post(PATHS['mgmt'], url, data=data)
-        self._update_self(next(entity))
+        self._update_self(entity)
 
     def update(self, *args, **kwargs):
         """Alias for save"""

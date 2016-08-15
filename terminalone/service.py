@@ -2,6 +2,7 @@
 """Provides service object for T1."""
 
 from __future__ import absolute_import, division
+from collections import Iterator
 from itertools import chain
 from types import GeneratorType
 from .connection import Connection
@@ -506,8 +507,8 @@ class T1(Connection):
 
         entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
 
-        if ent_count == 1:
-            return self._return_class(next(entities), child, child_id, entity, collection)
+        if not isinstance(entities, GeneratorType) and not isinstance(entities, Iterator):
+            return self._return_class(entities, child, child_id, entity, collection)
 
         ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
         if count:

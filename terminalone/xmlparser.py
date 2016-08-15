@@ -30,17 +30,17 @@ class XMLParser(object):
             return haystack.find(needle) is not None
 
         if xfind(result, 'entities'):
-            self._parse_collection(result)
+            self.entities = self._parse_collection(result)
 
         elif xfind(result, 'entity'):
             self.entity_count = 1
-            self.entities = self._parse_entities(result)
+            self.entities = next(self._parse_entities(result))
 
         elif any(xfind(result, x) for x in ['include, exclude', 'enabled']):
-            self._parse_target_dimensions(result)
+            self.entities = self._parse_target_dimensions(result)
 
         elif xfind(result, 'permissions'):
-            self._parse_permissions(result)
+            self.entities = self._parse_permissions(result)
 
         elif xfind(result, 'log_entries'):
             self.entity_count = 1
@@ -82,7 +82,7 @@ class XMLParser(object):
         """Iterate over collection (i.e. "entities" tag) and parse into dicts"""
         root = result.find('entities')
         self.entity_count = int(root.get('count') or 0)
-        self.entities = self._parse_entities(root)
+        return self._parse_entities(root)
 
     def _parse_target_dimensions(self, result):
         """Iterate over target dimensions and parse into dicts"""
@@ -91,11 +91,11 @@ class XMLParser(object):
         include = map(self.dictify_entity,
                       result.iterfind('include/entities/entity'))
         self.entity_count = 1
-        self.entities = [{
+        return {
             '_type': 'target_dimension',
             'exclude': exclude,
             'include': include,
-        }]
+        }
 
     def _parse_permissions(self, result):
         """Iterate over permissions and parse into dicts"""
@@ -114,9 +114,8 @@ class XMLParser(object):
             'organization': organization,
         })
 
-        # There will only be one instance here.
-        # But the caller expects an iterator, so make a list of it
-        self.entities, self.entity_count = [flags, ], 1
+        self.entity_count = 1
+        return flags
 
     @staticmethod
     def _parse_field_error(xml):
