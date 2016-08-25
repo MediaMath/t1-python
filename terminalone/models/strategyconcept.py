@@ -23,6 +23,8 @@ class StrategyConcept(Entity):
         'strategy_id': int,
         'updated_on': t1types.strpt,
         'version': int,
+        'weighting': None,
+        'percent': float,
     }
     _push = _pull.copy()
     _push.update({
