@@ -15,16 +15,17 @@ class StrategyConcept(Entity):
         'concept',
         'strategy',
     }
+    _weight_type = t1types.enum({'IMPRESSION', 'BUDGET', 'NONE'}, 'NONE')
     _pull = {
         'concept_id': int,
         'created_on': t1types.strpt,
         'id': int,
+        'percent': float,
         'status': t1types.int_to_bool,
         'strategy_id': int,
         'updated_on': t1types.strpt,
         'version': int,
-        'weighting': None,
-        'percent': float,
+        'weighting': _weight_type,
     }
     _push = _pull.copy()
     _push.update({
