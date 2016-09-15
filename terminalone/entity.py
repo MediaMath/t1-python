@@ -16,6 +16,8 @@ class Entity(Connection):
     subclasses should not be instantiated directly; instead, an instance of
     T1 should instantiate these classes, passing in the proper session, etc.
     """
+
+    _relations = {}
     _readonly = {'id', 'build_date', 'created_on',
                  '_type',  # _type is used because "type" is taken by User.
                  'updated_on', 'last_modified'}

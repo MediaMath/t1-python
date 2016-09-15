@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides site_placement object."""
+"""Provides contact object."""
 
 from __future__ import absolute_import
 from .. import t1types
@@ -7,12 +7,9 @@ from ..entity import Entity
 
 
 class Contact(Entity):
-    """Site Placement for PMP-D."""
+    """Concept entity."""
     collection = 'contacts'
     resource = 'contact'
-    _relations = {
-
-    }
     _pull = {
         'id': int,
         'version': int,
