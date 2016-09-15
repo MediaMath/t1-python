@@ -19,6 +19,9 @@ def setup(credentials, use_json):
     return t1
 
 
+t1 = setup(credentials(), True)
+
+
 def test_session_id(t1):
     t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='cookie')
     assert hasattr(t2, 'username'), 'Expected new T1 session, got: %r' % t2

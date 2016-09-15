@@ -9,6 +9,7 @@ from .atomiccreative import AtomicCreative
 from .audiencesegment import AudienceSegment
 from .campaign import Campaign
 from .concept import Concept
+from .contact import Contact
 from .creativeapproval import CreativeApproval
 from .creative import Creative
 from .deal import Deal
@@ -52,6 +53,7 @@ __all__ = ['ACL',
            'Campaign',
            'Concept',
            'Creative',
+           'Contact',
            'CreativeApproval',
            'Deal',
            'Organization',

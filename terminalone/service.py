@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, division
 from collections import Iterator
-from itertools import chain
 from types import GeneratorType
 from .connection import Connection
 from .entity import Entity
@@ -22,6 +21,7 @@ CLASSES = {
     'audience_segments': AudienceSegment,
     'campaigns': Campaign,
     'concepts': Concept,
+    'contacts': Contact,
     'creative_approvals': CreativeApproval,
     'creatives': Creative,
     'deals': Deal,
@@ -58,49 +58,9 @@ CLASSES = {
     'vendors': Vendor,
     'verticals': Vertical,
 }
-MODEL_PATHS = {
-    AdServer: 'ad_servers',
-    Advertiser: 'advertisers',
-    Agency: 'agencies',
-    AtomicCreative: 'atomic_creatives',
-    AudienceSegment: 'audience_segments',
-    Campaign: 'campaigns',
-    ChildPixel: 'pixels',
-    Concept: 'concepts',
-    Creative: 'creatives',
-    CreativeApproval: 'atomic_creatives',
-    Deal: 'deals',
-    Organization: 'organizations',
-    Permission: 'permissions',
-    PixelBundle: 'pixel_bundles',
-    PixelProvider: 'pixel_providers',
-    PlacementSlot: 'placement_slots',
-    Publisher: 'publishers',
-    PublisherSite: 'publisher_sites',
-    Report: 'reports',
-    RMXStrategy: 'rmx_strategies',
-    RMXStrategyROITargetPixel: 'rmx_strategy_roi_target_pixels',
-    Seat: 'seats',
-    SiteList: 'site_lists',
-    SitePlacement: 'site_placements',
-    Strategy: 'strategies',
-    StrategyAudienceSegment: 'strategy_audience_segments',
-    StrategyConcept: 'strategy_concepts',
-    StrategyDayPart: 'strategy_day_parts',
-    StrategyDomain: 'strategy_domain_restrictions',
-    StrategySupplySource: 'strategy_supply_sources',
-    StrategyTargetingSegment: 'strategy_targeting_segments',
-    SupplySource: 'supply_sources',
-    TargetDimension: 'target_dimensions',
-    TargetValue: 'target_values',
-    User: 'users',
-    Vendor: 'vendors',
-    VendorContract: 'vendor_contracts',
-    VendorDomain: 'vendor_domains',
-    VendorPixel: 'vendor_pixels',
-    VendorPixelDomain: 'vendor_pixel_domains',
-    Vertical: 'verticals',
-}
+
+MODEL_PATHS = {v: k for k, v in CLASSES.items()}
+
 SINGULAR = {
     'ad_server': AdServer,
     'advertiser': Advertiser,
@@ -109,6 +69,7 @@ SINGULAR = {
     'audience_segment': AudienceSegment,
     'campaign': Campaign,
     'concept': Concept,
+    'contact': Contact,
     'creative': Creative,
     'creative_approval': CreativeApproval,
     'deal': Deal,
