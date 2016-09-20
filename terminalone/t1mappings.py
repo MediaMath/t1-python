@@ -125,4 +125,3 @@ CHILD_PATHS = {
     'supplies': ('supplies', 0),
     'targeting_segments': ('targeting_segments', 0),
 }
-

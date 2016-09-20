@@ -99,7 +99,6 @@ class T1(Connection):
                 'password': password,
             })
 
-
         super(T1, self).__init__(environment, api_base=api_base,
                                  json=json,
                                  auth_params=self.auth_params,
