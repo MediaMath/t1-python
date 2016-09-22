@@ -22,7 +22,7 @@ class Strategy(Entity):
     }
     _seg_incexc_ops = t1types.enum({'AND', 'OR'}, 'OR')
     _pacing_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
-                              'not-applicable'}, 'not-applicable')
+                                'not-applicable'}, 'not-applicable')
     _pacing_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
                               'cpc')
