@@ -20,10 +20,10 @@ class Strategy(Entity):
     _relations = {
         'campaign', 'currency', 'time_zone',
     }
-    _aud_seg_ops = t1types.enum({'AND', 'OR'}, 'OR')
-    _freq_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
+    _seg_incexc_ops = t1types.enum({'AND', 'OR'}, 'OR')
+    _pacing_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                               'not-applicable'}, 'not-applicable')
-    _freq_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
+    _pacing_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
                               'cpc')
     _media_type = t1types.enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
@@ -42,18 +42,24 @@ class Strategy(Entity):
         'budget': float,
         'campaign_id': int,
         'created_on': t1types.strpt,
+        'currency_code': None,
         'description': None,
         'effective_goal_value': float,
         'end_date': t1types.strpt,
         'feature_compatibility': None,
         'frequency_amount': int,
         'frequency_interval': None,
+        'frequency_optimization': t1types.int_to_bool,
         'frequency_type': None,
         'goal_type': None,
         'goal_value': float,
         'id': int,
         'impression_cap': int,
+        'impression_pacing_amount': int,
+        'impression_pacing_interval': None,
+        'impression_pacing_type': None,
         'max_bid': float,
+        'max_bid_wm': float,
         'media_type': None,
         'name': None,
         'pacing_amount': float,
@@ -71,6 +77,8 @@ class Strategy(Entity):
         'start_date': t1types.strpt,
         'status': t1types.int_to_bool,
         'supply_type': None,
+        'targeting_segment_exclude_op': None,
+        'targeting_segment_include_op': None,
         'type': None,
         'updated_on': t1types.strpt,
         'use_campaign_end': t1types.int_to_bool,
@@ -82,13 +90,16 @@ class Strategy(Entity):
     }
     _push = _pull.copy()
     _push.update({
-        'audience_segment_exclude_op': _aud_seg_ops,
-        'audience_segment_include_op': _aud_seg_ops,
+        'audience_segment_exclude_op': _seg_incexc_ops,
+        'audience_segment_include_op': _seg_incexc_ops,
         'bid_price_is_media_only': int,
         'end_date': partial(t1types.strft, null_on_none=True),
-        'frequency_interval': _freq_int,
-        'frequency_type': _freq_type,
+        'frequency_interval': _pacing_int,
+        'frequency_optimization': int,
+        'frequency_type': _pacing_type,
         'goal_type': _goal_type,
+        'impression_pacing_interval': _pacing_int,
+        'impression_pacing_type': _pacing_type,
         'media_type': _media_type,
         'pacing_interval': _pac_int,
         'pacing_type': _pac_type,
@@ -102,6 +113,8 @@ class Strategy(Entity):
         'start_date': partial(t1types.strft, null_on_none=True),
         'status': int,
         'supply_type': _supply_type,
+        'targeting_segment_exclude_op': _seg_incexc_ops,
+        'targeting_segment_include_op': _seg_incexc_ops,
         'type': _type,
         'use_campaign_end': int,
         'use_campaign_start': int,
