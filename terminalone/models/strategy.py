@@ -21,9 +21,9 @@ class Strategy(Entity):
         'campaign', 'currency', 'time_zone',
     }
     _seg_incexc_ops = t1types.enum({'AND', 'OR'}, 'OR')
-    _pacing_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
+    _pacing_ints = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                                 'not-applicable'}, 'not-applicable')
-    _pacing_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
+    _pacing_types = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
                               'cpc')
     _media_type = t1types.enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
@@ -94,12 +94,12 @@ class Strategy(Entity):
         'audience_segment_include_op': _seg_incexc_ops,
         'bid_price_is_media_only': int,
         'end_date': partial(t1types.strft, null_on_none=True),
-        'frequency_interval': _pacing_int,
+        'frequency_interval': _pacing_ints,
         'frequency_optimization': int,
-        'frequency_type': _pacing_type,
+        'frequency_type': _pacing_types,
         'goal_type': _goal_type,
-        'impression_pacing_interval': _pacing_int,
-        'impression_pacing_type': _pacing_type,
+        'impression_pacing_interval': _pacing_ints,
+        'impression_pacing_type': _pacing_types,
         'media_type': _media_type,
         'pacing_interval': _pac_int,
         'pacing_type': _pac_type,
