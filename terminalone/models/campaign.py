@@ -100,4 +100,51 @@ class Campaign(Entity):
     })
 
     def __init__(self, session, properties=None, **kwargs):
+        if properties is None:
+            # super(Entity) supers to grandparent
+            super(Entity, self).__setattr__('_init_sce', None)
+            super(Entity, self).__setattr__('_init_sct', None)
+        else:
+            super(Entity, self).__setattr__('_init_sce',
+                                            properties.get('spend_cap_enabled'))
+            super(Entity, self).__setattr__('_init_sct',
+                                            properties.get('spend_cap_type'))
         super(Campaign, self).__init__(session, properties, **kwargs)
+
+    def _migration_asst(self):
+        """Helps migrate users to the new impression pacing features.
+
+        spend_cap_enabled is the old field. spend_cap_type is the new field.
+        If the user has changed:
+            - Nothing (final vals all equal): remove both fields
+            - Old (new vals equal): remove new fields, post old
+            - New (old vals equal): remove old fields, post new
+            - Both (no vals equal): UNDEFINED. remove old fields to prep.
+        """
+        i_sce, i_sct = self._init_sce, self._init_sct
+        f_sce, f_sct = (self.properties.get('spend_cap_enabled'),
+                        self.properties.get('spend_cap_type'))
+
+        fields_to_remove = None
+        if i_sce == f_sce and i_sct == f_sct:
+            fields_to_remove = ['spend_cap_enabled', 'spend_cap_type']
+        elif i_sct == f_sct:
+            fields_to_remove = ['spend_cap_type']
+        else:  # we don't need a second elif here because it's the same result
+            fields_to_remove = ['spend_cap_enabled']
+        return fields_to_remove
+
+    def save(self, data=None, url=None):
+        """Save object to T1 while accounting for old fields"""
+        if data is None:
+            data = self.properties.copy()
+
+        fields_to_remove = self._migration_asst()
+        for field in fields_to_remove:
+            data.pop(field, None)
+
+        super(Campaign, self).save(data=data, url=url)
+        # Re-set the fields so that if the same object get saved, we
+        # compare agains the re-initialized values
+        super(Entity, self).__setattr__('_init_sce', self.spend_cap_enabled)
+        super(Entity, self).__setattr__('_init_sct', self.spend_cap_type)
