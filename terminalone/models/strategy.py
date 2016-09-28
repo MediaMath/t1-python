@@ -182,12 +182,12 @@ class Strategy(Entity):
             - New (old vals equal): remove old fields, post new
             - Both (no vals equal): UNDEFINED. remove old fields to prep.
         """
-        new_fields = ['imperssion_pacing_type',
+        new_fields = ['impression_pacing_type',
                       'impression_pacing_amount',
                       'impression_pacing_interval']
         i_cap, i_pac = self._init_impcap, self._init_imppac
         f_cap, f_pac = (self.properties.get('impression_cap'),
-                        (self.properties.get('imperssion_pacing_type'),
+                        (self.properties.get('impression_pacing_type'),
                          self.properties.get('impression_pacing_amount'),
                          self.properties.get('impression_pacing_interval')))
 
