@@ -1,25 +1,7 @@
 from __future__ import absolute_import
-from time import time
 import unittest
 from terminalone.models import campaign
 from terminalone.models import strategy
-
-API_BASE = 'api.mediamath.com'
-
-expected_token = {
-    'access_token': 'accesstoken',
-    'expires_in': 3600,
-    'refresh_token': 'refreshtoken',
-    'token_type': 'Bearer',
-}
-
-
-def to_nearest_hundred(number):
-    return round(float(number) / 100) * 100
-
-
-def mock_saver(_):
-    pass
 
 
 class TestRemoveDeprecatedFields(unittest.TestCase):
