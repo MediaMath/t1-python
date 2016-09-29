@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import unittest
 from terminalone.models import campaign
 from terminalone.models import strategy
+from terminalone.vendor import six
 
 
 class TestRemoveDeprecatedFields(unittest.TestCase):
@@ -55,14 +56,14 @@ class TestRemoveDeprecatedFields(unittest.TestCase):
         fields_to_remove = self.strategy._migration_asst()
         expected = ['impression_pacing_interval', 'impression_pacing_type', 'impression_pacing_amount',
                     'impression_cap']
-        self.assertItemsEqual(expected, fields_to_remove)
+        six.assertCountEqual(self, expected, fields_to_remove)
 
     def test_strategy_remove_new_fields_when_old_changed(self):
         self.strategy.impression_cap = 1
 
         fields_to_remove = self.strategy._migration_asst()
         expected = ['impression_pacing_interval', 'impression_pacing_type', 'impression_pacing_amount']
-        self.assertItemsEqual(expected, fields_to_remove)
+        six.assertCountEqual(self, expected, fields_to_remove)
 
     def test_strategy_remove_old_fields_when_new_changed(self):
         self.strategy.impression_pacing_interval = 'derp'
@@ -71,7 +72,7 @@ class TestRemoveDeprecatedFields(unittest.TestCase):
 
         fields_to_remove = self.strategy._migration_asst()
         expected = ['impression_cap']
-        self.assertItemsEqual(expected, fields_to_remove)
+        six.assertCountEqual(self, expected, fields_to_remove)
 
     def test_strategy_remove_old_fields_when_all_changed(self):
         self.strategy.impression_pacing_interval = 'derp'
@@ -81,4 +82,4 @@ class TestRemoveDeprecatedFields(unittest.TestCase):
 
         fields_to_remove = self.strategy._migration_asst()
         expected = ['impression_cap']
-        self.assertItemsEqual(expected, fields_to_remove)
+        six.assertCountEqual(self, expected, fields_to_remove)
