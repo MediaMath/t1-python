@@ -8,14 +8,14 @@ from ..entity import Entity
 
 
 class StrategyConcept(Entity):
-    """docstring for StrategyConcept."""
+    """StrategyConcept object to join strategy and concept."""
     collection = 'strategy_concepts'
     resource = 'strategy_concept'
     _relations = {
         'concept',
         'strategy',
     }
-    _weight_type = t1types.enum({'IMPRESSION', 'BUDGET', 'NONE'}, 'NONE')
+    _weight_types = t1types.enum({'IMPRESSION', 'BUDGET', 'NONE'}, 'NONE')
     _pull = {
         'concept_id': int,
         'created_on': t1types.strpt,
@@ -25,11 +25,12 @@ class StrategyConcept(Entity):
         'strategy_id': int,
         'updated_on': t1types.strpt,
         'version': int,
-        'weighting': _weight_type,
+        'weighting': None,
     }
     _push = _pull.copy()
     _push.update({
         'status': int,
+        'weighting': _weight_types,
     })
     _readonly = Entity._readonly | {'name', }
 
