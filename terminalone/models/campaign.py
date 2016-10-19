@@ -100,6 +100,8 @@ class Campaign(Entity):
     })
 
     def __init__(self, session, properties=None, **kwargs):
+        super(Campaign, self).__init__(session, properties, **kwargs)
+
         if properties is None:
             # super(Entity) supers to grandparent
             super(Entity, self).__setattr__('_init_sce', None)
@@ -109,7 +111,6 @@ class Campaign(Entity):
                                             properties.get('spend_cap_enabled'))
             super(Entity, self).__setattr__('_init_sct',
                                             properties.get('spend_cap_type'))
-        super(Campaign, self).__init__(session, properties, **kwargs)
 
     def _migration_asst(self):
         """Helps migrate users to the new impression pacing features.

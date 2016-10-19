@@ -125,6 +125,8 @@ class Strategy(Entity):
     _readonly = Entity._readonly | {'effective_goal_value', 'zone_name'}
 
     def __init__(self, session, properties=None, **kwargs):
+        super(Strategy, self).__init__(session, properties, **kwargs)
+
         if properties is None:
             # super(Entity) supers to grandparent
             super(Entity, self).__setattr__('_init_impcap', None)
@@ -136,7 +138,7 @@ class Strategy(Entity):
                                             (properties.get('impression_pacing_type'),
                                              properties.get('impression_pacing_amount'),
                                              properties.get('impression_pacing_interval')))
-        super(Strategy, self).__init__(session, properties, **kwargs)
+
         try:
             self.pixel_target_expr
         except AttributeError:
