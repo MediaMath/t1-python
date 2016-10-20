@@ -13,7 +13,7 @@ class SupplySource(Entity):
     _relations = {
         'parent_supply',
     }
-    _rtb_types = t1types.enum({'STANDARD', 'MARKETPLACE'}, None)
+    _rtb_types = t1types.enum({'STANDARD', 'MARKETPLACE', 'BATCH'}, None)
     _supply_types = t1types.enum({'exchange', 'data'}, None)
     _pull = {
         'bidder_exchange_identifier': int,

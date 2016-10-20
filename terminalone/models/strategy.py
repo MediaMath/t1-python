@@ -31,7 +31,8 @@ class Strategy(Entity):
     _pac_type = t1types.enum({'even', 'asap'}, 'even')
     _site_selec = t1types.enum({'MATHSELECT_250', 'EXCLUDE_UGC', 'ALL',
                                 'REDUCED'}, 'REDUCED')
-    _supply_type = t1types.enum({'RTB', 'RMX_API', 'T1_RMX'}, 'RTB')
+    _supply_types = t1types.enum({'RTB', 'RMX_API', 'T1_RMX', 'MKT', 'BATCH'},
+                                 'RTB')
     _type = t1types.enum({'REM', 'GBO', 'AUD'}, 'GBO')
 
     _pull = {
@@ -112,7 +113,7 @@ class Strategy(Entity):
         'site_selectiveness': _site_selec,
         'start_date': partial(t1types.strft, null_on_none=True),
         'status': int,
-        'supply_type': _supply_type,
+        'supply_type': _supply_types,
         'targeting_segment_exclude_op': _seg_incexc_ops,
         'targeting_segment_include_op': _seg_incexc_ops,
         'type': _type,
