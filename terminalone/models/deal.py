@@ -15,12 +15,14 @@ class Deal(Entity):
         'publisher',
         'supply_source',
     }
+    _bill_types = t1types.enum({'EXCHANGE', 'PUBLISHER', 'NONE'}, 'EXCHANGE')
     _deal_sources = t1types.enum({'USER', 'INTERNAL'}, 'INTERNAL')
     _media_types = t1types.enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
     _price_methods = t1types.enum({'CPM'}, 'CPM')
     _price_types = t1types.enum({'FIXED', 'FLOOR'}, None)
     _pull = {
         'advertiser_id': int,
+        'bill_type': t1types.strpt,
         'created_on': t1types.strpt,
         'currency_code': None,
         'deal_identifier': None,
@@ -44,6 +46,7 @@ class Deal(Entity):
     }
     _push = _pull.copy()
     _push.update({
+        'bill_type': _bill_types,
         'deal_source': _deal_sources,
         'end_datetime': t1types.strft,
         'media_type': _media_types,
