@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "type": "field-error",
+      "message": "Must supply advertiser_id (integer)",
+      "field": "advertiser_id"
+    }
+  ],
+  "meta": {
+    "called_on": "2016-11-07T14:53:20+0000",
+    "status": "invalid"
+  }
+}

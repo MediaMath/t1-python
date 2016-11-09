@@ -1,0 +1,25 @@
+{
+  "data": {
+    "minimize_multi_ads": false,
+    "frequency_type": "no-limit",
+    "status": true,
+    "dmp_enabled": "disabled",
+    "agency_id": 300,
+    "frequency_interval": "not-applicable",
+    "updated_on": "2016-11-07T09:07:57+0000",
+    "domain": "http://www.mediamath.com",
+    "created_on": "2016-11-07T09:07:57+0000",
+    "entity_type": "advertiser",
+    "id": 1,
+    "version": 0,
+    "name": "Advertiser 1",
+    "ad_server_id": 9,
+    "allow_x_strat_optimization": false,
+    "vertical_id": 2
+  },
+  "meta": {
+    "etag": "835d61eb1683acc6972d25cbf9283570b31602d9",
+    "called_on": "2016-11-07T11:53:42+0000",
+    "status": "ok"
+  }
+}

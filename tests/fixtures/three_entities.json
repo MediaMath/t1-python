@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "entity_type": "campaign",
+      "name": "Campaign 0",
+      "id": 0
+    },
+    {
+      "entity_type": "campaign",
+      "name": "Campaign 1",
+      "id": 1
+    },
+    {
+      "entity_type": "campaign",
+      "name": "Campaign 2",
+      "id": 2
+    }
+  ],
+  "meta": {
+    "next_page": "https://api.mediamath.com/api/v2.0/campaigns?page_offset=5&page_limit=5&api_key=asdfghjklqwert",
+    "etag": "c0c341eb304a3a7f18a688d33321b54c9f929ba7",
+    "count": 3,
+    "called_on": "2016-11-07T11:55:25+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 3
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "data": {
+    "permissions": {
+      "flags": [
+        {
+          "access": [
+            {
+              "value": 1,
+              "type": "edit_data_definition"
+            },
+            {
+              "value": 1,
+              "type": "view_data_definition"
+            },
+            {
+              "value": 1,
+              "type": "edit_segments"
+            },
+            {
+              "value": 1,
+              "type": "edit_campaigns"
+            },
+            {
+              "value": 0,
+              "type": "access_internal_fees"
+            },
+            {
+              "value": 1,
+              "type": "edit_margins_and_performance"
+            },
+            {
+              "value": 1,
+              "type": "view_organizations"
+            },
+            {
+              "value": 1,
+              "type": "view_segments"
+            },
+            {
+              "value": 1,
+              "type": "view_dmp_reports"
+            },
+            {
+              "value": "INTERNAL",
+              "type": "type"
+            },
+            {
+              "value": "ADMIN",
+              "type": "role"
+            },
+            {
+              "value": "SELECT",
+              "type": "scope"
+            }
+          ]
+        }
+      ]
+    },
+    "user": {
+      "entity_type": "user",
+      "name": "user",
+      "id": 1
+    }
+  },
+  "meta": {
+    "status": "ok"
+  }
+}
