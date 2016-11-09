@@ -13,6 +13,7 @@ API_BASES = {
 
 ACCEPT_HEADERS = {
     'json': 'application/vnd.mediamath.v1+json',
+    'xml': ['text/xml', 'application/xml']
 }
 
 PATHS = {
