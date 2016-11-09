@@ -35,7 +35,7 @@ class TestOAuth2Login(unittest.TestCase):
     """Tests for OAuth2 Authentication"""
     def setUp(self):
         self.t1 = T1(**mock_credentials)
-        with open('tests/fixtures/access_token.json') as f:
+        with open('tests/fixtures/json/access_token.json') as f:
             self.token = f.read()
 
     def test_minimum_creds_for_oauth2(self):
@@ -97,7 +97,7 @@ class TestOAuth2Login(unittest.TestCase):
                       body=self.token,
                       content_type='application/json')
         token = self.t1.fetch_token(state='state', code='code')
-        with open('tests/fixtures/advertiser.xml') as f:
+        with open('tests/fixtures/xml/advertiser.xml') as f:
             responses.add(responses.GET,
                           'https://api.mediamath.com/api/v2.0/advertisers/1',
                           body=f.read(),
@@ -116,7 +116,7 @@ class TestOAuth2Login(unittest.TestCase):
                 filename = 'access_token_refreshed.json'
             else:
                 raise ValueError('What is your grant type?')
-            with open('tests/fixtures/' + filename) as f:
+            with open('tests/fixtures/json/' + filename) as f:
                 return 200, {}, f.read()
 
         responses.add_callback(
@@ -133,7 +133,7 @@ class TestOAuth2Login(unittest.TestCase):
             'expires_at': now - 1,
         })
 
-        with open('tests/fixtures/advertiser.xml') as f:
+        with open('tests/fixtures/xml/advertiser.xml') as f:
             responses.add(responses.GET,
                           'https://api.mediamath.com/api/v2.0/advertisers/1',
                           body=f.read(),

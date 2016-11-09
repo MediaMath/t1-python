@@ -21,7 +21,7 @@ class TestCookieLogin(unittest.TestCase):
         expected_user_id = 1
 
         def login_callback(_):
-            with open('tests/fixtures/session.json') as f:
+            with open('tests/fixtures/json/session.json') as f:
                 body = f.read()
             response_headers = {
                 'Set-Cookie': 'adama_session=' + expected_session,
@@ -51,7 +51,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_incorrect_login_raises_error(self):
         def login_callback(_):
-            with open('tests/fixtures/auth_error.json') as f:
+            with open('tests/fixtures/json/auth_error.json') as f:
                 body = f.read()
             return 401, {}, body
 
@@ -76,7 +76,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_no_key_fails(self):
         def login_callback(_):
-            with open('tests/fixtures/login_no_key.xml') as f:
+            with open('tests/fixtures/xml/login_no_key.xml') as f:
                 body = f.read()
             return 403, {}, body
 
@@ -100,7 +100,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_no_user_fails(self):
         def login_callback(_):
-            with open('tests/fixtures/login_badrequest.json') as f:
+            with open('tests/fixtures/json/login_badrequest.json') as f:
                 body = f.read()
             return 400, {}, body
 

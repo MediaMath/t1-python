@@ -23,7 +23,7 @@ requests.adapters.extract_cookies_to_jar = patched_extract_cookies_to_jar
 class TestPermissionsJson(unittest.TestCase):
     def setup(self):
         """set up test fixtures"""
-        with open('tests/fixtures/session.json') as f:
+        with open('tests/fixtures/json/session.json') as f:
             fixture = f.read()
         responses.add(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
                       body=fixture,
@@ -40,7 +40,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_get_permissions(self):
         self.setup()
-        with open('tests/fixtures/permissions.json') as f:
+        with open('tests/fixtures/json/permissions.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
@@ -54,7 +54,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_remove_advertiser(self):
         self.setup()
-        with open('tests/fixtures/permissions.json') as f:
+        with open('tests/fixtures/json/permissions.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
@@ -72,7 +72,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_it_should_remove_child_advertisers_when_removing_agency(self):
         self.setup()
-        with open('tests/fixtures/permissions.json') as f:
+        with open('tests/fixtures/json/permissions.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
@@ -93,7 +93,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_it_should_remove_child_agencies_and_advertisers_when_removing_organization(self):
         self.setup()
-        with open('tests/fixtures/permissions.json') as f:
+        with open('tests/fixtures/json/permissions.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
@@ -120,7 +120,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_it_should_add_entity_ids_on_save(self):
         self.setup()
-        with open('tests/fixtures/permissions.json') as f:
+        with open('tests/fixtures/json/permissions.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
@@ -135,7 +135,7 @@ class TestPermissionsJson(unittest.TestCase):
     @responses.activate
     def test_it_should_add_access_to_empty_permissions(self):
         self.setup()
-        with open('tests/fixtures/permissions_none.json') as f:
+        with open('tests/fixtures/json/permissions_none.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/users/10000/permissions',
