@@ -199,16 +199,13 @@ class Connection(object):
         return self._parse_response(response)
 
     def _parse_response(self, response):
-        if self.json:
-            response_body = response.text
-        else:
-            response_body = response.content
-
         content_type = response.headers['Content-type']
-        if content_type in ACCEPT_HEADERS['xml']:
+        if 'xml' in content_type:
             parser = XMLParser
-        elif content_type == ACCEPT_HEADERS['json']:
+            response_body = response.content
+        elif 'json' in content_type:
             parser = JSONParser
+            response_body = response.text
         else:
             raise ClientError('Cannot handle content type: {}'.format(content_type))
 

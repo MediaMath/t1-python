@@ -145,9 +145,11 @@ class JSONParser(object):
         """Iterate over field errors and parse into dicts"""
         errors = {}
         for error in data['errors']:
-            pass
-        errors[error['field']] = {
-            'error': error['message']}
+            if error.get('field') is None:
+                pass
+            else:
+                errors[error['field']] = {
+                    'error': error['message']}
         return errors
 
     @classmethod
