@@ -22,7 +22,7 @@ class Deal(Entity):
     _price_types = t1types.enum({'FIXED', 'FLOOR'}, None)
     _pull = {
         'advertiser_id': int,
-        'bill_type': t1types.strpt,
+        'bill_type': None,
         'created_on': t1types.strpt,
         'currency_code': None,
         'deal_identifier': None,
