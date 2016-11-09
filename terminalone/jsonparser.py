@@ -89,7 +89,10 @@ class JSONParser(object):
         if exc is True:
             message = self._parse_field_error(data)
             exc = ValidationError
-            raise exc(code=status_code, content=message)
+        else:
+            message = self._parse_error_messages(data)
+
+        raise exc(code=status_code, content=message)
 
     def _parse_permissions(self, permissions):
         """Iterate over permissions and parse into dicts"""
@@ -130,12 +133,21 @@ class JSONParser(object):
         }
 
     @staticmethod
+    def _parse_error_messages(data):
+        """Iterate over field errors and parse into dicts"""
+        errors = []
+        for error in data['errors']:
+            errors.append(error['message'])
+        return ', '.join(errors)
+
+    @staticmethod
     def _parse_field_error(data):
         """Iterate over field errors and parse into dicts"""
         errors = {}
         for error in data['errors']:
-            errors[error['field']] = {'code': error['field-error'],
-                                      'error': error['message']}
+            pass
+        errors[error['field']] = {
+            'error': error['message']}
         return errors
 
     @classmethod
