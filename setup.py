@@ -28,7 +28,7 @@ requirements = [
 
 setup(
     name='TerminalOne',
-    version='1.4.4',
+    version='1.4.5',
     author='Prasanna Swaminathan',
     author_email='prasanna@mediamath.com',
     url='http://www.mediamath.com',
