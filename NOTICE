@@ -2,8 +2,8 @@ T1-Python includes a third-party dependency Requests and a vendored Python libra
 
 Requests covered by the license at https://github.com/kennethreitz/requests/blob/master/LICENSE
 
-Six License
-===========
+Six License (MIT) - https://pypi.python.org/pypi/six
+====================================================
 
 Copyright (c) 2010-2014 Benjamin Peterson
 

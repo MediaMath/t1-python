@@ -2,7 +2,7 @@
 
 __author__ = 'Prasanna Swaminathan'
 __copyright__ = 'Copyright 2015, MediaMath'
-__license__ = 'BSD'
+__license__ = 'Apache License, Version 2.0'
 __version__ = '1.4.6'
 __maintainer__ = 'MediaMath Developer Relations'
 __email__ = 'developers@mediamath.com'

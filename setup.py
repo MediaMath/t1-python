@@ -39,8 +39,8 @@ setup(
     platforms=['any'],
     license=fread('LICENSE'),
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: BSD License',
+        'Development Status :: 5 - Production/Stable',
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
