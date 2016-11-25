@@ -1,0 +1,161 @@
+{
+  "data": {
+    "permissions": {
+      "flags": [
+        {
+          "access": [
+            {
+              "value": 1,
+              "type": "edit_data_definition"
+            },
+            {
+              "value": 1,
+              "type": "view_data_definition"
+            },
+            {
+              "value": 1,
+              "type": "edit_segments"
+            },
+            {
+              "value": 1,
+              "type": "edit_campaigns"
+            },
+            {
+              "value": 0,
+              "type": "access_internal_fees"
+            },
+            {
+              "value": 1,
+              "type": "edit_margins_and_performance"
+            },
+            {
+              "value": 1,
+              "type": "view_organizations"
+            },
+            {
+              "value": 1,
+              "type": "view_segments"
+            },
+            {
+              "value": 1,
+              "type": "view_dmp_reports"
+            },
+            {
+              "value": "INTERNAL",
+              "type": "type"
+            },
+            {
+              "value": "ADMIN",
+              "type": "role"
+            },
+            {
+              "value": "SELECT",
+              "type": "scope"
+            }
+          ]
+        }
+      ],
+      "entities": {
+        "advertiser": [
+          {
+            "access": [
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "agency_id": 3,
+                "name": "Advertiser 6 under Agency 3",
+                "id": "6"
+              },
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "agency_id": 3,
+                "name": "Advertiser 7 under Agency 3",
+                "id": "7"
+              },
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "agency_id": 4,
+                "name": "Advertiser 8 under Agency 4",
+                "id": "8"
+              },
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "agency_id": 4,
+                "name": "Advertiser 9 under Agency 4",
+                "id": "9"
+              },
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "agency_id": 5,
+                "name": "Advertiser 10 under Agency 5",
+                "id": "10"
+              }
+            ]
+          }
+        ],
+        "agency": [
+          {
+            "access": [
+              {
+                "organization_id": 1,
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "name": "Agency 3 under org 1",
+                "child_count": 2,
+                "id": "3"
+              },
+              {
+                "organization_id": 2,
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "name": "Agency 4 under org 2",
+                "child_count": 2,
+                "id": "4"
+              },
+              {
+                "organization_id": 2,
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "name": "Agency 5 under org 2",
+                "child_count": 1,
+                "id": "5"
+              }
+            ]
+          }
+        ],
+        "organization": [
+          {
+            "access": [
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "name": "Org 1",
+                "child_count": 1,
+                "id": "1"
+              },
+              {
+                "value": "w",
+                "dmp_enabled": "enabled",
+                "name": "Org 2",
+                "child_count": 2,
+                "id": "2"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "user": {
+      "entity_type": "user",
+      "name": "user",
+      "id": 1
+    }
+  },
+  "meta": {
+    "status": "ok"
+  }
+}

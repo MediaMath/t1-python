@@ -59,7 +59,7 @@ class ValidationError(APIError):
     """Raised on validation error on POST"""
 
     def __init__(self, code, content):
-        msg_list = ['{} (code: {}): {}'.format(error, val['code'], val['error'])
+        msg_list = ['{}: {}'.format(error, val['error'])
                     for (error, val) in six.iteritems(content)]
         messages = [code] + msg_list
         messages = '\n'.join(messages)

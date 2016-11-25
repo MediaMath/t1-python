@@ -1,0 +1,99 @@
+{
+  "data": [
+    {
+      "strategies": [
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "asoidhaposdiha; ",
+          "id": 3
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "adiufhiudfh",
+          "id": 4
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "aoisudhiadhsiuah",
+          "id": 5
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "qweiuhc sd9p8 ",
+          "id": 6
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "aosihx8hn3",
+          "id": 7
+        }
+      ],
+      "entity_type": "campaign",
+      "name": "Campaign 0",
+      "id": 0
+    },
+    {
+      "strategies": [
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "ashnph f",
+          "id": 8
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "asdlhuiauhd",
+          "id": 9
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "a;sudhoahcin",
+          "id": 10
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "RON_Bonnier-alsdhuin",
+          "id": 11
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "ajdhfkjahnd ",
+          "id": 12
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "adlfiuhqihuwdq hd",
+          "id": 13
+        },
+        {
+          "rel": "strategies",
+          "entity_type": "strategy",
+          "name": "adilfhuap9dfh oih sdf",
+          "id": 14
+        }
+      ],
+      "entity_type": "campaign",
+      "name": "Campaign 1",
+      "id": 1
+    }
+  ],
+  "meta": {
+    "next_page": "https://api.mediamath.com/api/v2.0/campaigns?page_offset=2&with=strategies&api_key=qweryuioasdfhjkl&page_limit=2",
+    "etag": "4fec596d744f927c820cda5481750e1f7bbd49ed",
+    "count": 2,
+    "called_on": "2016-11-07T13:16:32+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 55655
+  }
+}

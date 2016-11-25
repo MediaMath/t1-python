@@ -21,7 +21,7 @@ class TestGets(unittest.TestCase):
     @responses.activate
     def setUp(self):
         """set up test fixtures"""
-        with open('tests/fixtures/session.xml') as f:
+        with open('tests/fixtures/xml/session.xml') as f:
             fixture = f.read()
         responses.add(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
                       body=fixture,
@@ -36,7 +36,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_collection(self):
-        with open('tests/fixtures/advertisers.xml') as f:
+        with open('tests/fixtures/xml/advertisers.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers',
                       body=fixture,
@@ -48,7 +48,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_counts(self):
-        with open('tests/fixtures/advertisers.xml') as f:
+        with open('tests/fixtures/xml/advertisers.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers',
                       body=fixture,
@@ -61,7 +61,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_all(self):
-        with open('tests/fixtures/organizations.xml') as f:
+        with open('tests/fixtures/xml/organizations.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/organizations',
                       body=fixture,
@@ -74,7 +74,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_strategy_day_parts(self):
-        with open('tests/fixtures/strategy_day_parts.xml') as f:
+        with open('tests/fixtures/xml/strategy_day_parts.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/strategies/941273/day_parts',
                       body=fixture,
@@ -88,7 +88,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_entity_get_save(self):
-        with open('tests/fixtures/advertiser.xml') as f:
+        with open('tests/fixtures/xml/advertiser.xml') as f:
             fixture = f.read()
         responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/advertisers/1',
                       body=fixture,
@@ -113,9 +113,9 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_full(self):
-        with open('tests/fixtures/advertisers.xml') as f:
+        with open('tests/fixtures/xml/advertisers.xml') as f:
             advertisers = f.read()
-        with open('tests/fixtures/advertisers_limit_1.xml') as f:
+        with open('tests/fixtures/xml/advertisers_limit_1.xml') as f:
             advertiser = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/advertisers?'
@@ -148,7 +148,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_get_creative_approval(self):
-        with open('tests/fixtures/atomic_creatives_with_creative_approvals.xml') as f:
+        with open('tests/fixtures/xml/atomic_creatives_with_creative_approvals.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/atomic_creatives/1000'
@@ -161,7 +161,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_limit(self):
-        with open('tests/fixtures/data_pixel_bundle_full.xml') as f:
+        with open('tests/fixtures/xml/data_pixel_bundle_full.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
@@ -189,7 +189,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include(self):
-        with open('tests/fixtures/pixel_bundle_with_advertiser.xml') as f:
+        with open('tests/fixtures/xml/pixel_bundle_with_advertiser.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
@@ -206,7 +206,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_traversals(self):
-        with open('tests/fixtures/pixel_bundle_with_advertiser_agency.xml') as f:
+        with open('tests/fixtures/xml/pixel_bundle_with_advertiser_agency.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles/limit/'
@@ -223,7 +223,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_plural(self):
-        with open('tests/fixtures/campaigns_with_strategies.xml') as f:
+        with open('tests/fixtures/xml/campaigns_with_strategies.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/campaigns/limit/'
@@ -241,7 +241,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_include_multi(self):
-        with open('tests/fixtures/atomic_creatives_with_advertiser_concept.xml') as f:
+        with open('tests/fixtures/xml/atomic_creatives_with_advertiser_concept.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/atomic_creatives/limit/'
@@ -259,7 +259,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_find(self):
-        with open('tests/fixtures/pixel_bundles.xml') as f:
+        with open('tests/fixtures/xml/pixel_bundles.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/pixel_bundles'
@@ -289,7 +289,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_picard_meta(self):
-        with open('tests/fixtures/reports_meta.json') as f:
+        with open('tests/fixtures/json/reports_meta.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/reporting/v1/std/meta'
@@ -304,7 +304,7 @@ class TestGets(unittest.TestCase):
 
     @responses.activate
     def test_target_dimensions(self):
-        with open('tests/fixtures/target_dimensions.xml') as f:
+        with open('tests/fixtures/xml/target_dimensions.xml') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/api/v2.0/strategies/151940/target_dimensions/7',
@@ -325,7 +325,7 @@ class TestGets(unittest.TestCase):
                       body=fixture,
                       content_type='text/csv; charset=UTF-8',
                       match_querystring=True)
-        with open('tests/fixtures/reports_meta.json') as f:
+        with open('tests/fixtures/json/reports_meta.json') as f:
             fixture = f.read()
         responses.add(responses.GET,
                       'https://api.mediamath.com/reporting/v1/std/meta'

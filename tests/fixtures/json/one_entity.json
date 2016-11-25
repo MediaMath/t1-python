@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "entity_type": "campaign",
+      "name": "Campaign 0",
+      "id": 0
+    }
+  ],
+  "meta": {
+    "etag": "c0c341eb304a3a7f18a688d33321b54c9f929ba7",
+    "count": 5,
+    "called_on": "2016-11-07T11:55:25+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 1
+  }
+}

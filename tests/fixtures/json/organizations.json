@@ -1,0 +1,513 @@
+{
+  "data": [
+    {
+      "entity_type": "organization",
+      "name": "Organization 0",
+      "id": 0
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 1",
+      "id": 1
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 2",
+      "id": 2
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 3",
+      "id": 3
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 4",
+      "id": 4
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 5",
+      "id": 5
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 6",
+      "id": 6
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 7",
+      "id": 7
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 8",
+      "id": 8
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 9",
+      "id": 9
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 10",
+      "id": 10
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 11",
+      "id": 11
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 12",
+      "id": 12
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 13",
+      "id": 13
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 14",
+      "id": 14
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 15",
+      "id": 15
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 16",
+      "id": 16
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 17",
+      "id": 17
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 18",
+      "id": 18
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 19",
+      "id": 19
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 20",
+      "id": 20
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 21",
+      "id": 21
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 22",
+      "id": 22
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 23",
+      "id": 23
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 24",
+      "id": 24
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 25",
+      "id": 25
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 26",
+      "id": 26
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 27",
+      "id": 27
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 28",
+      "id": 28
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 29",
+      "id": 29
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 30",
+      "id": 30
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 31",
+      "id": 31
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 32",
+      "id": 32
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 33",
+      "id": 33
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 34",
+      "id": 34
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 35",
+      "id": 35
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 36",
+      "id": 36
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 37",
+      "id": 37
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 38",
+      "id": 38
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 39",
+      "id": 39
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 40",
+      "id": 40
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 41",
+      "id": 41
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 42",
+      "id": 42
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 43",
+      "id": 43
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 44",
+      "id": 44
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 45",
+      "id": 45
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 46",
+      "id": 46
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 47",
+      "id": 47
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 48",
+      "id": 48
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 49",
+      "id": 49
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 50",
+      "id": 50
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 51",
+      "id": 51
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 52",
+      "id": 52
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 53",
+      "id": 53
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 54",
+      "id": 54
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 55",
+      "id": 55
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 56",
+      "id": 56
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 57",
+      "id": 57
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 58",
+      "id": 58
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 59",
+      "id": 59
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 60",
+      "id": 60
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 61",
+      "id": 61
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 62",
+      "id": 62
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 63",
+      "id": 63
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 64",
+      "id": 64
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 65",
+      "id": 65
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 66",
+      "id": 66
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 67",
+      "id": 67
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 68",
+      "id": 68
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 69",
+      "id": 69
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 70",
+      "id": 70
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 71",
+      "id": 71
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 72",
+      "id": 72
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 73",
+      "id": 73
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 74",
+      "id": 74
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 75",
+      "id": 75
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 76",
+      "id": 76
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 77",
+      "id": 77
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 78",
+      "id": 78
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 79",
+      "id": 79
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 80",
+      "id": 80
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 81",
+      "id": 81
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 82",
+      "id": 82
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 83",
+      "id": 83
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 84",
+      "id": 84
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 85",
+      "id": 85
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 86",
+      "id": 86
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 87",
+      "id": 87
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 88",
+      "id": 88
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 89",
+      "id": 89
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 90",
+      "id": 90
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 91",
+      "id": 91
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 92",
+      "id": 92
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 93",
+      "id": 93
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 94",
+      "id": 94
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 95",
+      "id": 95
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 96",
+      "id": 96
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 97",
+      "id": 97
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 98",
+      "id": 98
+    },
+    {
+      "entity_type": "organization",
+      "name": "Organization 99",
+      "id": 99
+    }
+  ],
+  "meta": {
+    "next_page": "https://api.mediamath.com/api/v2.0/organizations?page_offset=100&api_key=asdfghjklqwert",
+    "etag": "c0c341eb304a3a7f18a688d33321b54c9f929ba7",
+    "count": 100,
+    "called_on": "2016-11-07T11:55:25+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 15540
+  },
+}

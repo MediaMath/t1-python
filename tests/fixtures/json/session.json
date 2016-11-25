@@ -1,0 +1,15 @@
+{
+  "data": {
+    "session": {
+      "current_time": "2015-08-19T15:05:10",
+      "sessionid": "d24f41277ae4c202dda876676b0006585b20f64f",
+      "expires": "2015-08-20T15:05:10"
+    },
+    "entity_type": "user",
+    "name": "user",
+    "id": 1
+  },
+  "meta": {
+    "status": "ok"
+  }
+}

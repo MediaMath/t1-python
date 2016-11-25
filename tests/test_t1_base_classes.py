@@ -21,7 +21,7 @@ class TestCookieLogin(unittest.TestCase):
         expected_user_id = 1
 
         def login_callback(_):
-            with open('tests/fixtures/session.xml') as f:
+            with open('tests/fixtures/json/session.json') as f:
                 body = f.read()
             response_headers = {
                 'Set-Cookie': 'adama_session=' + expected_session,
@@ -36,9 +36,10 @@ class TestCookieLogin(unittest.TestCase):
         responses.add_callback(
             responses.POST, 'https://api.mediamath.com/api/v2.0/login',
             callback=login_callback,
-            content_type='application/xml')
+            content_type='application/vnd.mediamath.v1+json')
 
         t1 = T1(auth_method='cookie',
+                json=True,
                 api_base=API_BASE,
                 **mock_credentials)
 
@@ -50,7 +51,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_incorrect_login_raises_error(self):
         def login_callback(_):
-            with open('tests/fixtures/auth_error.xml') as f:
+            with open('tests/fixtures/json/auth_error.json') as f:
                 body = f.read()
             return 401, {}, body
 
@@ -60,11 +61,13 @@ class TestCookieLogin(unittest.TestCase):
             'api_key': 'api_key',
         }
         responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               content_type='application/vnd.mediamath.v1+json',
                                callback=login_callback)
 
         with self.assertRaises(errors.AuthRequiredError) as cm:
             T1(auth_method='cookie',
                api_base=API_BASE,
+               json=True,
                **mock_credentials)
 
         exc = cm.exception
@@ -73,7 +76,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_no_key_fails(self):
         def login_callback(_):
-            with open('tests/fixtures/login_no_key.xml') as f:
+            with open('tests/fixtures/xml/login_no_key.xml') as f:
                 body = f.read()
             return 403, {}, body
 
@@ -82,10 +85,12 @@ class TestCookieLogin(unittest.TestCase):
             'password': 'pass',
         }
         responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               content_type='text/xml',
                                callback=login_callback)
 
         with self.assertRaises(errors.T1Error) as cm:
             T1(auth_method='cookie',
+               json=True,
                api_base=API_BASE,
                **mock_credentials)
 
@@ -95,7 +100,7 @@ class TestCookieLogin(unittest.TestCase):
     @responses.activate
     def test_no_user_fails(self):
         def login_callback(_):
-            with open('tests/fixtures/login_badrequest.xml') as f:
+            with open('tests/fixtures/json/login_badrequest.json') as f:
                 body = f.read()
             return 400, {}, body
 
@@ -104,6 +109,7 @@ class TestCookieLogin(unittest.TestCase):
             'api_key': 'api_key',
         }
         responses.add_callback(responses.POST, 'https://api.mediamath.com/api/v2.0/login',
+                               content_type='application/vnd.mediamath.v1+json',
                                callback=login_callback)
 
         with self.assertRaises(errors.ValidationError) as cm:

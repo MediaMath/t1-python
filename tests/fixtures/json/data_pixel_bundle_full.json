@@ -1,0 +1,36 @@
+{
+  "data": [
+    {
+      "rmx_conversion_type": "one",
+      "rmx_merit": false,
+      "status": true,
+      "rmx_conversion_minutes": 1,
+      "external_identifier": "externalID1897987",
+      "agency_id": 55,
+      "provider_id": 813,
+      "eligible": true,
+      "cost_cpm": 0,
+      "updated_on": "2016-11-07T11:05:16+0000",
+      "keywords": "",
+      "created_on": "2016-11-07T11:05:16+0000",
+      "entity_type": "pixel_bundle",
+      "id": 22,
+      "rmx_friendly": false,
+      "pixel_type": "data",
+      "version": 1,
+      "name": "Dummy data pixel",
+      "tags": "<img src='//pixel.mathtag.com/data/img?mt_id=22&v1=&v2=&v3=&s1=&s2=&s3=' width='1' height='1' />\n",
+      "tag_type": "image",
+      "pricing": "CPM"
+    }
+  ],
+  "meta": {
+    "next_page": "https://api.mediamath.com/api/v2.0/pixel_bundles?page_offset=1&q=pixel_type%3D%3Ddata&full=*&api_key=qwertyuiop&page_limit=1",
+    "etag": "29caa0d62bf2a4ac38207c4f2578cfec2ddb42b8",
+    "count": 1,
+    "called_on": "2016-11-07T13:22:13+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 50482
+  }
+}

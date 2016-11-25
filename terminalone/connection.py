@@ -54,12 +54,6 @@ class Connection(object):
                                   .format(environment))
 
         Connection.__setattr__(self, 'json', json)
-
-        if json:
-            Connection.__setattr__(self, '_parser', JSONParser)
-        else:
-            Connection.__setattr__(self, '_parser', XMLParser)
-
         Connection.__setattr__(self, 'auth_params', auth_params)
         if _create_session:
             self._create_session()
@@ -205,13 +199,18 @@ class Connection(object):
         return self._parse_response(response)
 
     def _parse_response(self, response):
-        if self.json:
+        content_type = response.headers['Content-type']
+        if 'xml' in content_type:
+            parser = XMLParser
+            response_body = response.content
+        elif 'json' in content_type:
+            parser = JSONParser
             response_body = response.text
         else:
-            response_body = response.content
+            raise ClientError('Cannot handle content type: {}'.format(content_type))
 
         try:
-            result = self._parser(response_body)
+            result = parser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
             raise ClientError('Could not parse response: {!r}'.format(exc.caught))
