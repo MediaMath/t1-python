@@ -147,5 +147,5 @@ class Campaign(Entity):
         super(Campaign, self).save(data=data, url=url)
         # Re-set the fields so that if the same object get saved, we
         # compare agains the re-initialized values
-        super(Entity, self).__setattr__('_init_sce', self.spend_cap_enabled)
-        super(Entity, self).__setattr__('_init_sct', self.spend_cap_type)
+        super(Entity, self).__setattr__('_init_sce', self.properties.get('spend_cap_enabled'))
+        super(Entity, self).__setattr__('_init_sct', self.properties.get('spend_cap_type'))
