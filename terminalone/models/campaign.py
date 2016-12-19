@@ -54,6 +54,7 @@ class Campaign(Entity):
         'io_reference_num': None,
         'initial_start_date': t1types.strpt,
         'margin_pct': float,
+        'minimize_multi_ads': t1types.int_to_bool,
         'merit_pixel_id': int,
         'name': None,
         'pacing_alert': float,
