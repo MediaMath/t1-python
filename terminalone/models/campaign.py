@@ -90,6 +90,7 @@ class Campaign(Entity):
         'impression_cap_automatic': int,
         'impression_cap_type': _cap_types,
         'initial_start_date': t1types.strft,
+        'minimize_multi_ads': int,
         'service_type': _serv_types,
         'spend_cap_automatic': int,
         'spend_cap_enabled': int,
