@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import, division
 from warnings import warn
-from .config import PATHS
+from .config import SERVICE_BASE_PATHS
 from .connection import Connection
 from .errors import ClientError
 from .vendor import six
@@ -193,7 +193,7 @@ class Entity(Connection):
             data = self._validate_write(data)
         else:
             data = self._validate_write(self.properties)
-        entity, _ = super(Entity, self)._post(PATHS['mgmt'], url, data=data)
+        entity, _ = super(Entity, self)._post(self._get_service_path(), url, data=data)
         self._update_self(entity)
 
     def update(self, *args, **kwargs):
@@ -205,8 +205,11 @@ class Entity(Connection):
         if not self.properties.get('id'):
             raise ClientError('Entity ID not given')
         url = self._construct_url(addl=['history', ])
-        history, _ = super(Entity, self)._get(PATHS['mgmt'], url)
+        history, _ = super(Entity, self)._get(self._get_service_path(), url)
         return history
+
+    def _get_service_path(self):
+        return SERVICE_BASE_PATHS.get(self.resource, SERVICE_BASE_PATHS['mgmt'])
 
 
 class SubEntity(Entity):

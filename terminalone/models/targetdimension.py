@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 from warnings import warn
-from ..config import PATHS
 from ..errors import ClientError
 from ..entity import Entity, SubEntity
 from .targetvalue import TargetValue
@@ -77,7 +76,7 @@ class TargetDimension(SubEntity):
         if hasattr(target, '__iter__'):
             for child_id in target:
                 url[1] = str(child_id)
-                entities, _ = super(TargetDimension, self)._get(PATHS['mgmt'],
+                entities, _ = super(TargetDimension, self)._get(self._get_service_path(),
                                                                 '/'.join(url))
                 group.append(TargetValue(self.session,
                                          properties=next(entities),

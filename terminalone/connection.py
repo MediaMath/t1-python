@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from requests import Session
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
-from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
+from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, VALID_ENVS
 from .errors import ClientError, ParserException
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
@@ -60,7 +60,7 @@ class Connection(object):
 
     def _oauth2_session(self, **kwargs):
         refresh_url = '/'.join(['https:/', self.api_base,
-                                PATHS['oauth2'], 'token'])
+                                SERVICE_BASE_PATHS['oauth2'], 'token'])
         refresh_kwargs = {'client_id': self.auth_params['api_key'],
                           'client_secret': self.auth_params['client_secret']}
         session = OAuth2Session(
@@ -96,7 +96,7 @@ class Connection(object):
         The traditional way of authenticating by making a POST request to /login
         endpoint and storing the returned session cookie.
         """
-        user, _ = self._post(PATHS['mgmt'], 'login', data={
+        user, _ = self._post(SERVICE_BASE_PATHS['mgmt'], 'login', data={
             'user': username,
             'password': password,
             'api_key': api_key,
@@ -133,7 +133,7 @@ class Connection(object):
     def authorization_url(self, redirect_uri=None):
         """Authenticate using OAuth2"""
         auth_url = '/'.join(['https:/', self.api_base,
-                             PATHS['oauth2'], 'authorize'])
+                             SERVICE_BASE_PATHS['oauth2'], 'authorize'])
         if redirect_uri is None:
             try:
                 redirect_uri = self.auth_params['redirect_uri']
@@ -147,7 +147,7 @@ class Connection(object):
                     authorization_response_url=None, set_session=False):
         token_url = '/'.join(['https:/',
                               self.api_base,
-                              PATHS['oauth2'],
+                              SERVICE_BASE_PATHS['oauth2'],
                               'token'])
         session = self._oauth2_session(state=state)
         token = session.fetch_token(
@@ -167,7 +167,7 @@ class Connection(object):
         check session
         """
         if user is None:
-            user, _ = self._get(PATHS['mgmt'], 'session')
+            user, _ = self._get(SERVICE_BASE_PATHS['mgmt'], 'session')
 
         Connection.__setattr__(self, 'user_id',
                                int(user['id']))

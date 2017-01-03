@@ -11,7 +11,7 @@ from .entity import Entity
 from .errors import ClientError
 from .reports import Report
 from .utils import filters
-from .config import PATHS
+from .config import SERVICE_BASE_PATHS
 from .vendor import six
 
 
@@ -347,7 +347,7 @@ class T1(Connection):
             _params = self._construct_params(entity, include, full, page_limit,
                                              page_offset, sort_by, parent, query)
 
-        entities, ent_count = super(T1, self)._get(PATHS['mgmt'], _url, params=_params)
+        entities, ent_count = super(T1, self)._get(SERVICE_BASE_PATHS['mgmt'], _url, params=_params)
 
         if not isinstance(entities, GeneratorType) and not isinstance(entities, Iterator):
             return self._return_class(entities, child, child_id, entity, collection)
@@ -369,7 +369,7 @@ class T1(Connection):
         Pages over 100 entities.
         This method should not be called directly: it's called from T1.get.
         """
-        _, num_recs = super(T1, self)._get(PATHS['mgmt'], kwargs['_url'], params={
+        _, num_recs = super(T1, self)._get(SERVICE_BASE_PATHS['mgmt'], kwargs['_url'], params={
             'page_limit': 1,
             'parent': kwargs.get('parent'),
             'q': kwargs.get('query')
