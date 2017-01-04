@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, division
 from warnings import warn
-from .config import SERVICE_BASE_PATHS
 from .connection import Connection
 from .errors import ClientError
 from .vendor import six
@@ -207,9 +206,6 @@ class Entity(Connection):
         url = self._construct_url(addl=['history', ])
         history, _ = super(Entity, self)._get(self._get_service_path(), url)
         return history
-
-    def _get_service_path(self):
-        return SERVICE_BASE_PATHS.get(self.resource, SERVICE_BASE_PATHS['mgmt'])
 
 
 class SubEntity(Entity):

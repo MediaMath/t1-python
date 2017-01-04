@@ -218,3 +218,8 @@ class Connection(object):
             Connection.__setattr__(self, 'response', response)
             raise
         return result.entities, result.entity_count
+
+    def _get_service_path(self, entity_name=None):
+        if not entity_name:
+            entity_name = self.resource
+        return SERVICE_BASE_PATHS.get(entity_name, SERVICE_BASE_PATHS['mgmt'])
