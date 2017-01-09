@@ -42,7 +42,7 @@ class Entity(Connection):
             return
 
         for attr, val in six.iteritems(properties):
-            if self._pull.get(attr) is not None:
+            if self._pull.get(attr) is not None and val is not None:
                 properties[attr] = self._pull[attr](val)
         super(Entity, self).__setattr__('properties', properties)
 
@@ -105,13 +105,6 @@ class Entity(Connection):
         """Custom unpickling. TODO"""
         return super(Entity, self).__setstate__(state)
 
-    def _validate_read(self, data):
-        """Convert XML strings to Python objects"""
-        for key, value in six.iteritems(data):
-            if key in self._pull:
-                data[key] = self._pull[key](value)
-        return data
-
     def _conds_for_removal(self, key, update, push_fn):
         """Determine if an attribute should be removed before POST.
 
@@ -125,7 +118,7 @@ class Entity(Connection):
                 push_fn is False)
 
     def _validate_write(self, data):
-        """Convert Python objects to XML values.
+        """Convert Python objects to POST values.
 
         If attribute should not be sent, remove it from the body.
         """

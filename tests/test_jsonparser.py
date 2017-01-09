@@ -3,7 +3,7 @@ from terminalone.jsonparser import JSONParser
 from terminalone import errors
 
 
-class TestXMLParsing(unittest.TestCase):
+class TestJSONParsing(unittest.TestCase):
     def test_auth_error(self):
         with open('tests/fixtures/json/auth_error.json') as f:
             fixture = f.read()

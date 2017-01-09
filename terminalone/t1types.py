@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from terminalone.utils import FixedOffset
+import re
 
 
 def int_to_bool(value):
@@ -49,11 +50,16 @@ def default_empty(default):
 
 def strpt(dt_string):
     """Convert ISO string time to datetime.datetime. No-op on datetimes"""
+    # 2016-11-07T09:07:57
+    # 2016-11-07T09:07:57+0000
+    # 2016-11-16T12:31:10+00:00
+    offset_re = re.compile('([-+][0-9:]+$)')
     if isinstance(dt_string, datetime):
         return dt_string
-    if dt_string[-5] == '-' or dt_string[-5] == '+':
-        offset_str = dt_string[-5:]
-        dt_string = dt_string[:-5]
+    matches = re.split(offset_re, dt_string)
+    dt_string = matches[0]
+    if len(matches) > 1:
+        offset_str = matches[1].replace(':', '')
         offset = int(offset_str[-4:-2]) * 60 + int(offset_str[-2:])
         if offset_str[0] == "-":
             offset = -offset
