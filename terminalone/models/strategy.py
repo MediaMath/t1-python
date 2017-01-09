@@ -205,6 +205,13 @@ class Strategy(Entity):
 
     def save_supplies(self, data):
         url = self._construct_url(addl=['supplies', ])
+        self._save_related(data, url)
+
+    def save_deals(self, data):
+        url = self._construct_url(addl=['deals', ])
+        self._save_related(data, url)
+
+    def _save_related(self, data, url):
         entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
         self._update_self(entity)
         self._deserialize_target_expr()
