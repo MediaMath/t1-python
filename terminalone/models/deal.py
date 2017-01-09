@@ -43,4 +43,3 @@ class Deal(Entity):
 
     def __init__(self, session, properties=None, **kwargs):
         super(Deal, self).__init__(session, properties, **kwargs)
-

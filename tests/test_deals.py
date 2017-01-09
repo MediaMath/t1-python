@@ -86,4 +86,4 @@ class TestDeals(unittest.TestCase):
             }
         }
         test_deal = deal.Deal(None, properties=mock_deal_properties)
-        #data = test_deal._validate_write(test_deal.data)
+        # data = test_deal._validate_write(test_deal.data)
