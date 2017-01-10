@@ -11,7 +11,7 @@ before_script:
   - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
 script:
   - coverage run --source terminalone setup.py test
-after_sucess:
+after_success:
   - codeclimate-test-reporter --token CODECLIMATE_REPO_TOKEN
 addons:
     code_climate:
