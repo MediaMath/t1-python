@@ -11,4 +11,6 @@ before_script:
   - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
 script:
   - python setup.py test
-
+addons:
+    code_climate:
+        repo_token: 158cca00cd0fa456ad97f77e8d82f457bdcaaa75f64caeae1296317f201aac1c
