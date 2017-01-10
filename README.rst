@@ -10,6 +10,10 @@ TerminalOne-Python
 .. image:: https://img.shields.io/pypi/dm/TerminalOne.svg
     :target: https://pypi.python.org/pypi/TerminalOne
 
+.. image:: https://codeclimate.com/github/MediaMath/t1-python/badges/gpa.svg
+    :target: https://codeclimate.com/github/MediaMath/t1-python
+
+
 Python library for MediaMath's APIs. This library consists of
 classes for working with T1 APIs and managing entities. It is written
 for Python 2.7 and >=3.3. Compatibility with Python 3 is made possible
