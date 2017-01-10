@@ -69,7 +69,7 @@ def strpt(dt_string):
     return datetime.strptime(dt_string, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=FixedOffset(offset))
 
 
-def strft(dt_obj, null_on_none=False):
+def strft(dt_obj, null_on_none=False, offset=False):
     """Convert datetime.datetime to ISO string.
 
     :param null_on_none: bool Occasionally, we will actually want to send an
@@ -82,11 +82,16 @@ def strft(dt_obj, null_on_none=False):
         should be nulled out. In cases like this, null_on_none should be set
         to True in the entity's _push dict using a partial to make it a
         single-argument function. See strategy.py
+    :param offset: bool Whether to add the timezone offset
     :raise AttributeError: if not provided a datetime
     :return: str
     """
+
     try:
-        return dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        dt_str = dt_obj.strftime("%Y-%m-%dT%H:%M:%S")
+        if offset:
+            dt_str += dt_obj.strftime("%z")
+        return dt_str
     except AttributeError:
         if dt_obj is None and null_on_none:
             return ""

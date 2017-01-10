@@ -186,16 +186,19 @@ class Connection(object):
         response = self.session.get(url, params=params, stream=True)
         return self._parse_response(response)
 
-    def _post(self, path, rest, data):
+    def _post(self, path, rest, data=None, json=None):
         """Base method for subclasses to call.
         :param url: str API URL
-        :param data: dict POST data
+        :param data: dict POST data for formdata posts
+        :param json: dict POST data for json posts
         """
-        if not data:
+        if not data and not json:
             raise ClientError('No POST data.')
+        if data and json:
+            raise ClientError('Cannot specify both data and json POST data.')
 
         url = '/'.join(['https:/', self.api_base, path, rest])
-        response = self.session.post(url, data=data, stream=True)
+        response = self.session.post(url, data=data, json=json, stream=True)
         return self._parse_response(response)
 
     def _parse_response(self, response):
@@ -221,5 +224,5 @@ class Connection(object):
 
     def _get_service_path(self, entity_name=None):
         if not entity_name:
-            entity_name = self.resource
+            entity_name = self.collection
         return SERVICE_BASE_PATHS.get(entity_name, SERVICE_BASE_PATHS['mgmt'])

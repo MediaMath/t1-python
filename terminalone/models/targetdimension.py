@@ -59,7 +59,7 @@ class TargetDimension(SubEntity):
             # TargetDimension doesn't have a version associated.
             # But we want to use .save, rather than ._post.
             # As such, we need to have a version number included.
-            # Setting it to None will make _validate_write yank it from the body
+            # Setting it to None will make _validate_form_post yank it from the body
             'version': None,
         })
 

@@ -16,6 +16,7 @@ class Entity(Connection):
     T1 should instantiate these classes, passing in the proper session, etc.
     """
 
+    _post_format = 'formdata'
     _relations = {}
     _readonly = {'id', 'build_date', 'created_on',
                  '_type',  # _type is used because "type" is taken by User.
@@ -79,7 +80,7 @@ class Entity(Connection):
             raise AttributeError(attribute)
 
     def __setattr__(self, attribute, value):
-        if self._pull.get(attribute) is not None:
+        if value is not None and self._pull.get(attribute) is not None:
             try:
                 self.properties[attribute] = self._pull[attribute](value)
             except ValueError:
@@ -117,7 +118,33 @@ class Entity(Connection):
                 (update and key in self._readonly_update) or
                 push_fn is False)
 
-    def _validate_write(self, data):
+    def _validate_json_post(self, data):
+        """Convert Python objects to POST values.
+
+        If attribute should not be sent, remove it from the body.
+        """
+        update = 'id' in self.properties
+        for key, value in six.iteritems(data.copy()):
+            push_fn = self._push.get(key, False)
+
+            if value is None or self._conds_for_removal(key, update, push_fn):
+                del data[key]
+                continue
+
+            if push_fn and value is not None:
+                try:
+                    data[key] = self._push[key](value)
+                except ValueError:
+                    raise ClientError('key {} is invalid: must be of type {}'
+                                      .format(key, self._push[key]))
+                except TypeError as e:
+                    raise ClientError('key {} is invalid: {}'
+                                      .format(key, e.message))
+            else:
+                data[key] = value
+        return data
+
+    def _validate_form_post(self, data):
         """Convert Python objects to POST values.
 
         If attribute should not be sent, remove it from the body.
@@ -132,7 +159,7 @@ class Entity(Connection):
                 del data[key]
                 continue
 
-            if push_fn is not None:
+            if push_fn:
                 try:
                     data[key] = self._push[key](value)
                 except ValueError:
@@ -181,11 +208,16 @@ class Entity(Connection):
         """Save object to T1."""
         if url is None:
             url = self._construct_url()
-        if data is not None:
-            data = self._validate_write(data)
+        if data is None:
+            data = self.properties
+
+        if self._post_format is 'formdata':
+            data = self._validate_form_post(data)
+            entity, _ = super(Entity, self)._post(self._get_service_path(), url, data=data)
         else:
-            data = self._validate_write(self.properties)
-        entity, _ = super(Entity, self)._post(self._get_service_path(), url, data=data)
+            data = self._validate_json_post(data)
+            entity, _ = super(Entity, self)._post(self._get_service_path(), url, json=data)
+
         self._update_self(entity)
 
     def update(self, *args, **kwargs):
