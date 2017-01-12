@@ -2,7 +2,6 @@
 """Provides strategy targeting segment object."""
 
 from __future__ import absolute_import
-from ..config import PATHS
 from .. import t1types
 from ..entity import Entity
 from ..errors import ClientError
@@ -48,6 +47,6 @@ class StrategyTargetingSegment(Entity):
             'exclude_op': 'OR',
             'include_op': 'OR',
         }
-        self._post(PATHS['mgmt'], rest=url, data=data)
+        self._post(self._get_service_path(), rest=url, data=data)
         for item in list(self.properties.keys()):
             del self.properties[item]

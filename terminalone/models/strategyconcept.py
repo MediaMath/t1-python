@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 from .. import t1types
-from ..config import PATHS
 from ..entity import Entity
 
 
@@ -42,6 +41,6 @@ class StrategyConcept(Entity):
         url = '/'.join([self.collection,
                         str(self.id),
                         'delete'])
-        self._post(PATHS['mgmt'], rest=url, data={'version': self.version})
+        self._post(self.get_service_path(), rest=url, data={'version': self.version})
         for item in list(self.properties.keys()):
             del self.properties[item]

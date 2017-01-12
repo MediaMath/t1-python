@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from functools import partial
 import re
 from .. import t1types
-from ..config import PATHS
 from ..entity import Entity
 from ..utils import suppress
 
@@ -206,7 +205,14 @@ class Strategy(Entity):
 
     def save_supplies(self, data):
         url = self._construct_url(addl=['supplies', ])
-        entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+        self._save_related(data, url)
+
+    def save_deals(self, data):
+        url = self._construct_url(addl=['deals', ])
+        self._save_related(data, url)
+
+    def _save_related(self, data, url):
+        entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
         self._update_self(entity)
         self._deserialize_target_expr()
         if 'relations' in self.properties:
@@ -217,17 +223,17 @@ class Strategy(Entity):
         # this endpoint doesn't return an entity like the supplies endpoint
         # so we ignore the error
         with suppress(AttributeError):
-            entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+            entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
 
             # you can't get these values so we don't need to reset anything
 
     def save_audience_segments(self, data):
         url = self._construct_url(addl=['audience_segments', ])
-        entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+        entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
 
     def save_targeting_segments(self, data):
         url = self._construct_url(addl=['targeting_segments', ])
-        entity, _ = super(Strategy, self)._post(PATHS['mgmt'], url, data)
+        entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
 
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""

@@ -59,7 +59,10 @@ class JSONParser(object):
                 data.get('enabled') is not None:
             self.entities = self._parse_target_dimensions(data)
 
-        elif data.get('permissions') is not None:
+        # FIXME: permissions responses dont have an 'entity_type' field so we're using the
+        # FIXME: absence of this field to identify whether it's a permissions object
+        # FIXME: or just a field named 'permissions'. As always, negative tests are bad. baaaaad.
+        elif data.get('permissions') is not None and data.get('entity_type') is None:
             self.entities = self._parse_permissions(data['permissions'])
 
         else:

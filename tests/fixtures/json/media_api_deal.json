@@ -1,0 +1,39 @@
+{
+  "data": {
+    "supply_source_id": 4,
+    "id": 11111,
+    "name": "Test deal",
+    "price": {
+      "value": "4.3200",
+      "currency_code": "EUR"
+    },
+    "created_on": "2016-11-16T11:31:53+00:00",
+    "entity_type": "deal",
+    "price_type": "FLOOR",
+    "permissions": {
+      "all_organizations": false,
+      "organization_ids": [],
+      "agency_ids": [
+        1234
+      ],
+      "advertiser_ids": [
+        12345,
+        123456
+      ]
+    },
+    "sub_supply_source_id": null,
+    "end_datetime": "2999-12-31T00:00:00+00:00",
+    "status": true,
+    "deal_identifier": "Deal_identifier",
+    "start_datetime": "2016-11-16T12:31:10+00:00",
+    "owner": {
+      "id": 22222,
+      "type": "ADVERTISER"
+    },
+    "updated_on": "2016-11-16T11:31:53+00:00",
+    "price_method": "CPM"
+  },
+  "meta": {
+    "status": "ok"
+  }
+}
