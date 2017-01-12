@@ -102,15 +102,11 @@ retrieval, creation, etc. are handled here. Parameters:
 .. code:: python
 
     >>> import terminalone
-    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie")
-
-Using ``auth_method`` authenticates upon instantiation. Previously, this was
-necessary. New in v1.2.0, ``auth_method`` is no longer necessary: it will be
-automatically detected.
-
-.. code:: python
-
     >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key")
+
+If you're a long-time user of t1-python, you'll notice this doesn't include
+the ``auth_method`` keyword. As of v1.2.0, ``auth_method`` is no longer
+necessary: it will be automatically detected.
 
 OAuth2 authentication is now supported. Send a client secret, redirect URI,
 and token updater in lieu of user credentials:
