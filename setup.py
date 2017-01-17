@@ -39,7 +39,7 @@ with open(ver_path) as ver_file:
 
 def check_pip():
     st = subprocess.check_output('pip search {}'.format(metadata['__name__']), shell=True)
-    pip_version = st[st.index('(')+1: st.index(')')]
+    pip_version = st[st.index('(') + 1: st.index(')')]
     print(pip_version)
     if pip_version == metadata['__version__']:
         print('version {} already published. '
