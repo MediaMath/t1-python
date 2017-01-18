@@ -2,7 +2,6 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
-
 try:
     from itertools import imap
 
@@ -140,10 +139,14 @@ class XMLParser(object):
         for prop in entity:
             if prop.tag == 'entity':  # Get parent entities recursively
                 ent = cls.dictify_entity(prop)
-                if prop.attrib['rel'] == ent.get('_type'):
-                    relations[prop.attrib['rel']] = ent
+                if prop.attrib.get('rel') == ent.get('_type'):
+                    relations[prop.attrib.get('rel')] = ent
                 else:
-                    relations.setdefault(prop.attrib['rel'], []).append(ent)
+                    relation = prop.attrib.get('rel')
+                    if relation:
+                        relations.setdefault(relation, []).append(ent)
+                    else:
+                        relations.setdefault(ent.get('_type') + 's', []).append(ent)
             else:
                 output[prop.attrib['name']] = prop.attrib['value']
         if relations:

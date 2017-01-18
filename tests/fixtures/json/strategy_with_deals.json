@@ -1,0 +1,96 @@
+{
+  "data": {
+    "run_on_streaming": false,
+    "use_mm_freq": false,
+    "run_on_display": true,
+    "zone_name": "Australia/Sydney",
+    "updated_on": "2017-01-05T15:14:11+0000",
+    "frequency_interval": "not-applicable",
+    "campaign_id": 297713,
+    "targeting_segment_exclude_op": "OR",
+    "created_on": "2017-01-04T19:10:28+0000",
+    "targeting_segment_include_op": "OR",
+    "run_on_all_pmp": false,
+    "id": 1881566,
+    "impression_pacing_interval": "day",
+    "currency_code": "AUD",
+    "use_campaign_start": false,
+    "name": "EMT",
+    "end_date": "2017-02-03T03:09:58+0000",
+    "type": "AUD",
+    "pixel_target_expr": "",
+    "impression_pacing_type": "no-limit",
+    "bid_price_is_media_only": true,
+    "frequency_optimization": false,
+    "supply_type": "RMX_API",
+    "pacing_type": "even",
+    "goal_type": "spend",
+    "frequency_type": "no-limit",
+    "status": false,
+    "budget": [
+      {
+        "currency_code": "AUD",
+        "value": 10
+      }
+    ],
+    "effective_goal_value": [
+      {
+        "currency_code": "AUD",
+        "value": "10.0000"
+      }
+    ],
+    "goal_value": [
+      {
+        "currency_code": "AUD",
+        "value": 10
+      }
+    ],
+    "pacing_amount": [
+      {
+        "currency_code": "AUD",
+        "value": 1
+      }
+    ],
+    "site_restriction_transparent_urls": false,
+    "media_type": "DISPLAY",
+    "entity_type": "strategy",
+    "start_date": "2017-01-05T03:09:58+0000",
+    "run_on_mobile": true,
+    "deals": [
+      {
+        "entity_type": "deal",
+        "id": 11111
+      },
+      {
+        "entity_type": "deal",
+        "id": 22222
+      }
+    ],
+    "use_optimization": false,
+    "max_bid": [
+      {
+        "currency_code": "AUD",
+        "value": 10
+      }
+    ],
+    "audience_segment_include_op": "OR",
+    "bid_aggressiveness": 50,
+    "version": 4,
+    "run_on_all_exchanges": false,
+    "audience_segment_exclude_op": "OR",
+    "site_selectiveness": "REDUCED",
+    "use_campaign_end": false,
+    "min_bid": [
+      {
+        "currency_code": "AUD",
+        "value": 0
+      }
+    ],
+    "pacing_interval": "day"
+  },
+  "meta": {
+    "etag": "ed3c15fbb860a6ef432e4f1ec36b209d7bdd76f9",
+    "called_on": "2017-01-17T17:04:22+0000",
+    "status": "ok"
+  }
+}

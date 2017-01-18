@@ -55,3 +55,25 @@ class TestDeals(unittest.TestCase):
         test_deal = self.t1.get('deals', 11111)
         data = test_deal._validate_json_post(test_deal.properties)
         self.assertEqual(data.get('start_datetime'), "2016-11-16T12:31:10+0000")
+
+    @responses.activate
+    def test_strategy_with_deals(self):
+        with open('tests/fixtures/json/strategy_with_deals.json') as f:
+            fixture = f.read()
+        responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/strategies/11111/deals',
+                      body=fixture,
+                      content_type='application/json')
+        strategy = self.t1.get('strategies', 11111, child='deals')
+        self.assertEqual(11111, strategy.deals[0].id)
+        self.assertEqual(22222, strategy.deals[1].id)
+
+    @responses.activate
+    def test_strategy_with_deals_xml(self):
+        with open('tests/fixtures/xml/strategy_with_deals.xml') as f:
+            fixture = f.read()
+        responses.add(responses.GET, 'https://api.mediamath.com/api/v2.0/strategies/11111/deals',
+                      body=fixture,
+                      content_type='application/xml')
+        strategy = self.t1.get('strategies', 11111, child='deals')
+        self.assertEqual(11111, strategy.deals[0].id)
+        self.assertEqual(22222, strategy.deals[1].id)
