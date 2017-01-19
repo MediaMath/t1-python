@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from __future__ import absolute_import
 import os
 import sys
 import subprocess
@@ -38,7 +37,7 @@ with open(ver_path) as ver_file:
 
 
 def check_pip():
-    st = subprocess.check_output('pip search {}'.format(metadata['__name__']), shell=True)
+    st = subprocess.check_output(['pip', 'search', metadata['__name__']])
     pip_version = st[st.index('(') + 1: st.index(')')]
     print(pip_version)
     if pip_version == metadata['__version__']:
@@ -49,25 +48,27 @@ def check_pip():
 
 if sys.argv[-1] == 'publish':
     check_pip()
-    os.system("python setup.py sdist")
+    subprocess.call(["python", "setup.py", "sdist"])
     filename = "TerminalOne-{}.tar.gz".format(metadata['__version__'])
     print('Uploading {}'.format(filename))
-    os.system("twine upload dist/{}".format(filename))
+    subprocess.call(["twine", "upload", "dist/{}".format(filename)])
     print("Did you remember to tag the release? ./setup.py tag")
     sys.exit()
 
 if sys.argv[-1] == 'tag':
-    os.system("git tag -a %s -m 'version %s'" % (metadata['__version__'], metadata['__version__']))
-    os.system("git push --tags")
+    subprocess.call(["git", "tag",
+                     "-a", metadata['__version__'],
+                     "-m", "'version {}'".format(metadata['__version__'])])
+    subprocess.call(["git", "push", "--tags"])
     sys.exit()
 
 setup(
     name=metadata['__name__'],
     version=metadata['__version__'],
     author=metadata['__author__'],
-    author_email='prasanna@mediamath.com',
-    url='http://www.mediamath.com',
-    description="A package for interacting with MediaMath's TerminalOne API.",
+    author_email=metadata['__email__'],
+    url=metadata['__url__'],
+    description=metadata['__description__'],
     long_description=fread('README.rst'),
     packages=packages,
     install_requires=requirements,
