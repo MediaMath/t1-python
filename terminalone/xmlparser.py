@@ -2,9 +2,10 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
+from terminalone.t1mappings_noclassdef import SINGULAR
+
 try:
     from itertools import imap
-
     map = imap
     import xml.etree.cElementTree as ET
 except ImportError:  # Python 3
@@ -146,7 +147,8 @@ class XMLParser(object):
                     if relation:
                         relations.setdefault(relation, []).append(ent)
                     else:
-                        relations.setdefault(ent.get('_type') + 's', []).append(ent)
+                        collection = SINGULAR.get(ent.get('_type'))
+                        relations.setdefault(collection, []).append(ent)
             else:
                 output[prop.attrib['name']] = prop.attrib['value']
         if relations:

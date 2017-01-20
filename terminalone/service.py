@@ -11,7 +11,6 @@ from .entity import Entity
 from .errors import ClientError
 from .reports import Report
 from .utils import filters
-from .config import SERVICE_BASE_PATHS
 from .vendor import six
 
 

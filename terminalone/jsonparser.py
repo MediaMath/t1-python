@@ -168,7 +168,7 @@ class JSONParser(object):
 
         for key, val in six.iteritems(output):
             if type(val) is dict and 'entity_type' in val:  # Get parent entities recursively
-                cls.process_related_entity(relations, val)
+                cls.process_related_entity(relations, val, key)
             elif type(val) is list and 'entity_type' in next(iter(val), {}):
                 for child in val:
                     cls.process_related_entity(relations, child, key)
