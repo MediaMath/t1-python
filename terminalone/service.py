@@ -195,7 +195,7 @@ class T1(Connection):
 
     @staticmethod
     def _construct_params(entity, include, full, page_limit,
-                          page_offset, sort_by, parent, query):
+                          page_offset, sort_by, parent, query, other_params):
         """Construct URL params"""
         if entity is not None:
             params = {}
@@ -235,6 +235,9 @@ class T1(Connection):
             params['full'] = '*'
         elif full is not None:
             params['full'] = full
+
+        if other_params:
+            params.update(other_params)
 
         return params
 
@@ -287,6 +290,7 @@ class T1(Connection):
             get_all=False,
             parent=None,
             query=None,
+            other_params=None,
             count=False,
             _url=None,
             _params=None):
@@ -307,6 +311,7 @@ class T1(Connection):
         :param get_all: bool whether to retrieve all results for a query or just a single page
         :param parent: only return entities with this parent id
         :param query: str search parameter. Invoked by `find`
+        :param other_params: optional dict of additional service specific params
         :param count: bool return the number of entities as a second parameter
         :param _url: str shortcut to bypass URL determination.
         :param _params: dict query string parameters to bypass query determination
@@ -336,6 +341,8 @@ class T1(Connection):
                                 parent=parent,
                                 query=query,
                                 count=count,
+                                other_params=other_params,
+                                _params=_params,
                                 _url=_url)
             if count:
                 ent_count = next(gen)
@@ -345,7 +352,7 @@ class T1(Connection):
 
         if _params is None:
             _params = self._construct_params(entity, include, full, page_limit,
-                                             page_offset, sort_by, parent, query)
+                                             page_offset, sort_by, parent, query, other_params)
 
         entities, ent_count = super(T1, self)._get(self._get_service_path(collection), _url, params=_params)
 
@@ -369,15 +376,19 @@ class T1(Connection):
         Pages over 100 entities.
         This method should not be called directly: it's called from T1.get.
         """
-        _, num_recs = super(T1, self)._get(self._get_service_path(collection), kwargs['_url'], params={
+        params = {
             'page_limit': 1,
             'parent': kwargs.get('parent'),
-            'q': kwargs.get('query')
-        })
+            'q': kwargs.get('query'),
+        }
+        if kwargs.get('other_params'):
+            params.update(kwargs.get('other_params'))
+
+        _, num_recs = super(T1, self)\
+            ._get(self._get_service_path(collection), kwargs['_url'], params=params)
 
         if kwargs.get('count'):
             yield num_recs
-
         for page_offset in six.moves.range(0, num_recs, 100):
             # get_all=False, otherwise we could go in a loop
             gen = self.get(collection,
@@ -389,6 +400,7 @@ class T1(Connection):
                            sort_by=kwargs.get('sort_by'),
                            parent=kwargs.get('parent'),
                            query=kwargs.get('query'),
+                           other_params=kwargs.get('other_params'),
                            get_all=False)
             if not isinstance(gen, GeneratorType):
                 gen = iter([gen])
