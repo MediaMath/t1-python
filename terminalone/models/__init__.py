@@ -86,4 +86,5 @@ __all__ = ['ACL',
            'VendorDomain',
            'VendorPixel',
            'VendorPixelDomain',
-           'Vertical', ]
+           'Vertical',
+           ]

@@ -123,5 +123,6 @@ CHILD_PATHS = {
     'region': ('target_dimensions', 7),
     'safety': ('target_dimensions', 15),
     'supplies': ('supplies', 0),
+    'deals': ('deals', 0),
     'targeting_segments': ('targeting_segments', 0),
 }

@@ -168,10 +168,10 @@ class JSONParser(object):
 
         for key, val in six.iteritems(output):
             if type(val) is dict and 'entity_type' in val:  # Get parent entities recursively
-                cls.process_related_entity(relations, val)
+                cls.process_related_entity(relations, val, key)
             elif type(val) is list and 'entity_type' in next(iter(val), {}):
                 for child in val:
-                    cls.process_related_entity(relations, child)
+                    cls.process_related_entity(relations, child, key)
             # this is new as we are potentially returning multiple
             # currency types, but for now let's grab the first value
             elif type(val) is list and 'currency_code' in next(iter(val), {}):
@@ -182,12 +182,15 @@ class JSONParser(object):
         return output
 
     @classmethod
-    def process_related_entity(cls, relations, val):
+    def process_related_entity(cls, relations, val, array_name):
         ent = cls.process_entity(val)
-        if val['rel'] == ent['_type']:
-            relations[val['rel']] = ent
+        relation = val.get('rel')
+        if not relation:
+            relation = array_name
+        if relation == ent['_type']:
+            relations[relation] = ent
         else:
-            relations.setdefault(val['rel'], []).append(ent)
+            relations.setdefault(relation, []).append(ent)
 
     @staticmethod
     def process_permission(permission, type):
