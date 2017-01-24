@@ -193,6 +193,7 @@ Entity and collection retrieval. Parameters:
 -  *query*: Search parameters. *Note*: it's much simpler to use ``find``
    instead of ``get``, allowing ``find`` to construct the query.
 -  *count*: bool return the number of entities as a second parameter
+-  *other_params*: dict of additional, service-specific parameters to be passed.
 
 | Raises: ``terminalone.errors.ClientError`` if *page\_limit* > 100,
   ``terminalone.errors.APIError`` on >399 HTTP status code.
