@@ -194,17 +194,16 @@ class T1(Connection):
             yield e
 
     @staticmethod
-    def _construct_params(entity, include, full, page_limit,
-                          page_offset, sort_by, parent, query, other_params):
+    def _construct_params(entity, **kwargs):
         """Construct URL params"""
         if entity is not None:
             params = {}
         else:
-            params = {'page_limit': page_limit,
-                      'page_offset': page_offset,
-                      'sort_by': sort_by,
-                      'parent': parent,
-                      'q': query, }
+            params = {'page_limit': kwargs.get('page_limit'),
+                      'page_offset': kwargs.get('page_offset'),
+                      'sort_by': kwargs.get('sort_by'),
+                      'parent': kwargs.get('parent'),
+                      'q': kwargs.get('query'), }
 
         # include can be either a string (e.g. 'advertiser'),
         # list of *non-traversable* relations (e.g. ['vendor', 'concept']),
@@ -222,13 +221,15 @@ class T1(Connection):
         # -> with=advertiser,agency&with=vendor
         # include=[['advertiser', 'agency'], ['vendor', 'vendor_domains']]
         # -> with=advertiser,agency&with=vendor,vendor_domains
-        if include is not None:
+        include = kwargs.get('include')
+        if include:
             if isinstance(include, list):
                 for i, item in enumerate(include):
                     if isinstance(item, list):
                         include[i] = ','.join(item)
             params['with'] = include
 
+        full = kwargs.get('full')
         if isinstance(full, list):
             params['full'] = ','.join(full)
         elif full is True:
@@ -236,8 +237,7 @@ class T1(Connection):
         elif full is not None:
             params['full'] = full
 
-        if other_params:
-            params.update(other_params)
+        params.update(kwargs.get('other_params', {}))
 
         return params
 
@@ -290,7 +290,7 @@ class T1(Connection):
             get_all=False,
             parent=None,
             query=None,
-            other_params=None,
+            other_params={},
             count=False,
             _url=None,
             _params=None):
@@ -351,8 +351,15 @@ class T1(Connection):
                 return gen
 
         if _params is None:
-            _params = self._construct_params(entity, include, full, page_limit,
-                                             page_offset, sort_by, parent, query, other_params)
+            _params = self._construct_params(entity,
+                                             include=include,
+                                             full=full,
+                                             page_limit=page_limit,
+                                             page_offset=page_offset,
+                                             sort_by=sort_by,
+                                             parent=parent,
+                                             query=query,
+                                             other_params=other_params)
 
         entities, ent_count = super(T1, self)._get(self._get_service_path(collection), _url, params=_params)
 
