@@ -81,14 +81,6 @@ class Entity(Connection):
         else:
             raise AttributeError(attribute)
 
-    def __getstate__(self):
-        """Custom pickling. TODO"""
-        return super(Entity, self).__getstate__()
-
-    def __setstate__(self, state):
-        """Custom unpickling. TODO"""
-        return super(Entity, self).__setstate__(state)
-
     def _conds_for_removal(self, key, update, push_fn):
         """Determine if an attribute should be removed before POST.
 
