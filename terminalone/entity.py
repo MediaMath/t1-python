@@ -56,23 +56,6 @@ class Entity(Connection):
             )
         )
 
-    def __getitem__(self, attribute):
-        """DEPRECATED way of retrieving properties like with dictionary"""
-        warn('Accessing entity like a dictionary will be removed: '
-             'please discontinue use.',
-             DeprecationWarning, stacklevel=2)
-        if attribute in self.properties:
-            return self.properties[attribute]
-        else:
-            raise AttributeError(attribute)
-
-    def __setitem__(self, attribute, value):
-        """DEPRECATED way of setting properties like with dictionary"""
-        warn('Accessing entity like a dictionary will be removed: '
-             'please discontinue use.',
-             DeprecationWarning, stacklevel=2)
-        self.properties[attribute] = self._pull[attribute](value)
-
     def __getattr__(self, attribute):
         if attribute in self.properties:
             return self.properties[attribute]
