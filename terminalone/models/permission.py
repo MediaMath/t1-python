@@ -40,6 +40,8 @@ class Permission(SubEntity):
 
     def __init__(self, session, properties=None, **kwargs):
         super(Permission, self).__init__(session, properties, **kwargs)
+        # we need to do 'full fat' posts on permissions, so override all the _init_properties
+        self.properties.update(self._init_properties)
 
     def _change_access(self, entity_access, id_to_change, add):
         entity_hierarchy = ['advertiser',

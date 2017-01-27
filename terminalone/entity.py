@@ -38,27 +38,29 @@ class Entity(Connection):
         # dict, we need to use the built-in __setattr__ method
         super(Entity, self).__init__(_create_session=False, **kwargs)
         super(Entity, self).__setattr__('session', session)
-        if properties is None:
-            super(Entity, self).__setattr__('properties', {})
-            return
 
-        for attr, val in six.iteritems(properties):
-            if self._pull.get(attr) is not None and val is not None:
-                properties[attr] = self._pull[attr](val)
-        super(Entity, self).__setattr__('properties', properties)
+        if properties is None:
+            properties = {}
+
+        self._update_self(properties)
 
     def __repr__(self):
+        properties = {}
+        properties.update(self.properties)
+        properties.update(self.init_properties)
         return '{cname}({props})'.format(
             cname=type(self).__name__,
             props=', '.join(
                 '{key}={value!r}'.format(key=key, value=value)
-                for key, value in six.iteritems(self.properties)
+                for key, value in six.iteritems(properties)
             )
         )
 
     def __getattr__(self, attribute):
         if attribute in self.properties:
             return self.properties[attribute]
+        elif attribute in self._init_properties:
+            return self._init_properties[attribute]
         else:
             raise AttributeError(attribute)
 
@@ -98,7 +100,7 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        update = 'id' in self.properties
+        update = 'id' in self._init_properties
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
@@ -124,13 +126,15 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        update = 'id' in self.properties
-        if 'version' not in data and update:
+        entity_id = self._init_properties.get('id', False)
+
+        if 'version' not in data and entity_id:
             data['version'] = self.version
+
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
-            if self._conds_for_removal(key, update, push_fn):
+            if self._conds_for_removal(key, entity_id, push_fn):
                 del data[key]
                 continue
 
@@ -154,17 +158,27 @@ class Entity(Connection):
         """
         url = [self.collection, ]
 
-        if self.properties.get('id'):
+        if self._init_properties.get('id'):
             url.append(str(self.id))
         if addl is not None:
             url.extend(addl)
 
         return '/'.join(url)
 
-    def _update_self(self, entity):
+    def _update_self(self, properties):
         """Update own properties based on values returned by API."""
-        for key, value in six.iteritems(entity):
-            setattr(self, key, value)
+        for attr, val in six.iteritems(properties):
+            if self._pull.get(attr) is not None and val is not None:
+                properties[attr] = self._pull[attr](val)
+        super(Entity, self).__setattr__('_init_properties', properties)
+        self._reset_properties(properties)
+
+    def _reset_properties(self, properties):
+        super(Entity, self).__setattr__('_init_properties', properties)
+        super(Entity, self).__setattr__('properties', {})
+
+    def revert(self):
+        super(Entity, self).__setattr__('properties', {})
 
     def is_property(self, prop):
         if prop in self._pull:

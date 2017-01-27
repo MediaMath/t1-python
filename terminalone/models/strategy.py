@@ -273,12 +273,6 @@ class Strategy(Entity):
         # Re-set the fields so that if the same object get saved, we
         # compare agains the re-initialized values
         self._deserialize_target_expr()
-        super(Entity, self).__setattr__('_init_impcap',
-                                        self.properties.get('impression_cap'))
-        super(Entity, self).__setattr__('_init_imppac',
-                                        (self.properties.get('impression_pacing_type'),
-                                         self.properties.get('impression_pacing_amount'),
-                                         self.properties.get('impression_pacing_interval')))
 
     @property
     def pixel_target_expr_string(self):
