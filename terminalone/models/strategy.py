@@ -21,7 +21,7 @@ class Strategy(Entity):
     }
     _seg_incexc_ops = t1types.enum({'AND', 'OR'}, 'OR')
     _pacing_ints = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
-                                'not-applicable'}, 'not-applicable')
+                                 'not-applicable'}, 'not-applicable')
     _pacing_types = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
                               'cpc')
@@ -127,18 +127,6 @@ class Strategy(Entity):
     def __init__(self, session, properties=None, **kwargs):
         super(Strategy, self).__init__(session, properties, **kwargs)
 
-        if properties is None:
-            # super(Entity) supers to grandparent
-            super(Entity, self).__setattr__('_init_impcap', None)
-            super(Entity, self).__setattr__('_init_imppac', None)
-        else:
-            super(Entity, self).__setattr__('_init_impcap',
-                                            properties.get('impression_cap'))
-            super(Entity, self).__setattr__('_init_imppac',
-                                            (properties.get('impression_pacing_type'),
-                                             properties.get('impression_pacing_amount'),
-                                             properties.get('impression_pacing_interval')))
-
         try:
             self.pixel_target_expr
         except AttributeError:
@@ -173,35 +161,6 @@ class Strategy(Entity):
                 'operator': exclude_operator,
             },
         }
-
-    def _migration_asst(self):
-        """Helps migrate users to the new impression pacing features.
-
-        impression_cap is the old field. impression pacing comprise the new.
-        If the user has changed:
-            - Nothing (final vals all equal): remove both fields
-            - Old (new vals equal): remove new fields, post old
-            - New (old vals equal): remove old fields, post new
-            - Both (no vals equal): UNDEFINED. remove old fields to prep.
-        """
-        new_fields = ['impression_pacing_type',
-                      'impression_pacing_amount',
-                      'impression_pacing_interval']
-        i_cap, i_pac = self._init_impcap, self._init_imppac
-        f_cap, f_pac = (self.properties.get('impression_cap'),
-                        (self.properties.get('impression_pacing_type'),
-                         self.properties.get('impression_pacing_amount'),
-                         self.properties.get('impression_pacing_interval')))
-
-        fields_to_remove = None
-        if i_cap == f_cap and i_pac == f_pac:
-            fields_to_remove = ['impression_cap']
-            fields_to_remove.extend(new_fields)
-        elif i_pac == f_pac:
-            fields_to_remove = new_fields
-        else:  # we don't need a second elif here because it's the same result
-            fields_to_remove = ['impression_cap']
-        return fields_to_remove
 
     def save_supplies(self, data):
         url = self._construct_url(addl=['supplies', ])
@@ -257,10 +216,6 @@ class Strategy(Entity):
 
         data['pixel_target_expr'] = self._serialize_target_expr()
 
-        fields_to_remove = self._migration_asst()
-        for field in fields_to_remove:
-            data.pop(field, None)
-
         if getattr(self, 'use_campaign_start', False) and 'start_date' in data:
             self.properties.pop('start_date', None)
             data['start_date'] = None
@@ -271,7 +226,7 @@ class Strategy(Entity):
         super(Strategy, self).save(data=data, url=url)
 
         # Re-set the fields so that if the same object get saved, we
-        # compare agains the re-initialized values
+        # compare against the re-initialized values
         self._deserialize_target_expr()
 
     @property
