@@ -47,7 +47,7 @@ class Entity(Connection):
     def __repr__(self):
         properties = {}
         properties.update(self.properties)
-        properties.update(self.init_properties)
+        properties.update(self._init_properties)
         return '{cname}({props})'.format(
             cname=type(self).__name__,
             props=', '.join(
