@@ -50,7 +50,7 @@ class Permission(SubEntity):
         if entity_access not in entity_hierarchy:
             raise ClientError('Must be one of {}!'.format(entity_hierarchy))
         if add:
-            if self.properties[entity_access] is None:
+            if not self.properties.get(entity_access):
                 self.properties[entity_access] = {}
             self.properties[entity_access][id_to_change] = "placeholder"
         else:
