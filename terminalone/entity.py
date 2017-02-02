@@ -126,15 +126,15 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        entity_id = self._init_properties.get('id', False)
+        update = 'id' in self._init_properties
 
-        if 'version' not in data and entity_id:
+        if 'version' not in data and update:
             data['version'] = self.version
 
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
-            if self._conds_for_removal(key, entity_id, push_fn):
+            if self._conds_for_removal(key, update, push_fn):
                 del data[key]
                 continue
 
@@ -215,7 +215,7 @@ class Entity(Connection):
 
     def history(self):
         """Retrieve changelog entry for entity."""
-        if not self.properties.get('id'):
+        if not self._init_properties.get('id'):
             raise ClientError('Entity ID not given')
         url = self._construct_url(addl=['history', ])
         history, _ = super(Entity, self)._get(self._get_service_path(), url)
@@ -231,7 +231,7 @@ class SubEntity(Entity):
     def _construct_url(self, addl=None):
         url = [self.parent, str(self.parent_id), self.collection]
 
-        if self.properties.get('id'):
+        if self._init_properties.get('id'):
             url.append(str(self.id))
         if addl is not None:
             url.extend(addl)
