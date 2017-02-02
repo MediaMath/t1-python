@@ -8,13 +8,11 @@ REPORTS = []
 API_BASE = 'api.mediamath.com'
 
 
-# TODO make real unit tests out of this
-
-def setup(credentials, use_json):
+def setup(user_credentials, use_json):
     t1 = T1(auth_method='cookie',
             api_base=API_BASE,
             json=use_json,
-            **credentials)
+            **user_credentials)
     assert hasattr(t1, 'user_id'), 'No user ID present'
     return t1
 

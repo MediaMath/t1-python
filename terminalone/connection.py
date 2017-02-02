@@ -119,14 +119,6 @@ class Connection(object):
         )
         self._check_session()
 
-    def _auth_basic(self, username, password, api_key):
-        """Authenticate using HTTP basic auth. DEPRECATED.
-
-        Will be removed in a future version.
-        """
-        self.session.auth = ('{}|{}'.format(username, api_key), password)
-        self._check_session()
-
     # these should be stored as instance vars, because they aren't specific
     # to the user. Except for redirect_uri, because that gets saved as an
     # instance var for the session

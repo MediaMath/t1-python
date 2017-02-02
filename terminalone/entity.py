@@ -38,44 +38,29 @@ class Entity(Connection):
         # dict, we need to use the built-in __setattr__ method
         super(Entity, self).__init__(_create_session=False, **kwargs)
         super(Entity, self).__setattr__('session', session)
-        if properties is None:
-            super(Entity, self).__setattr__('properties', {})
-            return
 
-        for attr, val in six.iteritems(properties):
-            if self._pull.get(attr) is not None and val is not None:
-                properties[attr] = self._pull[attr](val)
-        super(Entity, self).__setattr__('properties', properties)
+        if properties is None:
+            properties = {}
+
+        self._update_self(properties)
 
     def __repr__(self):
+        properties = {}
+        properties.update(self.properties)
+        properties.update(self._init_properties)
         return '{cname}({props})'.format(
             cname=type(self).__name__,
             props=', '.join(
                 '{key}={value!r}'.format(key=key, value=value)
-                for key, value in six.iteritems(self.properties)
+                for key, value in six.iteritems(properties)
             )
         )
-
-    def __getitem__(self, attribute):
-        """DEPRECATED way of retrieving properties like with dictionary"""
-        warn('Accessing entity like a dictionary will be removed: '
-             'please discontinue use.',
-             DeprecationWarning, stacklevel=2)
-        if attribute in self.properties:
-            return self.properties[attribute]
-        else:
-            raise AttributeError(attribute)
-
-    def __setitem__(self, attribute, value):
-        """DEPRECATED way of setting properties like with dictionary"""
-        warn('Accessing entity like a dictionary will be removed: '
-             'please discontinue use.',
-             DeprecationWarning, stacklevel=2)
-        self.properties[attribute] = self._pull[attribute](value)
 
     def __getattr__(self, attribute):
         if attribute in self.properties:
             return self.properties[attribute]
+        elif attribute in self._init_properties:
+            return self._init_properties[attribute]
         else:
             raise AttributeError(attribute)
 
@@ -98,14 +83,6 @@ class Entity(Connection):
         else:
             raise AttributeError(attribute)
 
-    def __getstate__(self):
-        """Custom pickling. TODO"""
-        return super(Entity, self).__getstate__()
-
-    def __setstate__(self, state):
-        """Custom unpickling. TODO"""
-        return super(Entity, self).__setstate__(state)
-
     def _conds_for_removal(self, key, update, push_fn):
         """Determine if an attribute should be removed before POST.
 
@@ -123,7 +100,7 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        update = 'id' in self.properties
+        update = 'id' in self._init_properties
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
@@ -149,9 +126,11 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        update = 'id' in self.properties
+        update = 'id' in self._init_properties
+
         if 'version' not in data and update:
             data['version'] = self.version
+
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
@@ -179,17 +158,27 @@ class Entity(Connection):
         """
         url = [self.collection, ]
 
-        if self.properties.get('id'):
+        if self._init_properties.get('id'):
             url.append(str(self.id))
         if addl is not None:
             url.extend(addl)
 
         return '/'.join(url)
 
-    def _update_self(self, entity):
+    def _update_self(self, properties):
         """Update own properties based on values returned by API."""
-        for key, value in six.iteritems(entity):
-            setattr(self, key, value)
+        for attr, val in six.iteritems(properties):
+            if self._pull.get(attr) is not None and val is not None:
+                properties[attr] = self._pull[attr](val)
+        super(Entity, self).__setattr__('_init_properties', properties)
+        self._reset_properties(properties)
+
+    def _reset_properties(self, properties):
+        super(Entity, self).__setattr__('_init_properties', properties)
+        super(Entity, self).__setattr__('properties', {})
+
+    def revert(self):
+        super(Entity, self).__setattr__('properties', {})
 
     def is_property(self, prop):
         if prop in self._pull:
@@ -226,7 +215,7 @@ class Entity(Connection):
 
     def history(self):
         """Retrieve changelog entry for entity."""
-        if not self.properties.get('id'):
+        if not self._init_properties.get('id'):
             raise ClientError('Entity ID not given')
         url = self._construct_url(addl=['history', ])
         history, _ = super(Entity, self)._get(self._get_service_path(), url)
@@ -242,7 +231,7 @@ class SubEntity(Entity):
     def _construct_url(self, addl=None):
         url = [self.parent, str(self.parent_id), self.collection]
 
-        if self.properties.get('id'):
+        if self._init_properties.get('id'):
             url.append(str(self.id))
         if addl is not None:
             url.extend(addl)

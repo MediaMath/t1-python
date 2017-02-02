@@ -53,7 +53,7 @@ class TestDeals(unittest.TestCase):
                       body=fixture,
                       content_type='application/json')
         test_deal = self.t1.get('deals', 11111)
-        data = test_deal._validate_json_post(test_deal.properties)
+        data = test_deal._validate_json_post(test_deal._init_properties)
         self.assertEqual(data.get('start_datetime'), "2016-11-16T12:31:10+0000")
 
     @responses.activate
