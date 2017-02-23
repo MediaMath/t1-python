@@ -56,6 +56,9 @@ def strpt(dt_string):
     offset_re = re.compile('([-+][0-9:]+$)')
     if isinstance(dt_string, datetime):
         return dt_string
+    if dt_string == 'now':
+        return datetime.now()
+
     matches = re.split(offset_re, dt_string)
     dt_string = matches[0]
     if len(matches) > 1:
