@@ -60,6 +60,7 @@ class Strategy(Entity):
         'impression_pacing_type': None,
         'max_bid': float,
         'max_bid_wm': float,
+        'min_bid': float,
         'media_type': None,
         'name': None,
         'pacing_amount': float,
