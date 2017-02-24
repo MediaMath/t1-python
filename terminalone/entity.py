@@ -42,7 +42,7 @@ class Entity(Connection):
         if properties is None:
             properties = {}
         super(Entity, self).__setattr__('is_update', 'id' in properties)
-        print(self.is_update)
+        self._update_self(properties)
 
     def __repr__(self):
         properties = {}
