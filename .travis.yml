@@ -12,7 +12,7 @@ before_script:
 script:
   - coverage run --source terminalone setup.py test
 after_success:
-  - codeclimate-test-reporter --token ${CODECLIMATE_REPO_TOKEN}
+  - codeclimate-test-reporter
 addons:
     code_climate:
         repo_token: ${CODECLIMATE_REPO_TOKEN}
