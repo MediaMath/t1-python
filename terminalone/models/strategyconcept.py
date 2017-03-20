@@ -41,6 +41,6 @@ class StrategyConcept(Entity):
         url = '/'.join([self.collection,
                         str(self.id),
                         'delete'])
-        self._post(self.get_service_path(), rest=url, data={'version': self.version})
+        self._post(self._get_service_path(), rest=url, data={'version': self.version})
         for item in list(self.properties.keys()):
             del self.properties[item]
