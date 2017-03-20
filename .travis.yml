@@ -1,18 +1,13 @@
 language: python
 python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
-# command to install dependencies
+- '2.7'
+- '3.3'
+- '3.4'
 install: python setup.py install
-# command to run tests
 before_script:
-  - pip install responses pep8 codeclimate-test-reporter
-  - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
+- pip install responses pep8 codeclimate-test-reporter
+- pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
 script:
-  - coverage run --source terminalone setup.py test
+- coverage run --source terminalone setup.py test
 after_success:
-  - codeclimate-test-reporter --token CODECLIMATE_REPO_TOKEN
-addons:
-    code_climate:
-        repo_token: CODECLIMATE_REPO_TOKEN
+- CODECLIMATE_REPO_TOKEN=${CODECLIMATE_REPO_TOKEN} codeclimate-test-reporter 
