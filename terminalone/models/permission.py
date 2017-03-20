@@ -40,6 +40,8 @@ class Permission(SubEntity):
 
     def __init__(self, session, properties=None, **kwargs):
         super(Permission, self).__init__(session, properties, **kwargs)
+        # we need to do 'full fat' posts on permissions, so override all the _init_properties
+        self.properties.update(self._init_properties)
 
     def _change_access(self, entity_access, id_to_change, add):
         entity_hierarchy = ['advertiser',
@@ -48,7 +50,7 @@ class Permission(SubEntity):
         if entity_access not in entity_hierarchy:
             raise ClientError('Must be one of {}!'.format(entity_hierarchy))
         if add:
-            if self.properties[entity_access] is None:
+            if not self.properties.get(entity_access):
                 self.properties[entity_access] = {}
             self.properties[entity_access][id_to_change] = "placeholder"
         else:

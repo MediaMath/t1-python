@@ -1,0 +1,72 @@
+<?xml version='1.0' ?>
+<result called_on="2017-01-17 17:15:25.400162+00">
+    <entity name="EMT" id="1881566" type="strategy" version="4">
+        <entity id="11111" type="deal" />
+        <entity id="22222" type="deal" />
+        <prop name="campaign_id" value="297713" />
+        <prop name="start_date" value="2017-01-05T03:09:58">
+            <local_time value="2017-01-05T14:09:58" zone_name="Australia/Sydney" />
+        </prop>
+        <prop name="end_date" value="2017-02-03T03:09:58">
+            <local_time value="2017-02-03T14:09:58" zone_name="Australia/Sydney" />
+        </prop>
+        <prop name="use_campaign_start" value="0" />
+        <prop name="use_campaign_end" value="0" />
+        <prop name="use_optimization" value="0" />
+        <prop name="pacing_type" value="even" />
+        <prop name="pacing_interval" value="day" />
+        <prop name="goal_type" value="spend" />
+        <prop name="bid_aggressiveness" value="50.00" />
+        <prop name="frequency_type" value="no-limit" />
+        <prop name="frequency_interval" value="not-applicable" />
+        <prop name="run_on_all_exchanges" value="0" />
+        <prop name="created_on" value="2017-01-04T19:10:28">
+            <local_time value="2017-01-05T06:10:28" zone_name="Australia/Sydney" />
+        </prop>
+        <prop name="updated_on" value="2017-01-05T15:14:11">
+            <local_time value="2017-01-06T02:14:11" zone_name="Australia/Sydney" />
+        </prop>
+        <prop name="status" value="0" />
+        <prop name="budget" currency_code="AUD" value="10.00">
+            <amount currency_code="AUD" value="10.00" />
+        </prop>
+        <prop name="pacing_amount" currency_code="AUD" value="1.00">
+            <amount currency_code="AUD" value="1.00" />
+        </prop>
+        <prop name="goal_value" currency_code="AUD" value="10.0000">
+            <amount currency_code="AUD" value="10.0000" />
+        </prop>
+        <prop name="max_bid" currency_code="AUD" value="10.00">
+            <amount currency_code="AUD" value="10.00" />
+        </prop>
+        <prop name="min_bid" currency_code="AUD" value="0.00">
+            <amount currency_code="AUD" value="0.00" />
+        </prop>
+        <prop name="name" value="EMT" />
+        <prop name="site_selectiveness" value="REDUCED" />
+        <prop name="type" value="AUD" />
+        <prop name="use_mm_freq" value="0" />
+        <prop name="site_restriction_transparent_urls" value="0" />
+        <prop name="supply_type" value="RMX_API" />
+        <prop name="audience_segment_include_op" value="OR" />
+        <prop name="audience_segment_exclude_op" value="OR" />
+        <prop name="run_on_all_pmp" value="0" />
+        <prop name="bid_price_is_media_only" value="1" />
+        <prop name="media_type" value="DISPLAY" />
+        <prop name="run_on_display" value="1" />
+        <prop name="run_on_mobile" value="1" />
+        <prop name="run_on_streaming" value="0" />
+        <prop name="currency_code" value="AUD" />
+        <prop name="zone_name" value="Australia/Sydney" />
+        <prop name="targeting_segment_include_op" value="OR" />
+        <prop name="targeting_segment_exclude_op" value="OR" />
+        <prop name="frequency_optimization" value="0" />
+        <prop name="impression_pacing_type" value="no-limit" />
+        <prop name="impression_pacing_interval" value="day" />
+        <prop name="effective_goal_value" currency_code="AUD" value="10.0000">
+            <amount currency_code="AUD" value="10.0000" />
+        </prop>
+        <prop name="pixel_target_expr" value="" />
+    </entity>
+    <status code="ok" />
+</result>

@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from requests import Session
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
-from .config import ACCEPT_HEADERS, API_BASES, PATHS, VALID_ENVS
-from .errors import ClientError, ParserException
+from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS
+from .errors import ClientError
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
@@ -60,7 +60,7 @@ class Connection(object):
 
     def _oauth2_session(self, **kwargs):
         refresh_url = '/'.join(['https:/', self.api_base,
-                                PATHS['oauth2'], 'token'])
+                                SERVICE_BASE_PATHS['oauth2'], 'token'])
         refresh_kwargs = {'client_id': self.auth_params['api_key'],
                           'client_secret': self.auth_params['client_secret']}
         session = OAuth2Session(
@@ -96,7 +96,7 @@ class Connection(object):
         The traditional way of authenticating by making a POST request to /login
         endpoint and storing the returned session cookie.
         """
-        user, _ = self._post(PATHS['mgmt'], 'login', data={
+        user, _ = self._post(SERVICE_BASE_PATHS['mgmt'], 'login', data={
             'user': username,
             'password': password,
             'api_key': api_key,
@@ -119,21 +119,13 @@ class Connection(object):
         )
         self._check_session()
 
-    def _auth_basic(self, username, password, api_key):
-        """Authenticate using HTTP basic auth. DEPRECATED.
-
-        Will be removed in a future version.
-        """
-        self.session.auth = ('{}|{}'.format(username, api_key), password)
-        self._check_session()
-
     # these should be stored as instance vars, because they aren't specific
     # to the user. Except for redirect_uri, because that gets saved as an
     # instance var for the session
     def authorization_url(self, redirect_uri=None):
         """Authenticate using OAuth2"""
         auth_url = '/'.join(['https:/', self.api_base,
-                             PATHS['oauth2'], 'authorize'])
+                             SERVICE_BASE_PATHS['oauth2'], 'authorize'])
         if redirect_uri is None:
             try:
                 redirect_uri = self.auth_params['redirect_uri']
@@ -147,7 +139,7 @@ class Connection(object):
                     authorization_response_url=None, set_session=False):
         token_url = '/'.join(['https:/',
                               self.api_base,
-                              PATHS['oauth2'],
+                              SERVICE_BASE_PATHS['oauth2'],
                               'token'])
         session = self._oauth2_session(state=state)
         token = session.fetch_token(
@@ -167,7 +159,7 @@ class Connection(object):
         check session
         """
         if user is None:
-            user, _ = self._get(PATHS['mgmt'], 'session')
+            user, _ = self._get(SERVICE_BASE_PATHS['mgmt'], 'session')
 
         Connection.__setattr__(self, 'user_id',
                                int(user['id']))
@@ -186,16 +178,19 @@ class Connection(object):
         response = self.session.get(url, params=params, stream=True)
         return self._parse_response(response)
 
-    def _post(self, path, rest, data):
+    def _post(self, path, rest, data=None, json=None):
         """Base method for subclasses to call.
         :param url: str API URL
-        :param data: dict POST data
+        :param data: dict POST data for formdata posts
+        :param json: dict POST data for json posts
         """
-        if not data:
+        if not data and not json:
             raise ClientError('No POST data.')
+        if data and json:
+            raise ClientError('Cannot specify both data and json POST data.')
 
         url = '/'.join(['https:/', self.api_base, path, rest])
-        response = self.session.post(url, data=data, stream=True)
+        response = self.session.post(url, data=data, json=json, stream=True)
         return self._parse_response(response)
 
     def _parse_response(self, response):
@@ -218,3 +213,8 @@ class Connection(object):
             Connection.__setattr__(self, 'response', response)
             raise
         return result.entities, result.entity_count
+
+    def _get_service_path(self, entity_name=None):
+        if not entity_name:
+            entity_name = self.collection
+        return SERVICE_BASE_PATHS.get(entity_name, SERVICE_BASE_PATHS['mgmt'])

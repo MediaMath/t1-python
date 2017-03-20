@@ -1,10 +1,8 @@
 from __future__ import absolute_import
-import json
 from time import time
 import unittest
 import responses
-import requests
-from terminalone import T1, errors
+from terminalone import T1
 from terminalone.vendor import six
 
 mock_credentials = {

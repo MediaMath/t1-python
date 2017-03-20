@@ -102,15 +102,11 @@ retrieval, creation, etc. are handled here. Parameters:
 .. code:: python
 
     >>> import terminalone
-    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key", auth_method="cookie")
-
-Using ``auth_method`` authenticates upon instantiation. Previously, this was
-necessary. New in v1.2.0, ``auth_method`` is no longer necessary: it will be
-automatically detected.
-
-.. code:: python
-
     >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key")
+
+If you're a long-time user of t1-python, you'll notice this doesn't include
+the ``auth_method`` keyword. As of v1.2.0, ``auth_method`` is no longer
+necessary: it will be automatically detected.
 
 OAuth2 authentication is now supported. Send a client secret, redirect URI,
 and token updater in lieu of user credentials:
@@ -197,6 +193,7 @@ Entity and collection retrieval. Parameters:
 -  *query*: Search parameters. *Note*: it's much simpler to use ``find``
    instead of ``get``, allowing ``find`` to construct the query.
 -  *count*: bool return the number of entities as a second parameter
+-  *other_params*: dict of additional, service-specific parameters to be passed.
 
 | Raises: ``terminalone.errors.ClientError`` if *page\_limit* > 100,
   ``terminalone.errors.APIError`` on >399 HTTP status code.

@@ -2,10 +2,10 @@
 """Parses XML output from T1 and returns a (relatively) sane Python object."""
 
 from __future__ import absolute_import
+from terminalone.t1mappings_noclassdef import SINGULAR
 
 try:
     from itertools import imap
-
     map = imap
     import xml.etree.cElementTree as ET
 except ImportError:  # Python 3
@@ -21,12 +21,13 @@ class XMLParser(object):
     def __init__(self, xml):
         try:
             result = ET.fromstring(xml)
-        except ParseError as e:
-            raise ParserException(e)
+        except ParseError as exc:
+            raise ParserException(exc)
 
         self.get_status(result, xml)
 
         def xfind(haystack, needle):
+            """Find the needle in the haystack"""
             return haystack.find(needle) is not None
 
         if xfind(result, 'entities'):
@@ -140,15 +141,26 @@ class XMLParser(object):
         for prop in entity:
             if prop.tag == 'entity':  # Get parent entities recursively
                 ent = cls.dictify_entity(prop)
-                if prop.attrib['rel'] == ent.get('_type'):
-                    relations[prop.attrib['rel']] = ent
+                if prop.attrib.get('rel') == ent.get('_type'):
+                    relations[prop.attrib.get('rel')] = ent
                 else:
-                    relations.setdefault(prop.attrib['rel'], []).append(ent)
+                    collection = cls.get_collection_name(prop, ent)
+                    relations.setdefault(collection, []).append(ent)
             else:
                 output[prop.attrib['name']] = prop.attrib['value']
         if relations:
             output['relations'] = relations
         return output
+
+    @classmethod
+    def get_collection_name(cls, prop, entity):
+        """Attempt to grab the related collection name from the entity,
+        otherwise do a best guess"""
+        collection_name = prop.attrib.get('rel')
+        if not collection_name:
+            collection_name = SINGULAR.get(entity.get('_type'))
+
+        return collection_name
 
     @staticmethod
     def dictify_permission(entity):
@@ -166,9 +178,10 @@ class XMLParser(object):
 
     @staticmethod
     def dictify_access_flag(flag):
+        """Turn user permission access flags into sensible dicts"""
         output = flag.attrib
         for key in output.keys():
-            if 'id' == key or key.endswith('_id'):
+            if key == 'id' or key.endswith('_id'):
                 output[key] = int(output[key])
         return output
 

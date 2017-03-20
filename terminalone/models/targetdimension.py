@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import
 from warnings import warn
-from ..config import PATHS
 from ..errors import ClientError
 from ..entity import Entity, SubEntity
 from .targetvalue import TargetValue
@@ -60,7 +59,7 @@ class TargetDimension(SubEntity):
             # TargetDimension doesn't have a version associated.
             # But we want to use .save, rather than ._post.
             # As such, we need to have a version number included.
-            # Setting it to None will make _validate_write yank it from the body
+            # Setting it to None will make _validate_form_post yank it from the body
             'version': None,
         })
 
@@ -77,7 +76,7 @@ class TargetDimension(SubEntity):
         if hasattr(target, '__iter__'):
             for child_id in target:
                 url[1] = str(child_id)
-                entities, _ = super(TargetDimension, self)._get(PATHS['mgmt'],
+                entities, _ = super(TargetDimension, self)._get(self._get_service_path(),
                                                                 '/'.join(url))
                 group.append(TargetValue(self.session,
                                          properties=next(entities),

@@ -3,7 +3,7 @@ from terminalone.jsonparser import JSONParser
 from terminalone import errors
 
 
-class TestXMLParsing(unittest.TestCase):
+class TestJSONParsing(unittest.TestCase):
     def test_auth_error(self):
         with open('tests/fixtures/json/auth_error.json') as f:
             fixture = f.read()
@@ -50,3 +50,10 @@ class TestXMLParsing(unittest.TestCase):
         parser = JSONParser(fixture)
         self.assertEqual(True, parser.status_code)
         self.assertEqual(3, parser.entity_count)
+
+    def test_media_service_deals(self):
+        with open('tests/fixtures/json/media_api_deal.json') as f:
+            fixture = f.read()
+        parser = JSONParser(fixture)
+        self.assertEqual(True, parser.status_code)
+        self.assertEqual(1, parser.entity_count)

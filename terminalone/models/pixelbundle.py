@@ -9,7 +9,7 @@ from ..entity import Entity
 class Pixel(Entity):
     """Pixel entity, or entity_type == 'pixel_bundle'"""
     collection = 'pixel_bundles'
-    resource = 'pixel_bundle',
+    resource = 'pixel_bundle'
     _relations = {
         'advertiser', 'agency', 'provider',
     }

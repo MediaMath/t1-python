@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import, division
 import csv
-from .config import PATHS
+from .config import SERVICE_BASE_PATHS
 from .connection import Connection
 from .errors import ClientError, T1Error
 from .utils import compose
@@ -85,7 +85,7 @@ class Report(Connection):
         :param path: str path to hit. Should not start with slash
         :param params: dict query string params
         """
-        url = '/'.join(['https:/', self.api_base, PATHS['reports'], path])
+        url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports'], path])
         response = self.session.get(url, params=params, stream=True)
 
         if not response.ok:
