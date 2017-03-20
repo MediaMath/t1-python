@@ -194,18 +194,11 @@ class Connection(object):
         return self._parse_response(response)
 
     def _parse_response(self, response):
-
         content_type = response.headers.get('Content-type')
         if content_type is None:
             raise T1Error(None, 'No content type header returned')
-        if 'xml' in content_type:
-            parser = XMLParser
-            response_body = response.content
-        elif 'json' in content_type:
-            parser = JSONParser
-            response_body = response.text
-        else:
-            raise T1Error(None, 'Cannot handle content type: {}'.format(content_type))
+
+        parser, response_body = self._get_parser(content_type, response)
 
         try:
             result = parser(response_body)
@@ -216,6 +209,18 @@ class Connection(object):
             Connection.__setattr__(self, 'response', response)
             raise
         return result.entities, result.entity_count
+
+    @staticmethod
+    def _get_parser(content_type, response):
+        if 'xml' in content_type:
+            parser = XMLParser
+            response_body = response.content
+        elif 'json' in content_type:
+            parser = JSONParser
+            response_body = response.text
+        else:
+            raise T1Error(None, 'Cannot handle content type: {}'.format(content_type))
+        return parser, response_body
 
     def _get_service_path(self, entity_name=None):
         if not entity_name:
