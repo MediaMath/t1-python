@@ -6,7 +6,7 @@ from requests import Session
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS
-from .errors import ClientError
+from .errors import ClientError, T1Error
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
@@ -194,7 +194,24 @@ class Connection(object):
         return self._parse_response(response)
 
     def _parse_response(self, response):
-        content_type = response.headers['Content-type']
+        content_type = response.headers.get('Content-type')
+        if content_type is None:
+            raise T1Error(None, 'No content type header returned')
+
+        parser, response_body = self._get_parser(content_type, response)
+
+        try:
+            result = parser(response_body)
+        except ParseError as exc:
+            Connection.__setattr__(self, 'response', response)
+            raise T1Error(None, 'Could not parse response: {!r}'.format(exc.caught))
+        except Exception:
+            Connection.__setattr__(self, 'response', response)
+            raise
+        return result.entities, result.entity_count
+
+    @staticmethod
+    def _get_parser(content_type, response):
         if 'xml' in content_type:
             parser = XMLParser
             response_body = response.content
@@ -202,17 +219,8 @@ class Connection(object):
             parser = JSONParser
             response_body = response.text
         else:
-            raise ClientError('Cannot handle content type: {}'.format(content_type))
-
-        try:
-            result = parser(response_body)
-        except ParseError as exc:
-            Connection.__setattr__(self, 'response', response)
-            raise ClientError('Could not parse response: {!r}'.format(exc.caught))
-        except Exception:
-            Connection.__setattr__(self, 'response', response)
-            raise
-        return result.entities, result.entity_count
+            raise T1Error(None, 'Cannot handle content type: {}'.format(content_type))
+        return parser, response_body
 
     def _get_service_path(self, entity_name=None):
         if not entity_name:
