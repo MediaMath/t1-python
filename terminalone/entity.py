@@ -41,7 +41,7 @@ class Entity(Connection):
 
         if properties is None:
             properties = {}
-        super(Entity, self).__setattr__('is_update', 'id' in properties)
+
         self._update_self(properties)
 
     def __repr__(self):
@@ -83,7 +83,7 @@ class Entity(Connection):
         else:
             raise AttributeError(attribute)
 
-    def _conds_for_removal(self, key, push_fn):
+    def _conds_for_removal(self, key, update, push_fn):
         """Determine if an attribute should be removed before POST.
 
         Attributes should be removed if we don't expect them or if they
@@ -92,7 +92,7 @@ class Entity(Connection):
         """
         return (key in self._readonly or
                 key in self._relations or
-                (self.is_update and key in self._readonly_update) or
+                (update and key in self._readonly_update) or
                 push_fn is False)
 
     def _validate_json_post(self, data):
@@ -100,10 +100,11 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
+        update = 'id' in self._init_properties
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
-            if value is None or self._conds_for_removal(key, push_fn):
+            if value is None or self._conds_for_removal(key, update, push_fn):
                 del data[key]
                 continue
 
@@ -125,13 +126,15 @@ class Entity(Connection):
 
         If attribute should not be sent, remove it from the body.
         """
-        if 'version' not in data and self.is_update:
+        update = 'id' in self._init_properties
+
+        if 'version' not in data and update:
             data['version'] = self.version
 
         for key, value in six.iteritems(data.copy()):
             push_fn = self._push.get(key, False)
 
-            if self._conds_for_removal(key, push_fn):
+            if self._conds_for_removal(key, update, push_fn):
                 del data[key]
                 continue
 
@@ -172,10 +175,7 @@ class Entity(Connection):
 
     def _reset_properties(self, properties):
         super(Entity, self).__setattr__('_init_properties', properties)
-        if self.is_update:
-            super(Entity, self).__setattr__('properties', {})
-        else:
-            super(Entity, self).__setattr__('properties', properties)
+        super(Entity, self).__setattr__('properties', {})
 
     def revert(self):
         super(Entity, self).__setattr__('properties', {})
