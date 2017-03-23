@@ -146,6 +146,9 @@ class XMLParser(object):
                     relations.setdefault(prop.attrib['rel'], []).append(ent)
             else:
                 output[prop.attrib['name']] = prop.attrib['value']
+            if prop.attrib['name'] == 'price':
+                for amount in prop.findall('amount'):
+                    output['price-'+amount.attrib['currency_code']] = amount.attrib['value']
         if relations:
             output['relations'] = relations
         return output
