@@ -360,16 +360,13 @@ access that entity's properties using instance attributes:
 -  ``save(data=None)``
    Save the entity. If ``data`` is provided, send that. Typically used
    with no arguments.
--  ``properties``
-   Dictionary of entity properties
-
 (*Note: you will typically interact with subclasses, not ``Entity``
 itself*)
 
 If for some reason you need to access the object like a dictionary (for
-instance, if you need to iterate over fields or dump to a CSV), the dict
-``properties`` is available. However, you shouldn't modify
-``properties`` directly, as it bypasses validation.
+instance, if you need to iterate over fields or dump to a CSV), the method
+``get_properties()`` is available. However, you shouldn't modify
+``_properties`` directly, as it will cause incorrect behaviour.
 
 Once you have your instance, you can modify its values, and then save it
 back. A return value of ``None`` indicates success. Otherwise, an error

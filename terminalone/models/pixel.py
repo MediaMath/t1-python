@@ -41,5 +41,5 @@ class ChildPixel(Entity):
                         str(self.id),
                         'delete'])
         self._post(self._get_service_path(), rest=url, data={'version': self.version})
-        for item in list(self.properties.keys()):
-            del self.properties[item]
+        for item in list(self._properties.keys()):
+            del self._properties[item]

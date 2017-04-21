@@ -48,5 +48,5 @@ class StrategyTargetingSegment(Entity):
             'include_op': 'OR',
         }
         self._post(self._get_service_path(), rest=url, data=data)
-        for item in list(self.properties.keys()):
-            del self.properties[item]
+        for item in list(self._properties.keys()):
+            del self._properties[item]

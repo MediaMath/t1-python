@@ -88,5 +88,5 @@ class PlacementSlot(Entity):
 
     def save(self, data=None, url=None):
         """Set defaults for object before saving"""
-        update_low_priority(self.properties, self.defaults)
+        update_low_priority(self._properties, self.defaults)
         super(PlacementSlot, self).save()

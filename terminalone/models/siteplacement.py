@@ -43,7 +43,7 @@ class SitePlacement(Entity):
 
     def save(self, data=None, url=None):
         if data is None:
-            data = self.properties
+            data = self._properties
         if not data.get('display_text'):
             data['display_text'] = data['name']
         super(SitePlacement, self).save(data=data, url=url)
