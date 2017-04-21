@@ -16,9 +16,6 @@ def setup(user_credentials, use_json):
     assert hasattr(t1, 'user_id'), 'No user ID present'
     return t1
 
-t1 = setup(credentials(), False)
-
-
 
 def test_session_id(t1):
     t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='cookie')
