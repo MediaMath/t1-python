@@ -321,9 +321,6 @@ class T1(Connection):
         if type(collection) == type and issubclass(collection, Entity):
             collection = MODEL_PATHS[collection]
 
-        if page_limit > 100:
-            raise ClientError('page_limit parameter must not exceed 100')
-
         child_id = None
         if _url is None:
             _url, child_id = self._construct_url(collection, entity, child, limit)
@@ -337,6 +334,7 @@ class T1(Connection):
                                 sort_by=sort_by,
                                 parent=parent,
                                 query=query,
+                                page_limit=page_limit,
                                 count=count,
                                 other_params=other_params,
                                 _params=_params,
@@ -380,6 +378,8 @@ class T1(Connection):
         Pages over 100 entities.
         This method should not be called directly: it's called from T1.get.
         """
+
+        num_to_fetch = kwargs.get('page_limit', 100)
         params = {
             'page_limit': 1,
             'parent': kwargs.get('parent'),
@@ -393,7 +393,7 @@ class T1(Connection):
 
         if kwargs.get('count'):
             yield num_recs
-        for page_offset in six.moves.range(0, num_recs, 100):
+        for page_offset in six.moves.range(0, num_recs, num_to_fetch):
             # get_all=False, otherwise we could go in a loop
             gen = self.get(collection,
                            _url=kwargs['_url'],
@@ -402,6 +402,7 @@ class T1(Connection):
                            full=kwargs.get('full'),
                            page_offset=page_offset,
                            sort_by=kwargs.get('sort_by'),
+                           page_limit=num_to_fetch,
                            parent=kwargs.get('parent'),
                            query=kwargs.get('query'),
                            other_params=kwargs.get('other_params'),
