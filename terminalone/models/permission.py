@@ -41,7 +41,7 @@ class Permission(SubEntity):
     def __init__(self, session, properties=None, **kwargs):
         super(Permission, self).__init__(session, properties, **kwargs)
         # we need to do 'full fat' posts on permissions, so override all the _init_properties
-        self.properties.update(self._init_properties)
+        self._properties.update(self._init_properties)
 
     def _change_access(self, entity_access, id_to_change, add):
         entity_hierarchy = ['advertiser',
@@ -50,17 +50,17 @@ class Permission(SubEntity):
         if entity_access not in entity_hierarchy:
             raise ClientError('Must be one of {}!'.format(entity_hierarchy))
         if add:
-            if not self.properties.get(entity_access):
-                self.properties[entity_access] = {}
-            self.properties[entity_access][id_to_change] = "placeholder"
+            if not self._properties.get(entity_access):
+                self._properties[entity_access] = {}
+            self._properties[entity_access][id_to_change] = "placeholder"
         else:
-            self.properties[entity_access].pop(id_to_change)
+            self._properties[entity_access].pop(id_to_change)
             depth = entity_hierarchy.index(entity_access)
             if depth > 0:
                 child_entity = entity_hierarchy[depth - 1]
                 parent_key = entity_access + '_id'
                 children_to_remove = []
-                for entity_id, entity in six.iteritems(self.properties[child_entity]):
+                for entity_id, entity in six.iteritems(self._properties[child_entity]):
                     if entity[parent_key] == id_to_change:
                         children_to_remove.append(entity_id)
                 for entity_id in children_to_remove:
@@ -84,14 +84,14 @@ class Permission(SubEntity):
 
     def _generate_save_data(self, data=None):
         if data is None:
-            data = self.properties.copy()
+            data = self._properties.copy()
         data.pop('organization', None)
         data.pop('agency', None)
         data.pop('advertiser', None)
-        if self.properties['advertiser'] is not None:
-            data['advertiser_id'] = self.properties['advertiser'].keys()
-        if self.properties['agency'] is not None:
-            data['agency_id'] = self.properties['agency'].keys()
-        if self.properties['organization'] is not None:
-            data['organization_id'] = self.properties['organization'].keys()
+        if self._properties['advertiser'] is not None:
+            data['advertiser_id'] = self._properties['advertiser'].keys()
+        if self._properties['agency'] is not None:
+            data['agency_id'] = self._properties['agency'].keys()
+        if self._properties['organization'] is not None:
+            data['organization_id'] = self._properties['organization'].keys()
         return data

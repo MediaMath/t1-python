@@ -34,7 +34,7 @@ class Entity(Connection):
         :param kwargs: additional kwargs to pass to Connection
         """
 
-        # __setattr__ is overridden below. So to set self.properties as an empty
+        # __setattr__ is overridden below. So to set self._properties as an empty
         # dict, we need to use the built-in __setattr__ method
         super(Entity, self).__init__(_create_session=False, **kwargs)
         super(Entity, self).__setattr__('session', session)
@@ -45,9 +45,7 @@ class Entity(Connection):
         self._update_self(properties)
 
     def __repr__(self):
-        properties = {}
-        properties.update(self.properties)
-        properties.update(self._init_properties)
+        properties = self.get_properties()
         return '{cname}({props})'.format(
             cname=type(self).__name__,
             props=', '.join(
@@ -57,8 +55,8 @@ class Entity(Connection):
         )
 
     def __getattr__(self, attribute):
-        if attribute in self.properties:
-            return self.properties[attribute]
+        if attribute in self._properties:
+            return self._properties[attribute]
         elif attribute in self._init_properties:
             return self._init_properties[attribute]
         else:
@@ -67,7 +65,7 @@ class Entity(Connection):
     def __setattr__(self, attribute, value):
         if value is not None and self._pull.get(attribute) is not None:
             try:
-                self.properties[attribute] = self._pull[attribute](value)
+                self._properties[attribute] = self._pull[attribute](value)
             except ValueError:
                 raise ClientError('key {} is invalid: must be of type {}'
                                   .format(attribute, self._pull[attribute]))
@@ -75,11 +73,11 @@ class Entity(Connection):
                 raise ClientError('key {} is invalid: {}'
                                   .format(attribute, e.message))
         else:
-            self.properties[attribute] = value
+            self._properties[attribute] = value
 
     def __delattr__(self, attribute):
-        if attribute in self.properties:
-            del self.properties[attribute]
+        if attribute in self._properties:
+            del self._properties[attribute]
         else:
             raise AttributeError(attribute)
 
@@ -170,12 +168,18 @@ class Entity(Connection):
         super(Entity, self).__setattr__('_init_properties', properties)
         self._reset_properties(properties)
 
+    def get_properties(self):
+        properties = {}
+        properties.update(self._properties)
+        properties.update(self._init_properties)
+        return properties
+
     def _reset_properties(self, properties):
         super(Entity, self).__setattr__('_init_properties', properties)
         if self.is_update:
-            super(Entity, self).__setattr__('properties', {})
+            super(Entity, self).__setattr__('_properties', {})
         else:
-            super(Entity, self).__setattr__('properties', properties)
+            super(Entity, self).__setattr__('_properties', properties)
 
     def revert(self):
         super(Entity, self).__setattr__('properties', {})
@@ -198,7 +202,7 @@ class Entity(Connection):
         if url is None:
             url = self._construct_url()
         if data is None:
-            data = self.properties
+            data = self._properties
 
         if self._post_format is 'formdata':
             data = self._validate_form_post(data)

@@ -107,6 +107,6 @@ class Campaign(Entity):
     def save(self, data=None, url=None):
         """Save object to T1 while accounting for old fields"""
         if data is None:
-            data = self.properties.copy()
+            data = self._properties.copy()
 
         super(Campaign, self).save(data=data, url=url)

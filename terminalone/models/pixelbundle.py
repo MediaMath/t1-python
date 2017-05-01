@@ -85,7 +85,7 @@ class Pixel(Entity):
             return super(Pixel, self).save(data=data)
 
         if data is None:
-            data = self.properties.copy()
+            data = self._properties.copy()
         if self.pricing == 'CPM':
             data.pop('cost_cpts', None)
             if not getattr(self, 'cost_pct_cpm', None):

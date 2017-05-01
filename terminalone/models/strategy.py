@@ -175,8 +175,8 @@ class Strategy(Entity):
         entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
         self._update_self(entity)
         self._deserialize_target_expr()
-        if 'relations' in self.properties:
-            del self.properties['relations']
+        if 'relations' in self._properties:
+            del self._properties['relations']
 
     def save_domains(self, data):
         url = self._construct_url(addl=['domain_restrictions', ])
@@ -213,15 +213,15 @@ class Strategy(Entity):
     def save(self, data=None, url=None):
         """Save object to T1 accounting for fields an pixel target expr"""
         if data is None:
-            data = self.properties.copy()
+            data = self._properties.copy()
 
         data['pixel_target_expr'] = self._serialize_target_expr()
 
         if getattr(self, 'use_campaign_start', False) and 'start_date' in data:
-            self.properties.pop('start_date', None)
+            self._properties.pop('start_date', None)
             data['start_date'] = None
         if getattr(self, 'use_campaign_end', False) and 'end_date' in data:
-            self.properties.pop('end_date', None)
+            self._properties.pop('end_date', None)
             data['end_date'] = None
 
         super(Strategy, self).save(data=data, url=url)
