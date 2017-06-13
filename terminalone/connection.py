@@ -12,6 +12,7 @@ from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
 import json
 import base64
+import jwt
 
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
@@ -161,15 +162,20 @@ class Connection(object):
             'password': password,
             'client_id': client_id,
             'connection': t1_connection,
-            'scope': 'openid'
+            'scope': 'openid profile'
         }
         response = post('https://sso.mediamath-dev.auth0.com/oauth/ro', json=payload, stream=True)
         if response.status_code != 200:
             raise ClientError('Failed to get OAuth2 token. Error: '+ response.text)
         id_token = json.loads(response.text)['id_token']
-        # print(id_token)
-        # print(base64.urlsafe_b64decode(id_token))
-        return json.loads(response.text)['id_token']
+        user = jwt.decode(id_token, verify=False)
+
+        Connection.__setattr__(self, 'user_id',
+                               user['user_id'])
+        Connection.__setattr__(self, 'username',
+                               user['email'])
+        self.session.headers['Authorization'] = 'Bearer ' + id_token
+        return id_token, user
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
