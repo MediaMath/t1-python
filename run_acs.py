@@ -8,6 +8,22 @@ REPORTS = []
 API_BASE = 'api.mediamath.com'
 
 
+
+def setup_oauth(user_credentials, use_json):
+    t1 = T1(auth_method='oauth2-resourceowner',
+            api_base=API_BASE,
+            json=use_json,
+            **user_credentials)
+    assert hasattr(t1, 'user_id'), 'No user ID present'
+    return t1
+
+
+def test_session_id_oauth(t1):
+    t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='oauth2-resourceowner')
+    assert hasattr(t2, 'username'), 'Expected new T1 session, got: %r' % t2
+
+
+
 def setup(user_credentials, use_json):
     t1 = T1(auth_method='cookie',
             api_base=API_BASE,
@@ -186,14 +202,22 @@ def main():
         test_report_meta,
     ]
 
-    t1 = setup(credentials(), False)
-    print('running XML tests')
-    for test in tests:
-        test(t1)
-        print("Passed test for {}".format(test.__name__.replace('test_', '')))
-    print("Passed all XML tests!")
+    # t1 = setup(credentials(), False)
+    # print('running XML tests')
+    # for test in tests:
+    #     test(t1)
+    #     print("Passed test for {}".format(test.__name__.replace('test_', '')))
+    # print("Passed all XML tests!")
 
-    t1 = setup(credentials(), True)
+    # t1 = setup(credentials(), True)
+
+    # print('running json tests')
+    # for test in tests:
+    #     test(t1)
+    #     print("Passed test for {}".format(test.__name__.replace('test_', '')))
+    # print("Passed all json tests!")
+
+    t1 = setup_oauth(credentials(), True)
 
     print('running json tests')
     for test in tests:

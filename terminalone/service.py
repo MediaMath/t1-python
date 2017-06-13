@@ -39,6 +39,7 @@ class T1(Connection):
                  username=None,
                  password=None,
                  api_key=None,
+                 client_id=None,
                  client_secret=None,
                  auth_method=None,
                  session_id=None,
@@ -47,6 +48,7 @@ class T1(Connection):
                  json=False,
                  redirect_uri=None,
                  token=None,
+                 t1_connection=None,
                  token_updater=None,
                  **kwargs):
         """Set up session for main service object.
@@ -92,6 +94,13 @@ class T1(Connection):
                 'token': token,
                 'token_updater': token_updater,
             })
+        elif auth_method == 'oauth2-resourceowner':
+            self.auth_params.update({
+                'token': token,
+                'username': username,
+                'password': password,
+                't1_connection': t1_connection,
+                })
         else:
             self.auth_params.update({
                 'username': username,
@@ -124,6 +133,18 @@ class T1(Connection):
             return super(T1, self)._auth_cookie(self.auth_params['username'],
                                                 self.auth_params['password'],
                                                 self.auth_params['api_key'])
+        elif auth_method == 'oauth2-resourceowner':
+            session_id = kwargs.get('session_id')
+            if session_id is not None:
+                return super(T1, self)._auth_session_id(
+                    session_id,
+                    self.auth_params['api_key']
+                )
+            return super(T1, self).fetch_resource_owner_password_token(
+                self.auth_params['username'],
+                self.auth_params['password'],
+                self.auth_params['api_key'],
+                self.auth_params['t1_connection'])
         elif auth_method == 'basic':
             raise ClientError('basic authentication is no longer supported - use cookie or oauth')
         else:

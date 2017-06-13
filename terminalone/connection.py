@@ -2,7 +2,7 @@
 """Provides connection object for T1."""
 
 from __future__ import absolute_import
-from requests import Session
+from requests import Session, post
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS
@@ -10,7 +10,8 @@ from .errors import ClientError, T1Error
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
-
+import json
+import base64
 
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
@@ -39,6 +40,7 @@ class Connection(object):
         :param auth_params: dict set of auth parameters:
             "method" required argument. Determines session handler.
             "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
+            "oauth2-ro" => "client_id", "client_secret", "username", "password"
             "cookie" => "username", "password", "api_key"
         :param _create_session: bool flag to create a Requests Session.
             Should only be used for initial T1 instantiation.
@@ -152,6 +154,23 @@ class Connection(object):
             Connection.__setattr__(self, 'session', session)
         return token
 
+    def fetch_resource_owner_password_token(self, username, password, client_id, t1_connection ):
+        payload = {
+            'grant_type': 'password',
+            'username': username,
+            'password': password,
+            'client_id': client_id,
+            'connection': t1_connection,
+            'scope': 'openid'
+        }
+        response = post('https://sso.mediamath-dev.auth0.com/oauth/ro', json=payload, stream=True)
+        if response.status_code != 200:
+            raise ClientError('Failed to get OAuth2 token. Error: '+ response.text)
+        id_token = json.loads(response.text)['id_token']
+        # print(id_token)
+        # print(base64.urlsafe_b64decode(id_token))
+        return json.loads(response.text)['id_token']
+
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
 
@@ -212,6 +231,7 @@ class Connection(object):
 
     @staticmethod
     def _get_parser(content_type, response):
+        print(response)
         if 'xml' in content_type:
             parser = XMLParser
             response_body = response.content
