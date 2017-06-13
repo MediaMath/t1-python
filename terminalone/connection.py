@@ -155,26 +155,29 @@ class Connection(object):
             Connection.__setattr__(self, 'session', session)
         return token
 
-    def fetch_resource_owner_password_token(self, username, password, client_id, t1_connection ):
+    def fetch_resource_owner_password_token(self, username, password, client_id, client_secret ):
         payload = {
             'grant_type': 'password',
             'username': username,
             'password': password,
             'client_id': client_id,
-            'connection': t1_connection,
-            'scope': 'openid profile'
+            'audience': 'https://api.mediamath.com/api/v2.0/',
+            'client_secret': client_secret,
+            # 'connection': t1_connection,
+            'scope': 'openid'
         }
-        response = post('https://sso.mediamath-dev.auth0.com/oauth/ro', json=payload, stream=True)
+        response = post('https://sso.mediamath-dev.auth0.com/oauth/token', json=payload, stream=True)
         if response.status_code != 200:
             raise ClientError('Failed to get OAuth2 token. Error: '+ response.text)
         id_token = json.loads(response.text)['id_token']
         user = jwt.decode(id_token, verify=False)
-
+        print user
         Connection.__setattr__(self, 'user_id',
-                               user['user_id'])
+                               user['name'])
         Connection.__setattr__(self, 'username',
-                               user['email'])
+                               user['nickname'])
         self.session.headers['Authorization'] = 'Bearer ' + id_token
+        print id_token
         return id_token, user
 
     def _check_session(self, user=None):

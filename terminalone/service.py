@@ -48,7 +48,6 @@ class T1(Connection):
                  json=False,
                  redirect_uri=None,
                  token=None,
-                 t1_connection=None,
                  token_updater=None,
                  **kwargs):
         """Set up session for main service object.
@@ -99,7 +98,7 @@ class T1(Connection):
                 'token': token,
                 'username': username,
                 'password': password,
-                't1_connection': t1_connection,
+                'client_secret': client_secret,
                 })
         else:
             self.auth_params.update({
@@ -144,7 +143,7 @@ class T1(Connection):
                 self.auth_params['username'],
                 self.auth_params['password'],
                 self.auth_params['api_key'],
-                self.auth_params['t1_connection'])
+                self.auth_params['client_secret'])
         elif auth_method == 'basic':
             raise ClientError('basic authentication is no longer supported - use cookie or oauth')
         else:

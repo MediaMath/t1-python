@@ -69,7 +69,6 @@ def credentials(filename=None, root=None):
                 'api_key': os.environ.get('T1_API_KEY'),
                 'client_id': os.environ.get('T1_CLIENT_ID'),
                 'client_secret': os.environ.get('T1_CLIENT_SECRET'),
-                't1_connection': os.environ.get('T1_CONNECTION')
             }
         except KeyError:
             raise TypeError('Must either supply JSON file of credentials'
