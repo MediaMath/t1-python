@@ -8,7 +8,6 @@ REPORTS = []
 API_BASE = 'api.mediamath.com'
 
 
-
 def setup_oauth(user_credentials, use_json):
     t1 = T1(auth_method='oauth2-resourceowner',
             api_base=API_BASE,
@@ -19,9 +18,9 @@ def setup_oauth(user_credentials, use_json):
 
 
 def test_session_id_oauth(t1):
-    t2 = T1(session_id=t1.session_id, api_base=API_BASE, auth_method='oauth2-resourceowner')
+    t2 = T1(session_id=t1.session_id, api_base=API_BASE,
+            auth_method='oauth2-resourceowner')
     assert hasattr(t2, 'username'), 'Expected new T1 session, got: %r' % t2
-
 
 
 def setup(user_credentials, use_json):
@@ -107,23 +106,30 @@ def test_limit(t1):
 def test_include(t1):
     pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
                       include='advertiser', full=True, page_limit=1))
-    assert hasattr(pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
-    assert hasattr(pxl.advertiser, 'id'), 'Expected advertiser instance, got: %r' % pxl.advertiser
+    assert hasattr(
+        pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
+    assert hasattr(
+        pxl.advertiser, 'id'), 'Expected advertiser instance, got: %r' % pxl.advertiser
 
 
 def test_include_traversal(t1):
     pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
                       include=[['advertiser', 'agency'], ], full=True, page_limit=1))
-    assert hasattr(pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
-    assert hasattr(pxl.advertiser, 'agency'), 'Expected agency instance, got: %r' % pxl.advertiser
+    assert hasattr(
+        pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
+    assert hasattr(
+        pxl.advertiser, 'agency'), 'Expected agency instance, got: %r' % pxl.advertiser
 
 
 def test_include_plural(t1):
     camp = next(t1.get('campaigns', limit={'advertiser': 105162},
                        include='strategies', page_limit=1))
-    assert hasattr(camp, 'strategies'), 'Expected strategies included, got: %r' % camp
-    assert isinstance(camp.strategies, list), 'Expected list of strategies, got: %r' % camp.strategies
-    assert hasattr(camp.strategies[0], 'id'), 'Expected strategy instances, got: %r' % camp.strategies[0]
+    assert hasattr(
+        camp, 'strategies'), 'Expected strategies included, got: %r' % camp
+    assert isinstance(
+        camp.strategies, list), 'Expected list of strategies, got: %r' % camp.strategies
+    assert hasattr(camp.strategies[
+                   0], 'id'), 'Expected strategy instances, got: %r' % camp.strategies[0]
 
 
 def test_include_multi(t1):
@@ -133,7 +139,8 @@ def test_include_multi(t1):
                      full=True,
                      page_limit=1,
                      sort_by='-concept_id'))
-    assert hasattr(ac, 'advertiser'), 'Expected advertiser included, got: %r' % ac
+    assert hasattr(
+        ac, 'advertiser'), 'Expected advertiser included, got: %r' % ac
     assert hasattr(ac, 'concept'), 'Expected concept included, got: %r' % ac
 
 
@@ -163,7 +170,8 @@ def test_target_dimensions(t1):
 def test_picard_meta(t1):
     r = t1.new('report')
     md = r.metadata
-    assert hasattr(md, 'keys'), 'Expected mapping structure, got: %r' % type(md)
+    assert hasattr(
+        md, 'keys'), 'Expected mapping structure, got: %r' % type(md)
 
     assert 'reports' in md, 'Expected overall metadata, got: %r' % md
 

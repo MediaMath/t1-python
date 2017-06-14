@@ -14,6 +14,7 @@ import json
 import base64
 import jwt
 
+
 def _generate_user_agent(name='t1-python'):
     return '{name}/{version} {ua}'.format(name=name, version=__version__,
                                           ua=default_user_agent())
@@ -155,7 +156,7 @@ class Connection(object):
             Connection.__setattr__(self, 'session', session)
         return token
 
-    def fetch_resource_owner_password_token(self, username, password, client_id, client_secret ):
+    def fetch_resource_owner_password_token(self, username, password, client_id, client_secret):
         payload = {
             'grant_type': 'password',
             'username': username,
@@ -166,9 +167,11 @@ class Connection(object):
             # 'connection': t1_connection,
             'scope': 'openid'
         }
-        response = post('https://sso.mediamath-dev.auth0.com/oauth/token', json=payload, stream=True)
+        response = post(
+            'https://sso.mediamath-dev.auth0.com/oauth/token', json=payload, stream=True)
         if response.status_code != 200:
-            raise ClientError('Failed to get OAuth2 token. Error: '+ response.text)
+            raise ClientError(
+                'Failed to get OAuth2 token. Error: ' + response.text)
         id_token = json.loads(response.text)['id_token']
         user = jwt.decode(id_token, verify=False)
         print user
@@ -232,7 +235,8 @@ class Connection(object):
             result = parser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
-            raise T1Error(None, 'Could not parse response: {!r}'.format(exc.caught))
+            raise T1Error(
+                None, 'Could not parse response: {!r}'.format(exc.caught))
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise
@@ -248,7 +252,8 @@ class Connection(object):
             parser = JSONParser
             response_body = response.text
         else:
-            raise T1Error(None, 'Cannot handle content type: {}'.format(content_type))
+            raise T1Error(
+                None, 'Cannot handle content type: {}'.format(content_type))
         return parser, response_body
 
     def _get_service_path(self, entity_name=None):

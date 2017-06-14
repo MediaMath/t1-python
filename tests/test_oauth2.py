@@ -31,6 +31,7 @@ def mock_saver(_):
 
 class TestOauth2ResourceOwnerLogin(unittest.TestCase):
   """ Tests for OAuth2 Resource Owner Login"""
+
   def setUp(self):
         self.t1 = T1(**mock_credentials)
         with open('tests/fixtures/json/access_token.json') as f:
