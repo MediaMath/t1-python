@@ -39,6 +39,7 @@ class T1(Connection):
                  username=None,
                  password=None,
                  api_key=None,
+                 client_id=None,
                  client_secret=None,
                  auth_method=None,
                  session_id=None,
@@ -90,12 +91,19 @@ class T1(Connection):
                 'client_secret': client_secret,
                 'redirect_uri': redirect_uri,
                 'token': token,
-                'token_updater': token_updater,
+                'token_updater': token_updater
+            })
+        elif auth_method == 'oauth2-resourceowner':
+            self.auth_params.update({
+                'token': token,
+                'username': username,
+                'password': password,
+                'client_secret': client_secret
             })
         else:
             self.auth_params.update({
                 'username': username,
-                'password': password,
+                'password': password
             })
 
         super(T1, self).__init__(environment, api_base=api_base,
@@ -124,8 +132,21 @@ class T1(Connection):
             return super(T1, self)._auth_cookie(self.auth_params['username'],
                                                 self.auth_params['password'],
                                                 self.auth_params['api_key'])
+        elif auth_method == 'oauth2-resourceowner':
+            session_id = kwargs.get('session_id')
+            if session_id is not None:
+                return super(T1, self)._auth_session_id(
+                    session_id,
+                    self.auth_params['api_key']
+                )
+            return super(T1, self).fetch_resource_owner_password_token(
+                self.auth_params['username'],
+                self.auth_params['password'],
+                self.auth_params['api_key'],
+                self.auth_params['client_secret'])
         elif auth_method == 'basic':
-            raise ClientError('basic authentication is no longer supported - use cookie or oauth')
+            raise ClientError(
+                'basic authentication is no longer supported - use cookie or oauth')
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
@@ -187,7 +208,8 @@ class T1(Connection):
     def _gen_classes(self, entities, child, child_id, entity_id, collection):
         """Iterate over entities, returning objects for each"""
         for entity in entities:
-            e = self._return_class(entity, child, child_id, entity_id, collection)
+            e = self._return_class(
+                entity, child, child_id, entity_id, collection)
             yield e
 
     @staticmethod
@@ -250,7 +272,8 @@ class T1(Connection):
             try:
                 child_path = CHILD_PATHS[child.lower()]
             except AttributeError:
-                raise ClientError("`child` must be a string of the entity to retrieve")
+                raise ClientError(
+                    "`child` must be a string of the entity to retrieve")
             except KeyError:
                 raise ClientError("`child` must correspond to an entity in T1")
             # child_path should always be a tuple of (path, id). For children
@@ -323,7 +346,8 @@ class T1(Connection):
 
         child_id = None
         if _url is None:
-            _url, child_id = self._construct_url(collection, entity, child, limit)
+            _url, child_id = self._construct_url(
+                collection, entity, child, limit)
 
         if get_all:
             gen = self._get_all(collection,
@@ -356,12 +380,14 @@ class T1(Connection):
                                              query=query,
                                              other_params=other_params)
 
-        entities, ent_count = super(T1, self)._get(self._get_service_path(collection), _url, params=_params)
+        entities, ent_count = super(T1, self)._get(
+            self._get_service_path(collection), _url, params=_params)
 
         if not isinstance(entities, GeneratorType) and not isinstance(entities, Iterator):
             return self._return_class(entities, child, child_id, entity, collection)
 
-        ent_gen = self._gen_classes(entities, child, child_id, entity, collection)
+        ent_gen = self._gen_classes(
+            entities, child, child_id, entity, collection)
         if count:
             return ent_gen, ent_count
         else:
@@ -446,10 +472,12 @@ class T1(Connection):
         """
         if operator == filters.IN:
             if not isinstance(candidates, list):
-                raise TypeError('`candidates` must be list of entities for `IN`')
+                raise TypeError(
+                    '`candidates` must be list of entities for `IN`')
             query = '(' + ','.join(str(c) for c in candidates) + ')'
         else:
-            query = operator.join([variable, self._parse_candidate(candidates)])
+            query = operator.join(
+                [variable, self._parse_candidate(candidates)])
         return self.get(collection, query=query, **kwargs)
 
 
