@@ -64,10 +64,10 @@ class Connection(object):
     def _oauth2_session(self, **kwargs):
         refresh_url = '/'.join(['https:/', self.api_base,
                                 SERVICE_BASE_PATHS['oauth2'], 'token'])
-        refresh_kwargs = {'client_id': self.auth_params['client_id'],
+        refresh_kwargs = {'client_id': self.auth_params['api_key'],
                           'client_secret': self.auth_params['client_secret']}
         session = OAuth2Session(
-            client_id=self.auth_params['client_id'],
+            client_id=self.auth_params['api_key'],
             auto_refresh_url=refresh_url,
             auto_refresh_kwargs=refresh_kwargs,
             token=self.auth_params['token'],
