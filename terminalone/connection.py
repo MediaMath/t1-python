@@ -11,7 +11,6 @@ from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
 import json
-import base64
 import jwt
 
 
@@ -65,10 +64,10 @@ class Connection(object):
     def _oauth2_session(self, **kwargs):
         refresh_url = '/'.join(['https:/', self.api_base,
                                 SERVICE_BASE_PATHS['oauth2'], 'token'])
-        refresh_kwargs = {'client_id': self.auth_params['api_key'],
+        refresh_kwargs = {'client_id': self.auth_params['client_id'],
                           'client_secret': self.auth_params['client_secret']}
         session = OAuth2Session(
-            client_id=self.auth_params['api_key'],
+            client_id=self.auth_params['client_id'],
             auto_refresh_url=refresh_url,
             auto_refresh_kwargs=refresh_kwargs,
             token=self.auth_params['token'],
@@ -88,7 +87,8 @@ class Connection(object):
         else:
             session = Session()
             session.headers['User-Agent'] = self.user_agent
-            session.params = {'api_key': self.auth_params['api_key']}
+            if method != 'oauth2-resourceowner':
+                session.params = {'api_key': self.auth_params['api_key']}
             if self.json:
                 session.headers['Accept'] = ACCEPT_HEADERS['json']
 
@@ -164,7 +164,6 @@ class Connection(object):
             'client_id': client_id,
             'audience': 'https://api.mediamath.com/api/v2.0/',
             'client_secret': client_secret,
-            # 'connection': t1_connection,
             'scope': 'openid'
         }
         response = post(
@@ -174,13 +173,11 @@ class Connection(object):
                 'Failed to get OAuth2 token. Error: ' + response.text)
         id_token = json.loads(response.text)['id_token']
         user = jwt.decode(id_token, verify=False)
-        print user
         Connection.__setattr__(self, 'user_id',
                                user['name'])
         Connection.__setattr__(self, 'username',
                                user['nickname'])
         self.session.headers['Authorization'] = 'Bearer ' + id_token
-        print id_token
         return id_token, user
 
     def _check_session(self, user=None):
@@ -244,7 +241,6 @@ class Connection(object):
 
     @staticmethod
     def _get_parser(content_type, response):
-        print(response)
         if 'xml' in content_type:
             parser = XMLParser
             response_body = response.content

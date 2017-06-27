@@ -15,7 +15,7 @@ from .vendor import six
 
 
 def _detect_auth_method(username, password, session_id,
-                        api_key, client_secret, token):
+                        api_key, client_id, client_secret, token):
     if api_key is None:
         raise ClientError('API Key is required!')
     if token is not None:
@@ -26,6 +26,8 @@ def _detect_auth_method(username, password, session_id,
         return 'cookie'
     if client_secret is not None:
         return 'oauth2'
+    if client_id is not None and client_secret is not None:
+        return 'oauth2-resourceowner'
 
 
 class T1(Connection):
@@ -82,7 +84,7 @@ class T1(Connection):
         self.auth_params = {}
         if auth_method is None:
             auth_method = _detect_auth_method(username, password, session_id,
-                                              api_key, client_secret, token)
+                                              api_key, client_id, client_secret, token)
         self.auth_params['method'] = auth_method
         self.auth_params['api_key'] = api_key
 
@@ -98,7 +100,8 @@ class T1(Connection):
                 'token': token,
                 'username': username,
                 'password': password,
-                'client_secret': client_secret
+                'client_secret': client_secret,
+                'client_id': client_id
             })
         else:
             self.auth_params.update({
@@ -137,12 +140,12 @@ class T1(Connection):
             if session_id is not None:
                 return super(T1, self)._auth_session_id(
                     session_id,
-                    self.auth_params['api_key']
+                    self.auth_params['client_id']
                 )
             return super(T1, self).fetch_resource_owner_password_token(
                 self.auth_params['username'],
                 self.auth_params['password'],
-                self.auth_params['api_key'],
+                self.auth_params['client_id'],
                 self.auth_params['client_secret'])
         elif auth_method == 'basic':
             raise ClientError(

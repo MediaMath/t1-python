@@ -4,9 +4,11 @@ from __future__ import print_function
 from terminalone import T1, filters
 from terminalone.utils import credentials
 from terminalone.vendor import six
+from terminalone.errors import AuthRequiredError
 REPORTS = []
 API_BASE = 'api.mediamath.com'
 
+ADVERTISER_ID = 191902
 
 def setup_oauth(user_credentials, use_json):
     t1 = T1(auth_method='oauth2-resourceowner',
@@ -59,8 +61,8 @@ def test_get_all(t1):
 
 
 def test_entity_get_save(t1):
-    adv = t1.get('advertisers', 105162)
-    assert adv.id == 105162, "Expected ID 105162, got: %d" % adv.id
+    adv = t1.get('advertisers', ADVERTISER_ID)
+    assert adv.id == ADVERTISER_ID, "Expected ID ADVERTISER_ID, got: %d" % adv.id
     assert all(
         hasattr(adv, item) for item in [
             'id',
@@ -94,17 +96,17 @@ def test_full(t1):
 
 
 def test_limit(t1):
-    pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
+    pxl = next(t1.get('pixel_bundles', limit={'advertiser': ADVERTISER_ID},
                       full='pixel_bundle', page_limit=1))
-    assert pxl.advertiser_id == 105162, 'Expected adv ID 105162, got: %d' % pxl.advertiser_id
+    assert pxl.advertiser_id == ADVERTISER_ID, 'Expected adv ID ADVERTISER_ID, got: %d' % pxl.advertiser_id
 
-    pxl = next(t1.get('pixel_bundles', limit={'agency.organization': 100001},
+    pxl = next(t1.get('pixel_bundles', limit={'agency.organization': 100048},
                       full='pixel_bundle', page_limit=1))
     assert pxl.pixel_type != 'event', 'Expected non-event pixel, got: %r' % pxl.pixel_type
 
 
 def test_include(t1):
-    pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
+    pxl = next(t1.get('pixel_bundles', limit={'advertiser': ADVERTISER_ID},
                       include='advertiser', full=True, page_limit=1))
     assert hasattr(
         pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
@@ -113,7 +115,7 @@ def test_include(t1):
 
 
 def test_include_traversal(t1):
-    pxl = next(t1.get('pixel_bundles', limit={'advertiser': 105162},
+    pxl = next(t1.get('pixel_bundles', limit={'advertiser': ADVERTISER_ID},
                       include=[['advertiser', 'agency'], ], full=True, page_limit=1))
     assert hasattr(
         pxl, 'advertiser'), 'Expected advertiser included, got: %r' % pxl
@@ -122,7 +124,7 @@ def test_include_traversal(t1):
 
 
 def test_include_plural(t1):
-    camp = next(t1.get('campaigns', limit={'advertiser': 105162},
+    camp = next(t1.get('campaigns', limit={'advertiser': ADVERTISER_ID},
                        include='strategies', page_limit=1))
     assert hasattr(
         camp, 'strategies'), 'Expected strategies included, got: %r' % camp
@@ -134,7 +136,7 @@ def test_include_plural(t1):
 
 def test_include_multi(t1):
     # sort_by=-concept_id to ensure that we get a creative with a concept
-    ac = next(t1.get('atomic_creatives', limit={'advertiser': 105162},
+    ac = next(t1.get('atomic_creatives', limit={'advertiser': ADVERTISER_ID},
                      include=[['advertiser', ], ['concept', ]],
                      full=True,
                      page_limit=1,
@@ -146,7 +148,7 @@ def test_include_multi(t1):
 
 def test_find(t1):
     pxls = t1.find('pixel_bundles', 'id', operator=filters.IN,
-                   candidates=[452050, 452051, 452052])
+                   candidates=[1197721, 1197722, 1197723])
     count = len(list(pxls))
     assert count == 3, 'Expected 3 entities, got: %d' % count
 
@@ -158,12 +160,12 @@ def test_find(t1):
 
 
 def test_permissions(t1):
-    p = t1.get('users', 1090, child='permissions')
+    p = t1.get('users', 20628, child='permissions')
     assert p._type == 'permission', 'Expected permission entity, got: %r' % p
 
 
 def test_target_dimensions(t1):
-    t = t1.get('strategies', 151940, child='region')
+    t = t1.get('strategies', 2442820, child='region')
     assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t
 
 
@@ -190,6 +192,13 @@ def test_report_meta(t1):
         assert good, 'Expected report metadata, got: %r' % md
 
 
+def test_oauth_token(t1):
+    try:
+        t1.get('campaigns')
+    except AuthRequiredError as e:
+        assert 'access token expired' in e.message
+
+
 def main():
     tests = [
         test_session_id,
@@ -210,22 +219,18 @@ def main():
         test_report_meta,
     ]
 
-    # t1 = setup(credentials(), False)
-    # print('running XML tests')
-    # for test in tests:
-    #     test(t1)
-    #     print("Passed test for {}".format(test.__name__.replace('test_', '')))
-    # print("Passed all XML tests!")
+    oauth_tests = [
+        test_oauth_token,
+    ]
 
-    # t1 = setup(credentials(), True)
+    t1 = setup(credentials(), False)
+    print('running XML tests')
+    for test in tests:
+        test(t1)
+        print("Passed test for {}".format(test.__name__.replace('test_', '')))
+    print("Passed all XML tests!")
 
-    # print('running json tests')
-    # for test in tests:
-    #     test(t1)
-    #     print("Passed test for {}".format(test.__name__.replace('test_', '')))
-    # print("Passed all json tests!")
-
-    t1 = setup_oauth(credentials(), True)
+    t1 = setup(credentials(), True)
 
     print('running json tests')
     for test in tests:
@@ -233,6 +238,13 @@ def main():
         print("Passed test for {}".format(test.__name__.replace('test_', '')))
     print("Passed all json tests!")
 
+    t1 = setup_oauth(credentials(), True)
+
+    print("running oauth tests")
+    for test in oauth_tests:
+        test(t1)
+        print("Passed test for {}".format(test.__name__.replace('test_', '')))
+    print("Passed all oauth tests!")
 
 if __name__ == '__main__':
     main()

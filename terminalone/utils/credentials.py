@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """Get credentials from file or environment variables"""
 
+import os
 from functools import reduce
-from os.path import join, dirname
 from dotenv import load_dotenv
 
-dotenv_path = join(dirname(__file__), '../../.env')
+dotenv_path = os.path.join(os.getcwd(), '.env')
 load_dotenv(dotenv_path)
 
 
