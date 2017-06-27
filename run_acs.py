@@ -19,12 +19,6 @@ def setup_oauth(user_credentials, use_json):
     return t1
 
 
-def test_session_id_oauth(t1):
-    t2 = T1(session_id=t1.session_id, api_base=API_BASE,
-            auth_method='oauth2-resourceowner')
-    assert hasattr(t2, 'username'), 'Expected new T1 session, got: %r' % t2
-
-
 def setup(user_credentials, use_json):
     t1 = T1(auth_method='cookie',
             api_base=API_BASE,
@@ -192,6 +186,10 @@ def test_report_meta(t1):
         assert good, 'Expected report metadata, got: %r' % md
 
 
+def test_session_id_oauth(t1):
+    assert hasattr(t1, 'username'), 'Expected new T1 session, got: %r' % t1
+
+
 def test_oauth_token(t1):
     try:
         t1.get('campaigns')
@@ -220,6 +218,7 @@ def main():
     ]
 
     oauth_tests = [
+        test_session_id_oauth,
         test_oauth_token,
     ]
 
