@@ -10,6 +10,7 @@ API_BASE = 'api.mediamath.com'
 
 ADVERTISER_ID = 191902
 
+
 def setup_oauth(user_credentials, use_json):
     t1 = T1(auth_method='oauth2-resourceowner',
             api_base=API_BASE,
