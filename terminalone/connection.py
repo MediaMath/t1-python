@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from requests import Session, post
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
-from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS
+from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
 from .errors import ClientError, T1Error
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
@@ -55,6 +55,13 @@ class Connection(object):
             except KeyError:
                 raise ClientError("Environment: {!r}, does not exist."
                                   .format(environment))
+
+        try:
+            Connection.__setattr__(self, 'auth_base',
+                                   AUTH_BASES[environment])
+        except KeyError:
+            raise ClientError("Auth URL for environment: {!r} does not exist."
+                              .format(environment))
 
         Connection.__setattr__(self, 'json', json)
         Connection.__setattr__(self, 'auth_params', auth_params)
@@ -166,8 +173,13 @@ class Connection(object):
             'client_secret': client_secret,
             'scope': 'openid'
         }
+
+        token_url = '/'.join(['https:/',
+                              self.auth_base,
+                              'oauth',
+                              'token'])
         response = post(
-            'https://sso.mediamath-dev.auth0.com/oauth/token', json=payload, stream=True)
+            token_url, json=payload, stream=True)
         if response.status_code != 200:
             raise ClientError(
                 'Failed to get OAuth2 token. Error: ' + response.text)

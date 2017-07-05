@@ -15,6 +15,7 @@ def setup_oauth(user_credentials, use_json):
     t1 = T1(auth_method='oauth2-resourceowner',
             api_base=API_BASE,
             json=use_json,
+            environment='sandbox',
             **user_credentials)
     assert hasattr(t1, 'user_id'), 'No user ID present'
     return t1

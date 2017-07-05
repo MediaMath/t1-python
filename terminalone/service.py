@@ -125,23 +125,18 @@ class T1(Connection):
 
     def authenticate(self, auth_method, **kwargs):
         """Authenticate using method given."""
+        session_id = kwargs.get('session_id')
+        if session_id is not None and auth_method in ['cookie', 'oauth2-resourceowner']:
+            return super(T1, self)._auth_session_id(
+                session_id,
+                self.auth_params['api_key']
+            )
+
         if auth_method == 'cookie':
-            session_id = kwargs.get('session_id')
-            if session_id is not None:
-                return super(T1, self)._auth_session_id(
-                    session_id,
-                    self.auth_params['api_key']
-                )
             return super(T1, self)._auth_cookie(self.auth_params['username'],
                                                 self.auth_params['password'],
                                                 self.auth_params['api_key'])
         elif auth_method == 'oauth2-resourceowner':
-            session_id = kwargs.get('session_id')
-            if session_id is not None:
-                return super(T1, self)._auth_session_id(
-                    session_id,
-                    self.auth_params['client_id']
-                )
             return super(T1, self).fetch_resource_owner_password_token(
                 self.auth_params['username'],
                 self.auth_params['password'],
