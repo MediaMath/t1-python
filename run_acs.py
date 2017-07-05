@@ -5,10 +5,19 @@ from terminalone import T1, filters
 from terminalone.utils import credentials
 from terminalone.vendor import six
 from terminalone.errors import AuthRequiredError
+from dotenv import load_dotenv
+import os
+
+
+dotenv_path = os.path.join(os.getcwd(), '.env')
+load_dotenv(dotenv_path)
+
 REPORTS = []
 API_BASE = 'api.mediamath.com'
 
-ADVERTISER_ID = 191902
+
+ADVERTISER_ID = int(os.environ.get('ACCEPTANCE_TEST_ADVERTISER'))
+STRATEGY_ID =  int(os.environ.get('ACCEPTANCE_TEST_STRATEGY'))
 
 
 def setup_oauth(user_credentials, use_json):
@@ -58,7 +67,7 @@ def test_get_all(t1):
 
 def test_entity_get_save(t1):
     adv = t1.get('advertisers', ADVERTISER_ID)
-    assert adv.id == ADVERTISER_ID, "Expected ID ADVERTISER_ID, got: %d" % adv.id
+    assert adv.id == ADVERTISER_ID, "Expected ID %d, got: %d" % (ADVERTISER_ID, adv.id)
     assert all(
         hasattr(adv, item) for item in [
             'id',
@@ -94,7 +103,7 @@ def test_full(t1):
 def test_limit(t1):
     pxl = next(t1.get('pixel_bundles', limit={'advertiser': ADVERTISER_ID},
                       full='pixel_bundle', page_limit=1))
-    assert pxl.advertiser_id == ADVERTISER_ID, 'Expected adv ID ADVERTISER_ID, got: %d' % pxl.advertiser_id
+    assert pxl.advertiser_id == ADVERTISER_ID, 'Expected adv ID %d, got: %d' % (ADVERTISER_ID, pxl.advertiser_id)
 
     pxl = next(t1.get('pixel_bundles', limit={'agency.organization': 100048},
                       full='pixel_bundle', page_limit=1))
@@ -161,7 +170,7 @@ def test_permissions(t1):
 
 
 def test_target_dimensions(t1):
-    t = t1.get('strategies', 2442820, child='region')
+    t = t1.get('strategies', STRATEGY_ID, child='region')
     assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t
 
 
