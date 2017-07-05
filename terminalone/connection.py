@@ -2,14 +2,16 @@
 """Provides connection object for T1."""
 
 from __future__ import absolute_import
-from requests import Session
+from requests import Session, post
 from requests.utils import default_user_agent
 from requests_oauthlib import OAuth2Session
-from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS
+from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
 from .errors import ClientError, T1Error
 from .metadata import __version__
 from .xmlparser import XMLParser, ParseError
 from .jsonparser import JSONParser
+import json
+import jwt
 
 
 def _generate_user_agent(name='t1-python'):
@@ -39,6 +41,7 @@ class Connection(object):
         :param auth_params: dict set of auth parameters:
             "method" required argument. Determines session handler.
             "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
+            "oauth2-ro" => "client_id", "client_secret", "username", "password"
             "cookie" => "username", "password", "api_key"
         :param _create_session: bool flag to create a Requests Session.
             Should only be used for initial T1 instantiation.
@@ -52,6 +55,13 @@ class Connection(object):
             except KeyError:
                 raise ClientError("Environment: {!r}, does not exist."
                                   .format(environment))
+
+        try:
+            Connection.__setattr__(self, 'auth_base',
+                                   AUTH_BASES[environment])
+        except KeyError:
+            raise ClientError("Auth URL for environment: {!r} does not exist."
+                              .format(environment))
 
         Connection.__setattr__(self, 'json', json)
         Connection.__setattr__(self, 'auth_params', auth_params)
@@ -84,7 +94,8 @@ class Connection(object):
         else:
             session = Session()
             session.headers['User-Agent'] = self.user_agent
-            session.params = {'api_key': self.auth_params['api_key']}
+            if method != 'oauth2-resourceowner':
+                session.params = {'api_key': self.auth_params['api_key']}
             if self.json:
                 session.headers['Accept'] = ACCEPT_HEADERS['json']
 
@@ -152,6 +163,34 @@ class Connection(object):
             Connection.__setattr__(self, 'session', session)
         return token
 
+    def fetch_resource_owner_password_token(self, username, password, client_id, client_secret):
+        payload = {
+            'grant_type': 'password',
+            'username': username,
+            'password': password,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'scope': 'openid'
+        }
+
+        token_url = '/'.join(['https:/',
+                              self.auth_base,
+                              'oauth',
+                              'token'])
+        response = post(
+            token_url, json=payload, stream=True)
+        if response.status_code != 200:
+            raise ClientError(
+                'Failed to get OAuth2 token. Error: ' + response.text)
+        id_token = json.loads(response.text)['id_token']
+        user = jwt.decode(id_token, verify=False)
+        Connection.__setattr__(self, 'user_id',
+                               user['name'])
+        Connection.__setattr__(self, 'username',
+                               user['nickname'])
+        self.session.headers['Authorization'] = 'Bearer ' + id_token
+        return id_token, user
+
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
 
@@ -204,7 +243,8 @@ class Connection(object):
             result = parser(response_body)
         except ParseError as exc:
             Connection.__setattr__(self, 'response', response)
-            raise T1Error(None, 'Could not parse response: {!r}'.format(exc.caught))
+            raise T1Error(
+                None, 'Could not parse response: {!r}'.format(exc.caught))
         except Exception:
             Connection.__setattr__(self, 'response', response)
             raise
@@ -219,7 +259,8 @@ class Connection(object):
             parser = JSONParser
             response_body = response.text
         else:
-            raise T1Error(None, 'Cannot handle content type: {}'.format(content_type))
+            raise T1Error(
+                None, 'Cannot handle content type: {}'.format(content_type))
         return parser, response_body
 
     def _get_service_path(self, entity_name=None):

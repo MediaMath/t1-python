@@ -41,3 +41,5 @@ bootstrap.py
 
 .idea
 
+# Environment Variables for integration tests
+.env

@@ -125,6 +125,14 @@ makes another request, you can instantiate T1 with this token:
 
     >>> t1 = terminalone.T1(token=session['oauth2_token'], token_updater=update_token)
 
+*Experimental support for resource-owner grant*
+While not yet supported in production, T1-python now includes support for resource-owner code grant.
+Include a client ID and secret alongside your credentials:
+
+.. code:: python
+
+    >>> t1 = T1(auth_method='oauth2-resourceowner', client_id="my_client_id", client_secret="my_secret", username="my@user", password="mypass")
+
 If you have a specific API base (for instance, if you are testing
 against a sandbox deployment) (*Note*: sandbox environments are not yet
 useable), you can use the ``api_base`` keyword with the *domain*. For production

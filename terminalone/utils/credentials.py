@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 """Get credentials from file or environment variables"""
 
+import os
 from functools import reduce
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.getcwd(), '.env')
+load_dotenv(dotenv_path)
 
 
 def dpath(dict_, path):
@@ -59,9 +64,11 @@ def credentials(filename=None, root=None):
         import os
         try:
             conf = {
-                'username': os.environ['T1_API_USERNAME'],
-                'password': os.environ['T1_API_PASSWORD'],
-                'api_key': os.environ['T1_API_KEY'],
+                'username': os.environ.get('T1_API_USERNAME'),
+                'password': os.environ.get('T1_API_PASSWORD'),
+                'api_key': os.environ.get('T1_API_KEY'),
+                'client_id': os.environ.get('T1_CLIENT_ID'),
+                'client_secret': os.environ.get('T1_CLIENT_SECRET'),
             }
         except KeyError:
             raise TypeError('Must either supply JSON file of credentials'
