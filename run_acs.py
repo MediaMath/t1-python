@@ -17,7 +17,7 @@ API_BASE = 'api.mediamath.com'
 
 
 ADVERTISER_ID = int(os.environ.get('ACCEPTANCE_TEST_ADVERTISER'))
-STRATEGY_ID =  int(os.environ.get('ACCEPTANCE_TEST_STRATEGY'))
+STRATEGY_ID = int(os.environ.get('ACCEPTANCE_TEST_STRATEGY'))
 
 
 def setup_oauth(user_credentials, use_json):
