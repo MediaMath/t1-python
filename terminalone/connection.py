@@ -169,7 +169,6 @@ class Connection(object):
             'username': username,
             'password': password,
             'client_id': client_id,
-            'audience': 'https://api.mediamath.com/api/v2.0/',
             'client_secret': client_secret,
             'scope': 'openid'
         }

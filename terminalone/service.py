@@ -97,7 +97,6 @@ class T1(Connection):
             })
         elif auth_method == 'oauth2-resourceowner':
             self.auth_params.update({
-                'token': token,
                 'username': username,
                 'password': password,
                 'client_secret': client_secret,
