@@ -1,6 +1,10 @@
 TerminalOne-Python
 ==================
 
+.. image:: https://api.codacy.com/project/badge/Grade/4dc5cc975f5a48078f68994d6c546e25
+   :alt: Codacy Badge
+   :target: https://www.codacy.com/app/fsargent/t1-python?utm_source=github.com&utm_medium=referral&utm_content=MediaMath/t1-python&utm_campaign=badger
+
 .. image:: https://img.shields.io/pypi/v/TerminalOne.svg
     :target: https://pypi.python.org/pypi/TerminalOne
 
