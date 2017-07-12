@@ -5,9 +5,9 @@ python:
 - '3.4'
 install: python setup.py install
 before_script:
-- pip install responses pep8 codeclimate-test-reporter
+- pip install responses pep8 codacy-coverage
 - pep8 --exclude=vendor --ignore=E501,E225 --max-line-length=160 .
 script:
-- coverage run --source terminalone setup.py test
+- python setup.py test
 after_success:
-- CODECLIMATE_REPO_TOKEN=${CODECLIMATE_REPO_TOKEN} codeclimate-test-reporter 
+- coverage xml && python-codacy-coverage -r coverage.xml

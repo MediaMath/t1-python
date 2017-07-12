@@ -1,5 +1,4 @@
 *.py[cod]
-
 # C extensions
 *.so
 
@@ -24,6 +23,7 @@ pip-log.txt
 
 # Unit test / coverage reports
 .coverage
+coverage.xml
 .tox
 nosetests.xml
 
@@ -40,4 +40,5 @@ bootstrap_oauth2.py
 bootstrap.py
 
 .idea
+.env
 
