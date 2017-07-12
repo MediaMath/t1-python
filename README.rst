@@ -7,11 +7,13 @@ TerminalOne-Python
 .. image:: https://travis-ci.org/MediaMath/t1-python.svg?branch=master
     :target: https://travis-ci.org/MediaMath/t1-python
 
-.. image:: https://img.shields.io/pypi/dm/TerminalOne.svg
-    :target: https://pypi.python.org/pypi/TerminalOne
+.. image:: https://api.codacy.com/project/badge/Grade/4dc5cc975f5a48078f68994d6c546e25
+   :alt: Codacy Badge
+   :target: https://www.codacy.com/app/fsargent/t1-python?utm_source=github.com&utm_medium=referral&utm_content=MediaMath/t1-python&utm_campaign=badger
 
-.. image:: https://codeclimate.com/github/MediaMath/t1-python/badges/gpa.svg
-    :target: https://codeclimate.com/github/MediaMath/t1-python
+.. image:: https://api.codacy.com/project/badge/Coverage/4dc5cc975f5a48078f68994d6c546e25  
+    :alt: Codacy Badge Coverage
+    :target: https://www.codacy.com/app/fsargent/t1-python?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MediaMath/t1-python&amp;utm_campaign=Badge_Coverage
 
 
 Python library for MediaMath's APIs. This library consists of
