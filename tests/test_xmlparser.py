@@ -12,6 +12,14 @@ class TestXMLParsing(unittest.TestCase):
         exc = cm.exception
         self.assertEqual(exc.message, 'Authentication error')
 
+    def test_validation_errors(self):
+        with open('tests/fixtures/xml/validation_errors.xml') as f:
+            fixture = f.read()
+        with self.assertRaises(errors.ValidationError) as cm:
+            XMLParser(fixture)
+        exc = cm.exception
+        self.assertTrue('invalid' in exc.message)
+
     def test_developer_inactive(self):
         with open('tests/fixtures/xml/login_no_key.xml') as f:
             fixture = f.read()

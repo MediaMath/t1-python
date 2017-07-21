@@ -124,7 +124,7 @@ class XMLParser(object):
         errors = {}
         for error in xml.iter('field-error'):
             attribs = error.attrib
-            errors[attribs['name']] = {'code': attribs['code'],
+            errors[attribs['name']] = {'code': attribs['name'],
                                        'error': attribs['error']}
         return errors
 
