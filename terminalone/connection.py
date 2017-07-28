@@ -223,7 +223,7 @@ class Connection(object):
         :param data: dict POST data for formdata posts
         :param json: dict POST data for json posts
         """
-        if not data and not json:
+        if data is None and json is None:
             raise ClientError('No POST data.')
         if data and json:
             raise ClientError('Cannot specify both data and json POST data.')
