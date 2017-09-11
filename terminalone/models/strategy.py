@@ -23,7 +23,7 @@ class Strategy(Entity):
     _pacing_ints = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                                  'not-applicable'}, 'not-applicable')
     _pacing_types = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
-    _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi'},
+    _goal_type = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi' 'ctr', 'vcpm', 'vcr', 'viewability_rate'},
                               'cpc')
     _media_type = t1types.enum({'DISPLAY', 'VIDEO'}, 'DISPLAY')
     _pac_int = t1types.enum({'hour', 'day'}, 'day')
