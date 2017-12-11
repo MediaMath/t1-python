@@ -48,6 +48,6 @@ class TestPermissions(unittest.TestCase):
                       content_type='application/json')
 
         segments = self.t1.get('strategies', 12345, child='retired_audience_segments')
-        retired_strategy = segments.next()
+        retired_strategy = next(segments)
         retired_audience = retired_strategy.retired_audience_segment
         self.assertEqual(retired_audience.name, "Segment Name")
