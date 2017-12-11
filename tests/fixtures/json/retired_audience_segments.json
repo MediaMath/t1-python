@@ -1,0 +1,52 @@
+{
+    "data": [
+        {
+            "strategy_id": 123456,
+            "retired_audience_segment_id": 67890,
+            "version": 0,
+            "name": "Retired Strategy Audience Segments",
+            "updated_on": "2014-05-01T14:26:47+0000",
+            "group_identifier": "g1",
+            "retired_audience_segment": {
+                "rel": "retired_audience_segment",
+                "buyable": false,
+                "wholesale_cpm": [
+                    {
+                        "currency_code": "USD",
+                        "value": 0.75
+                    }
+                ],
+                "audience_vendor_id": 14,
+                "full_retired_path": "Datalogix - DLX Demographics - Occupation (Minor) - Manager/Office Manager",
+                "updated_on": "2014-05-01T14:26:47+0000",
+                "retail_cpm": [
+                    {
+                        "currency_code": "USD",
+                        "value": 0.75
+                    }
+                ],
+                "created_on": "2013-06-13T02:37:17+0000",
+                "entity_type": "retired_audience_segment",
+                "id": 67890,
+                "code": "1693766291",
+                "version": 0,
+                "name": "Segment Name",
+                "parent_audience_segment_id": 56789,
+                "uniques": 13228,
+                "type": "normal"
+            },
+            "created_on": "2013-12-13T15:09:14+0000",
+            "entity_type": "retired_strategy_audience_segment",
+            "id": 145906,
+            "restriction": "INCLUDE"
+        }
+    ],
+    "meta": {
+        "etag": "b2d61b6a218b0f4158fa36c50bd784aece9c0ab7",
+        "count": 1,
+        "called_on": "2017-12-06T20:24:15+0000",
+        "status": "ok",
+        "offset": 0,
+        "total_count": 0
+    }
+}

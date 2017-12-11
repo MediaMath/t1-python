@@ -95,7 +95,7 @@ class JSONParser(object):
         else:
             message = self._parse_error_messages(data)
 
-        raise exc(code=status_code, content=message)
+        raise exc(code=status_code, content=message, body=data)
 
     def _parse_permissions(self, permissions):
         """Iterate over permissions and parse into dicts"""
