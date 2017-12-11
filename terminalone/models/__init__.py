@@ -21,6 +21,8 @@ from .pixelprovider import PixelProvider
 from .placementslot import PlacementSlot
 from .publisher import Publisher
 from .publishersite import PublisherSite
+from .retiredaudiencesegment import RetiredAudienceSegment
+from .retiredstrategyaudiencesegment import RetiredStrategyAudienceSegment
 from .rmxstrategy import RMXStrategy
 from .rmxstrategyroitargetpixel import RMXStrategyROITargetPixel
 from .seat import Seat
@@ -65,6 +67,8 @@ __all__ = ['ACL',
            'PlacementSlot',
            'Publisher',
            'PublisherSite',
+           'RetiredAudienceSegment',
+           'RetiredStrategyAudienceSegment',
            'RMXStrategy',
            'RMXStrategyROITargetPixel',
            'Seat',

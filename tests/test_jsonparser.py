@@ -57,3 +57,15 @@ class TestJSONParsing(unittest.TestCase):
         parser = JSONParser(fixture)
         self.assertEqual(True, parser.status_code)
         self.assertEqual(1, parser.entity_count)
+
+    def test_retired_audience_segments(self):
+        with open('tests/fixtures/json/retired_audience_segments.json') as f:
+            fixture = f.read()
+        parser = JSONParser(fixture)
+        self.assertEqual(True, parser.status_code)
+
+    def test_advertiser(self):
+        with open('tests/fixtures/json/advertiser.json') as f:
+            fixture = f.read()
+        parser = JSONParser(fixture)
+        self.assertEqual(True, parser.status_code)

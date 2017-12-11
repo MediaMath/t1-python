@@ -195,6 +195,12 @@ class Strategy(Entity):
         url = self._construct_url(addl=['targeting_segments', ])
         entity, _ = super(Strategy, self)._post(self._get_service_path(), url, data)
 
+    def remove_retired_audience_segments(self, ids):
+        """Unassign specified the retired audience segments from the strategy."""
+        url = self._construct_url(addl=['retired_audience_segments', ])
+        data = {'retired_segments.{0}.id'.format(ind + 1): x for ind, x in enumerate(ids)}
+        self._post(self._get_service_path(), url, data)
+
     def _serialize_target_expr(self):
         """Serialize pixel_target_expr dict into string"""
         include_bool = '] {} ['.format(self.pixel_target_expr['include']['operator'] or 'OR')
