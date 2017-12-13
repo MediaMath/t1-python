@@ -99,3 +99,17 @@ def strft(dt_obj, null_on_none=False, offset=False):
         if dt_obj is None and null_on_none:
             return ""
         raise
+
+
+class Deleted:
+    """used for when un-setting a field"""
+
+    def __init__(self, original_value):
+        self.original_value = original_value
+
+    @staticmethod
+    def get_value():
+        return ""
+
+    def get_original_value(self):
+        return self.original_value

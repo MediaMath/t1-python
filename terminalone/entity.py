@@ -2,7 +2,7 @@
 """Provides base object for T1 data classes."""
 
 from __future__ import absolute_import, division
-from warnings import warn
+from terminalone import t1types
 from .connection import Connection
 from .errors import ClientError
 from .vendor import six
@@ -76,8 +76,8 @@ class Entity(Connection):
             self._properties[attribute] = value
 
     def __delattr__(self, attribute):
-        if attribute in self._properties:
-            del self._properties[attribute]
+        if attribute in self._init_properties:
+            self._properties[attribute] = t1types.Deleted(self._init_properties[attribute])
         else:
             raise AttributeError(attribute)
 
@@ -133,17 +133,20 @@ class Entity(Connection):
                 del data[key]
                 continue
 
-            if push_fn:
-                try:
-                    data[key] = self._push[key](value)
-                except ValueError:
-                    raise ClientError('key {} is invalid: must be of type {}'
-                                      .format(key, self._push[key]))
-                except TypeError as e:
-                    raise ClientError('key {} is invalid: {}'
-                                      .format(key, e.message))
+            if isinstance(value, t1types.Deleted):
+                data[key] = value.get_value()
             else:
-                data[key] = value
+                if push_fn:
+                    try:
+                        data[key] = self._push[key](value)
+                    except ValueError:
+                        raise ClientError('key {} is invalid: must be of type {}'
+                                          .format(key, self._push[key]))
+                    except TypeError as e:
+                        raise ClientError('key {} is invalid: {}'
+                                          .format(key, e.message))
+                else:
+                    data[key] = value
         return data
 
     def _construct_url(self, addl=None):
@@ -182,7 +185,7 @@ class Entity(Connection):
             super(Entity, self).__setattr__('_properties', properties)
 
     def revert(self):
-        super(Entity, self).__setattr__('properties', {})
+        super(Entity, self).__setattr__('_properties', {})
 
     def is_property(self, prop):
         if prop in self._pull:
