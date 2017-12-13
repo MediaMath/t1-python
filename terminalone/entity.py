@@ -170,8 +170,8 @@ class Entity(Connection):
 
     def get_properties(self):
         properties = {}
-        properties.update(self._properties)
         properties.update(self._init_properties)
+        properties.update(self._properties)
         return properties
 
     def _reset_properties(self, properties):
