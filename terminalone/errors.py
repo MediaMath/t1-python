@@ -44,6 +44,9 @@ T1ClientError = ClientError
 class APIError(T1Error):
     """Base class that includes error code and message."""
 
+    def __init__(self, content, code=None):
+        super(APIError, self).__init__(code, content)
+
     def __str__(self):
         return repr('{code}: {msg}\n'.format(code=self.code, msg=self.message))
 
