@@ -76,7 +76,7 @@ class Campaign(Entity):
         'use_mm_freq': t1types.int_to_bool,
         'version': int,
         'zone_name': None,
-        'viewability_type': str,
+        'viewability_type': None,
         'viewability_vendor_id': int,
         'viewability_sample_rate': float
     }
@@ -102,9 +102,6 @@ class Campaign(Entity):
         'status': int,
         'use_default_ad_server': int,
         'use_mm_freq': int,
-        'viewability_type': str,
-        'viewability_vendor_id': int,
-        'viewability_sample_rate': float
     })
 
     def __init__(self, session, properties=None, **kwargs):
