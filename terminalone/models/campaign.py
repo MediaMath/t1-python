@@ -22,7 +22,7 @@ class Campaign(Entity):
                               'not-applicable'}, 'not-applicable')
     _cap_types = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
     _goal_cats = t1types.enum({'audience', 'engagement', 'response'}, None)
-    _goal_types = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi','roi','viewability_rate','vcr','ctr','vcpm'},
+    _goal_types = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi','viewability_rate','vcr','ctr','vcpm'},
                                None)
     _serv_types = t1types.enum({'SELF', 'MANAGED'}, 'SELF')
     _pull = {
