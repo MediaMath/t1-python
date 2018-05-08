@@ -65,6 +65,8 @@ class Strategy(Entity):
         'name': None,
         'pacing_amount': float,
         'pacing_interval': None,
+        'pacing_optimization_amount': None,
+        'pacing_optimization_type': None,
         'pacing_type': None,
         'pixel_target_expr': None,
         'roi_target': float,
