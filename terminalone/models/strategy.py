@@ -34,7 +34,7 @@ class Strategy(Entity):
                                  'RTB')
     _type = t1types.enum({'REM', 'GBO', 'AUD'}, 'GBO')
     _alloc_pacing_type = t1types.enum({'monetary', 'impression'}, 'monetary')
-    
+
     _pull = {
         'audience_segment_exclude_op': None,
         'audience_segment_include_op': None,
