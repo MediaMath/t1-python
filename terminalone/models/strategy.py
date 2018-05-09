@@ -33,6 +33,7 @@ class Strategy(Entity):
     _supply_types = t1types.enum({'RTB', 'RMX_API', 'T1_RMX', 'MKT', 'BATCH'},
                                  'RTB')
     _type = t1types.enum({'REM', 'GBO', 'AUD'}, 'GBO')
+    _alloc_pacing_type = t1types.enum({'monetary', 'impression'}, 'monetary')
 
     _pull = {
         'audience_segment_exclude_op': None,
@@ -65,6 +66,8 @@ class Strategy(Entity):
         'name': None,
         'pacing_amount': float,
         'pacing_interval': None,
+        'pacing_optimization_amount': float,
+        'pacing_optimization_type': None,
         'pacing_type': None,
         'pixel_target_expr': None,
         'roi_target': float,
@@ -103,6 +106,7 @@ class Strategy(Entity):
         'impression_pacing_type': _pacing_types,
         'media_type': _media_type,
         'pacing_interval': _pac_int,
+        'pacing_optimization_type': _alloc_pacing_type,
         'pacing_type': _pac_type,
         'run_on_all_exchanges': int,
         'run_on_all_pmp': int,
