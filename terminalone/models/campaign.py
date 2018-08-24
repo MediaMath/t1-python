@@ -131,7 +131,7 @@ class Campaign(Entity):
                     pass
 
         url = self._construct_url(addl=['budget_flights', 'bulk', ]) + '?full=*'
-        flights, count = self._post(self._get_service_path(), rest=url, data=postdata, )
+        flights, _ = self._post(self._get_service_path(), rest=url, data=postdata, )
         self._init_properties['budget_flights'] = [BudgetFlight(self.session, f) for f in flights]
         if self._properties.get('budget_flights'):
             del (self._properties['budget_flights'])
