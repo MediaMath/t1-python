@@ -74,4 +74,5 @@ class TestBudgetFlights(unittest.TestCase):
         bf = next(bfs)
         bf.total_budget = 101
         bf.save()
-        self.assertEquals(responses.calls[1].request.body, 'total_budget=101.0&version=4')
+        self.assertTrue('total_budget=101.0' in responses.calls[1].request.body)
+        self.assertTrue('version=4' in responses.calls[1].request.body)
