@@ -11,7 +11,7 @@ CLASSES = {
     'agencies': Agency,
     'atomic_creatives': AtomicCreative,
     'audience_segments': AudienceSegment,
-    'budget_flight': BudgetFlight,
+    'budget_flights': BudgetFlight,
     'campaigns': Campaign,
     'concepts': Concept,
     'contacts': Contact,
