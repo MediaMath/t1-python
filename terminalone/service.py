@@ -16,18 +16,11 @@ from .vendor import six
 
 def _detect_auth_method(username, password, session_id,
                         api_key, client_id, client_secret, token):
-    if api_key is None:
-        raise ClientError('API Key is required!')
-    if token is not None:
-        return 'oauth2'
-    if username is not None and password is not None:
-        return 'cookie'
-    if session_id is not None:
-        return 'cookie'
-    if client_secret is not None:
-        return 'oauth2'
     if client_id is not None and client_secret is not None:
         return 'oauth2-resourceowner'
+    else:
+        return 'cookie'
+
 
 
 class T1(Connection):

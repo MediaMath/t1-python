@@ -68,36 +68,15 @@ class Connection(object):
         if _create_session:
             self._create_session()
 
-    def _oauth2_session(self, **kwargs):
-        refresh_url = '/'.join(['https:/', self.api_base,
-                                SERVICE_BASE_PATHS['oauth2'], 'token'])
-        refresh_kwargs = {'client_id': self.auth_params['api_key'],
-                          'client_secret': self.auth_params['client_secret']}
-        session = OAuth2Session(
-            client_id=self.auth_params['api_key'],
-            auto_refresh_url=refresh_url,
-            auto_refresh_kwargs=refresh_kwargs,
-            token=self.auth_params['token'],
-            token_updater=self.auth_params['token_updater'],
-            **kwargs
-        )
-        session.headers['User-Agent'] = self.user_agent
-        session.params = {'api_key': self.auth_params['api_key']}
-        if self.json:
-            self.session.headers['Accept'] = ACCEPT_HEADERS['json']
-        return session
 
     def _create_session(self):
         method = self.auth_params['method']
-        if method == 'oauth2':
-            session = self._oauth2_session()
-        else:
-            session = Session()
-            session.headers['User-Agent'] = self.user_agent
-            if method != 'oauth2-resourceowner':
-                session.params = {'api_key': self.auth_params['api_key']}
-            if self.json:
-                session.headers['Accept'] = ACCEPT_HEADERS['json']
+        session = Session()
+        session.headers['User-Agent'] = self.user_agent
+        if method != 'oauth2-resourceowner':
+            session.params = {'api_key': self.auth_params['api_key']}
+        if self.json:
+            session.headers['Accept'] = ACCEPT_HEADERS['json']
 
         Connection.__setattr__(self, 'session', session)
 
@@ -129,40 +108,6 @@ class Connection(object):
         )
         self._check_session()
 
-    # these should be stored as instance vars, because they aren't specific
-    # to the user. Except for redirect_uri, because that gets saved as an
-    # instance var for the session
-
-    def authorization_url(self, redirect_uri=None):
-        """Authenticate using OAuth2."""
-        auth_url = '/'.join(['https:/', self.api_base,
-                             SERVICE_BASE_PATHS['oauth2'], 'authorize'])
-        if redirect_uri is None:
-            try:
-                redirect_uri = self.auth_params['redirect_uri']
-            except KeyError:
-                raise ClientError('Redirect URI not provided!')
-
-        session = self._oauth2_session(redirect_uri=redirect_uri)
-        return session.authorization_url(auth_url)
-
-    def fetch_token(self, state=None, code=None,
-                    authorization_response_url=None, set_session=False):
-        """Trade Authorization Code for access_token."""
-        token_url = '/'.join(['https:/',
-                              self.api_base,
-                              SERVICE_BASE_PATHS['oauth2'],
-                              'token'])
-        session = self._oauth2_session(state=state)
-        token = session.fetch_token(
-            token_url,
-            code=code,
-            authorization_response=authorization_response_url,
-            client_secret=self.auth_params['client_secret']
-        )
-        if set_session:
-            Connection.__setattr__(self, 'session', session)
-        return token
 
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret):
