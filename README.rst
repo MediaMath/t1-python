@@ -95,34 +95,8 @@ retrieval, creation, etc. are handled here. Parameters:
 -  Either *environment* or *api\_base* can be provided to specify where
    the request goes.
 
-.. code:: python
 
-    >>> import terminalone
-    >>> t1 = terminalone.T1("myusername", "mypassword", "my_api_key")
-
-If you're a long-time user of t1-python, you'll notice this doesn't
-include the ``auth_method`` keyword. As of v1.2.0, ``auth_method`` is no
-longer necessary: it will be automatically detected.
-
-OAuth2 authentication is now supported. Send a client secret, redirect
-URI, and token updater in lieu of user credentials:
-
-.. code:: python
-
-    >>> t1 = terminalone.T1(api_key="my_api_key", client_secret="secret", redirect_uri="https://myapp.mediamath.com/authorize", token_updater=update_token)
-    >>> auth_url, state = t1.authorization_url()
-    # Send user to URL and authenticate.
-    >>> token = t1.fetch_token(authorization_response_url=request.url, state=state)
-
-Once you have this token, you can store it in the user's state. When the
-user makes another request, you can instantiate T1 with this token:
-
-.. code:: python
-
-    >>> t1 = terminalone.T1(token=session['oauth2_token'], token_updater=update_token)
-
-*Experimental support for resource-owner grant* While not yet supported
-in production, T1-python now includes support for resource-owner code
+T1-Python includes support for resource-owner code
 grant. Include a client ID and secret alongside your credentials:
 
 .. code:: python
@@ -146,6 +120,13 @@ provide the session ID and API key:
 .. code:: python
 
     >>> t1 = terminalone.T1(session_id="13ea5a26e77b64e7361c7ef84910c18a8d952cf0", api_key="my_api_key")
+
+Cookie Auth (username/password) exists, but it is not recommended for use.
+
+.. code:: python
+
+    >>> import terminalone
+    >>> t1 = terminalone.T1("myusername", "mypassword")
 
 Fetching Entities and Collections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

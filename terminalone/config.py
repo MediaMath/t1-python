@@ -20,7 +20,7 @@ ACCEPT_HEADERS = {
 AUTH_BASES = {
     'qa': 'sso.mediamath-dev.auth0.com',
     'sandbox': 'sso.mediamath-dev.auth0.com',
-    'production': 'sso.mediamath.auth0.com'
+    'production': 'auth.mediamath.com'
 }
 
 SERVICE_BASE_PATHS = {
