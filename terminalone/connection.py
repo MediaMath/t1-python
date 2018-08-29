@@ -4,7 +4,6 @@
 from __future__ import absolute_import
 from requests import Session, post
 from requests.utils import default_user_agent
-from requests_oauthlib import OAuth2Session
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
 from .errors import ClientError, T1Error
 from .metadata import __version__
@@ -68,7 +67,6 @@ class Connection(object):
         if _create_session:
             self._create_session()
 
-
     def _create_session(self):
         method = self.auth_params['method']
         session = Session()
@@ -107,7 +105,6 @@ class Connection(object):
             expires=(expires or int(time() + 86400)),
         )
         self._check_session()
-
 
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret):
