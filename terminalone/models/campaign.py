@@ -2,8 +2,12 @@
 """Provides campaign object."""
 
 from __future__ import absolute_import
+
+from terminalone.models import BudgetFlight
 from .. import t1types
 from ..entity import Entity
+from ..errors import ClientError
+from ..vendor import six
 
 
 class Campaign(Entity):
@@ -113,3 +117,24 @@ class Campaign(Entity):
             data = self._properties.copy()
 
         super(Campaign, self).save(data=data, url=url)
+
+    def save_budget_flights(self, data=None):
+        if data is None and self.budget_flights is None:
+            raise ClientError('No budget flights to save')
+        if data is None:
+            data = self.budget_flights
+        postdata = {}
+        for i, flight in enumerate(data):
+            d = flight.get_formdata(includeunchanged=True)
+            for key, value in six.iteritems(d):
+                postdata['budget_flights.{}.{}'.format(i + 1, key)] = value
+                try:
+                    postdata['budget_flights.{}.id'.format(i + 1)] = flight.id
+                except AttributeError:
+                    pass
+
+        url = self._construct_url(addl=['budget_flights', 'bulk', ]) + '?full=*'
+        flights, _ = self._post(self._get_service_path(), rest=url, data=postdata, )
+        self._init_properties['budget_flights'] = [BudgetFlight(self.session, f) for f in flights]
+        if self._properties.get('budget_flights'):
+            del (self._properties['budget_flights'])

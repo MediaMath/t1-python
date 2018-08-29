@@ -1,6 +1,9 @@
-#! /usr/bin/env python
+# ! /usr/bin/env python
 
 from __future__ import print_function
+
+import random
+
 from terminalone import T1, filters
 from terminalone.utils import credentials
 from terminalone.vendor import six
@@ -174,6 +177,21 @@ def test_target_dimensions(t1):
     assert t._type == 'target_dimension', 'Expected target_dimension entity, got: %r' % t
 
 
+def test_budget_flights(t1):
+    camps = t1.find('campaigns', 'name', filters.CASE_INS_STRING,
+                    'test*', page_limit=5, include='budget_flights', full=True)
+    c = next(camps)
+    old_version = c.budget_flights[0].version
+    c.budget_flights[0].total_budget = random.randint(1, 100)
+    c.budget_flights[0].save()
+    assert c.budget_flights[0].version == old_version + 1, 'expected version to increment'
+
+    for b in c.budget_flights:
+        b.total_budget = random.randint(1, 100)
+    c.save_budget_flights()
+    assert c.budget_flights[0].version == old_version + 2, 'expected version to increment'
+
+
 def test_picard_meta(t1):
     r = t1.new('report')
     md = r.metadata
@@ -211,6 +229,7 @@ def test_oauth_token(t1):
 def main():
     tests = [
         test_session_id,
+        test_budget_flights,
         test_collection,
         test_counts,
         test_get_all,
@@ -255,6 +274,7 @@ def main():
         test(t1)
         print("Passed test for {}".format(test.__name__.replace('test_', '')))
     print("Passed all oauth tests!")
+
 
 if __name__ == '__main__':
     main()

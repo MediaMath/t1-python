@@ -86,7 +86,7 @@ class TargetDimension(SubEntity):
 
     def add_to(self, group, target):
         """Alias for add to retain compatibility"""
-        warnings.warn('Deprecated; use `add\' method', DeprecationWarning)
+        warn('Deprecated; use `add\' method', DeprecationWarning)
         return self.add(group, target)
 
     def remove(self, group, target):
@@ -109,5 +109,5 @@ class TargetDimension(SubEntity):
 
     def remove_from(self, group, target):
         """Alias for remove to retain compatibility"""
-        warnings.warn('Deprecated; use `remove\' method', DeprecationWarning)
+        warn('Deprecated; use `remove\' method', DeprecationWarning)
         return self.remove(group, target)

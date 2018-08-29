@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "currency_code": "USD",
+      "version": 4,
+      "name": "Budget Flights #759593",
+      "zone_name": "America/New_York",
+      "updated_on": "2018-08-13T19:46:53+0000",
+      "campaign_id": 11111,
+      "created_on": "2018-08-09T16:04:33+0000",
+      "is_relevant": true,
+      "end_date": "2018-09-09T03:59:00+0000",
+      "entity_type": "budget_flight",
+      "id": 12345,
+      "start_date": "2018-08-09T16:30:00+0000",
+      "total_budget": [
+        {
+          "currency_code": "USD",
+          "value": 20
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "etag": "80c602a95b07770d0fff1899c158981ef696f8b1",
+    "count": 1,
+    "called_on": "2018-08-20T18:00:16+0000",
+    "status": "ok",
+    "offset": 0,
+    "total_count": 1
+  }
+}

@@ -216,6 +216,14 @@ class Entity(Connection):
 
         self._update_self(entity)
 
+    def get_formdata(self, data=None, includeunchanged=False):
+        if data is None:
+            data = self._properties.copy()
+        if includeunchanged:
+            data = self._init_properties.copy()
+            data.update(self._properties)
+        return self._validate_form_post(data)
+
     def update(self, *args, **kwargs):
         """Alias for save"""
         return self.save(*args, **kwargs)
