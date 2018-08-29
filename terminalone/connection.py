@@ -131,15 +131,17 @@ class Connection(object):
         if response.status_code != 200:
             raise ClientError(
                 'Failed to get OAuth2 token. Error: ' + response.text)
-        id_token = json.loads(response.text)['id_token']
-        access_token = json.loads(response.text)['access_token']
-        user = jwt.decode(id_token, algorithms=['RS256'], verify=False)
+        auth_response = json.loads(response.text)
+        user = jwt.decode(auth_response['id_token'],
+                          algorithms=['RS256'],
+                          verify=False)
         Connection.__setattr__(self, 'user_id',
                                user['sub'].split("|")[1])
         Connection.__setattr__(self, 'username',
                                user['nickname'])
-        self.session.headers['Authorization'] = 'Bearer ' + access_token
-        return access_token, user
+        self.session.headers['Authorization'] = (
+            'Bearer ' + auth_response['access_token'])
+        return auth_response['access_token'], user
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
