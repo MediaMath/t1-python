@@ -15,7 +15,7 @@ from .vendor import six
 
 
 def _detect_auth_method(username, password, session_id,
-                        api_key, client_id, client_secret, token):
+                        api_key, client_id, client_secret, token, realm=None):
     if client_id is not None and client_secret is not None:
         return 'oauth2-resourceowner'
     else:
@@ -42,6 +42,7 @@ class T1(Connection):
                  json=False,
                  redirect_uri=None,
                  token=None,
+                 realm=None,
                  token_updater=None,
                  **kwargs):
         """Set up session for main service object.
@@ -81,23 +82,17 @@ class T1(Connection):
                                               api_key,
                                               client_id,
                                               client_secret,
-                                              token)
+                                              token, realm)
         self.auth_params['method'] = auth_method
         self.auth_params['api_key'] = api_key
 
-        if auth_method == 'oauth2':
-            self.auth_params.update({
-                'client_secret': client_secret,
-                'redirect_uri': redirect_uri,
-                'token': token,
-                'token_updater': token_updater
-            })
-        elif auth_method == 'oauth2-resourceowner':
+        if auth_method == 'oauth2-resourceowner':
             self.auth_params.update({
                 'username': username,
                 'password': password,
                 'client_secret': client_secret,
-                'client_id': client_id
+                'client_id': client_id,
+                'realm': realm
             })
         else:
             self.auth_params.update({
@@ -113,7 +108,7 @@ class T1(Connection):
         self._authenticated = False
         self._auth = (username, password, api_key, client_secret)
         self.environment = environment
-        self.json = json
+            self.json = json
         self.api_key = api_key
 
         if auth_method != 'oauth2' and auth_method != 'delayed':
@@ -138,7 +133,8 @@ class T1(Connection):
                 self.auth_params['username'],
                 self.auth_params['password'],
                 self.auth_params['client_id'],
-                self.auth_params['client_secret'])
+                self.auth_params['client_secret'],
+                self.auth_params['realm'])
         elif auth_method == 'basic':
             raise ClientError(
                 'basic authentication is not supported')

@@ -106,8 +106,11 @@ class Connection(object):
         )
         self._check_session()
 
-    def fetch_resource_owner_password_token(self, username, password,
-                                            client_id, client_secret):
+    def fetch_resource_owner_password_token(self,
+                                            username,
+                                            password,
+                                            client_id,
+                                            client_secret, realm=None):
         """Authenticate using OAuth2.
 
         Preferred method at MediaMath for CLI applications.
@@ -122,6 +125,10 @@ class Connection(object):
             'scope': 'openid'
         }
 
+        if realm is not None:
+            payload['realm'] = realm
+            payload['grant_type'] = 'http://auth0.com/oauth/grant-type/password-realm'
+
         token_url = '/'.join(['https:/',
                               self.auth_base,
                               'oauth',
@@ -130,7 +137,7 @@ class Connection(object):
             token_url, json=payload, stream=True)
         if response.status_code != 200:
             raise ClientError(
-                'Failed to get OAuth2 token. Error: ' + response.text)
+                'Failed to get OAuth2 token. Error: ' + response.text + '\n'+ json.dumps(payload))
         auth_response = json.loads(response.text)
         user = jwt.decode(auth_response['id_token'],
                           algorithms=['RS256'],
