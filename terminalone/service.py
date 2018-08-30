@@ -186,7 +186,7 @@ class T1(Connection):
         if child is not None:
             # Child can be either a target dimension (with an ID) or
             # a bare child, like concepts or permissions. These should not
-            # have an ID passed in.anyway i'm at
+            # have an ID passed in.
             if child_id is not None:
                 ent_dict['id'] = child_id
             ent_dict['parent_id'] = entity_id
@@ -351,6 +351,10 @@ class T1(Connection):
         if _url is None:
             _url, child_id = self._construct_url(
                 collection, entity, child, limit)
+
+        # some child endpoints need to have full overridden to ensure correct behaviour
+        if child:
+            full = True
 
         if get_all:
             gen = self._get_all(collection,

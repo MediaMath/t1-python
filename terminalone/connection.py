@@ -109,6 +109,7 @@ class Connection(object):
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret):
         """Authenticate using OAuth2.
+<<<<<<< HEAD
 
         Preferred method at MediaMath for CLI applications.
         """
@@ -146,6 +147,8 @@ class Connection(object):
     def fetch_realm_password_token(self, username, password,
                                    client_id, client_secret, realm):
         """Authenticate using OAuth2.
+=======
+>>>>>>> origin
 
         Preferred method at MediaMath for CLI applications.
         """
@@ -155,7 +158,10 @@ class Connection(object):
             'password': password,
             'client_id': client_id,
             'client_secret': client_secret,
+<<<<<<< HEAD
             'realm': realm,
+=======
+>>>>>>> origin
             'audience': 'https://api.mediamath.com/',
             'scope': 'openid'
         }
