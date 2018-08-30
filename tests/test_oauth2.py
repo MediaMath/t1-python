@@ -8,7 +8,6 @@ mock_credentials = {
     'client_secret': 'secret',
     'username': 'username',
     'password': 'asdf'
-
 }
 
 
@@ -34,3 +33,10 @@ class TestOauth2ResourceOwnerLogin(unittest.TestCase):
     def test_minimum_creds_for_oauth2(self):
         """Test Minimum Credentials."""
         self.assertEqual(self.t1.auth_params['method'], 'oauth2-resourceowner')
+
+    @responses.activate
+    def test_logout(self):
+        """Test if logout removes credentials."""
+        self.assertIsNotNone(self.t1.session.headers['Authorization'])
+        self.t1.logout()
+        self.assertIsNone(self.t1.session.headers['Authorization'])
