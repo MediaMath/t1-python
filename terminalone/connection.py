@@ -109,6 +109,7 @@ class Connection(object):
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret):
         """Authenticate using OAuth2.
+<<<<<<< HEAD
 
         Preferred method at MediaMath for CLI applications.
         """
@@ -142,6 +143,54 @@ class Connection(object):
         self.session.headers['Authorization'] = (
             'Bearer ' + auth_response['access_token'])
         return auth_response['access_token'], user
+
+    def fetch_realm_password_token(self, username, password,
+                                   client_id, client_secret, realm):
+        """Authenticate using OAuth2.
+=======
+>>>>>>> origin
+
+        Preferred method at MediaMath for CLI applications.
+        """
+        payload = {
+            'grant_type': 'http://auth0.com/oauth/grant-type/password-realm',
+            'username': username,
+            'password': password,
+            'client_id': client_id,
+            'client_secret': client_secret,
+<<<<<<< HEAD
+            'realm': realm,
+=======
+>>>>>>> origin
+            'audience': 'https://api.mediamath.com/',
+            'scope': 'openid'
+        }
+
+        token_url = '/'.join(['https:/',
+                              self.auth_base,
+                              'oauth',
+                              'token'])
+        response = post(
+            token_url, json=payload, stream=True)
+        if response.status_code != 200:
+            raise ClientError(
+                'Failed to get OAuth2 token. Error: ' + response.text)
+        auth_response = json.loads(response.text)
+        user = jwt.decode(auth_response['id_token'],
+                          algorithms=['RS256'],
+                          verify=False)
+        Connection.__setattr__(self, 'user_id',
+                               user['sub'].split("|")[1])
+        Connection.__setattr__(self, 'username',
+                               user['nickname'])
+        self.session.headers['Authorization'] = (
+            'Bearer ' + auth_response['access_token'])
+        return auth_response['access_token'], user
+
+    def logout(self):
+        """Remove all session information."""
+        self.session.headers['Authorization'] = None
+        self.session.cookies['adama_session'] = None
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.

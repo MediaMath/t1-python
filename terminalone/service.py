@@ -145,6 +145,7 @@ class T1(Connection):
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
+
     def new(self, collection, report=None, properties=None, *args, **kwargs):
         """Return a fresh class instance for a new entity.
 
