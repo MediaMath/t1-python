@@ -16,22 +16,14 @@ from .vendor import six
 
 def _detect_auth_method(username, password, session_id,
                         api_key, client_id, client_secret, token):
-    if api_key is None:
-        raise ClientError('API Key is required!')
-    if token is not None:
-        return 'oauth2'
-    if username is not None and password is not None:
-        return 'cookie'
-    if session_id is not None:
-        return 'cookie'
-    if client_secret is not None:
-        return 'oauth2'
     if client_id is not None and client_secret is not None:
         return 'oauth2-resourceowner'
+    else:
+        return 'cookie'
 
 
 class T1(Connection):
-    """Service class for ALL other T1 entities, e.g.: t1 = T1(auth)
+    """Service class for ALL other T1 entities, e.g.: t1 = T1(auth).
 
     Accepts authentication parameters. Supports get methods to get
     collections or an entity, find method to user inner-join-like queries.
@@ -83,8 +75,13 @@ class T1(Connection):
         """
         self.auth_params = {}
         if auth_method is None:
-            auth_method = _detect_auth_method(username, password, session_id,
-                                              api_key, client_id, client_secret, token)
+            auth_method = _detect_auth_method(username,
+                                              password,
+                                              session_id,
+                                              api_key,
+                                              client_id,
+                                              client_secret,
+                                              token)
         self.auth_params['method'] = auth_method
         self.auth_params['api_key'] = api_key
 
@@ -125,7 +122,8 @@ class T1(Connection):
     def authenticate(self, auth_method, **kwargs):
         """Authenticate using method given."""
         session_id = kwargs.get('session_id')
-        if session_id is not None and auth_method in ['cookie', 'oauth2-resourceowner']:
+        if session_id is not None and auth_method in ['cookie',
+                                                      'oauth2-resourceowner']:
             return super(T1, self)._auth_session_id(
                 session_id,
                 self.auth_params['api_key']
@@ -143,12 +141,12 @@ class T1(Connection):
                 self.auth_params['client_secret'])
         elif auth_method == 'basic':
             raise ClientError(
-                'basic authentication is no longer supported - use cookie or oauth')
+                'basic authentication is not supported')
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
     def new(self, collection, report=None, properties=None, *args, **kwargs):
-        """Returns a fresh class instance for a new entity.
+        """Return a fresh class instance for a new entity.
 
         ac = t1.new('atomic_creative') OR
         ac = t1.new('atomic_creatives') OR even
@@ -179,8 +177,9 @@ class T1(Connection):
                    *args, **kwargs)
 
     def _return_class(self, ent_dict,
-                      child=None, child_id=None, entity_id=None, collection=None):
-        """Generate item for new class instantiation"""
+                      child=None, child_id=None,
+                      entity_id=None, collection=None):
+        """Generate item for new class instantiation."""
         ent_type = ent_dict.get('_type', ent_dict.get('type'))
         relations = ent_dict.get('relations')
         if child is not None:
@@ -203,7 +202,7 @@ class T1(Connection):
         return self.new(ent_type, properties=ent_dict)
 
     def _gen_classes(self, entities, child, child_id, entity_id, collection):
-        """Iterate over entities, returning objects for each"""
+        """Iterate over entities, returning objects for each."""
         for entity in entities:
             e = self._return_class(
                 entity, child, child_id, entity_id, collection)
@@ -211,7 +210,7 @@ class T1(Connection):
 
     @staticmethod
     def _construct_params(entity, **kwargs):
-        """Construct URL params"""
+        """Construct URL params."""
         if entity is not None:
             params = {}
         else:
@@ -259,7 +258,7 @@ class T1(Connection):
 
     @staticmethod
     def _construct_url(collection, entity, child, limit):
-        """Construct URL"""
+        """Construct URL."""
         url = [collection, ]
         if entity is not None:
             url.append(str(entity))  # str so that we can use join
@@ -285,10 +284,11 @@ class T1(Connection):
 
         if isinstance(limit, dict):
             if len(limit) != 1:
-                raise ClientError('Limit must consist of one parent collection '
-                                  '(or chained parent collection) and a single '
-                                  'value for it (e.g. {"advertiser": 1}, or '
-                                  '{"advertiser.agency": 2)')
+                raise ClientError(
+                    'Limit must consist of one parent collection '
+                    '(or chained parent collection) and a single '
+                    'value for it (e.g. {"advertiser": 1}, or '
+                    '{"advertiser.agency": 2)')
             url.extend(['limit',
                         '{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
 
@@ -316,24 +316,29 @@ class T1(Connection):
         :param collection: str T1 collection, e.g. "advertisers", "agencies"
         :param entity: int ID of entity being retrieved from T1
         :param child: str child, e.g. "dma", "acl"
-        :param limit: dict[str]int query for relation entity, e.g. {"advertiser": 123456}
+        :param limit: dict[str]int query for relation entity,
+        e.g. {"advertiser": 123456}
         :param include: str/list of relations to include, e.g. "advertiser",
             ["campaign", "advertiser"]
-        :param full: str/bool when retrieving multiple entities, specifies which
-            types to return the full record for.
+        :param full: str/bool when retrieving multiple entities, specifies
+            which types to return the full record for.
             e.g. "campaign", True, ["campaign", "advertiser"]
         :param page_limit: int number of entities to return per query, 100 max
         :param page_offset: int offset for results returned.
         :param sort_by: str sort order. Default "id". e.g. "-id", "name"
-        :param get_all: bool whether to retrieve all results for a query or just a single page
+        :param get_all: bool whether to retrieve all results for a query
+            or just a single page
         :param parent: only return entities with this parent id
         :param query: str search parameter. Invoked by `find`
-        :param other_params: optional dict of additional service specific params
+        :param other_params: optional dict of additional service
+            specific params
         :param count: bool return the number of entities as a second parameter
         :param _url: str shortcut to bypass URL determination.
-        :param _params: dict query string parameters to bypass query determination
+        :param _params: dict query string parameters to bypass
+            query determination
         :return: If:
-            Collection is requested => generator over collection of entity objects
+            Collection is requested => generator over collection of entity
+                objects
             Entity ID is provided => Entity object
             `count` is True => number of entities as second return val
         :raise ClientError: if page_limit > 100
@@ -384,8 +389,16 @@ class T1(Connection):
         entities, ent_count = super(T1, self)._get(
             self._get_service_path(collection), _url, params=_params)
 
-        if not isinstance(entities, GeneratorType) and not isinstance(entities, Iterator):
-            return self._return_class(entities, child, child_id, entity, collection)
+        if not isinstance(
+            entities, GeneratorType
+        ) and not isinstance(
+            entities, Iterator
+        ):
+            return self._return_class(entities,
+                                      child,
+                                      child_id,
+                                      entity,
+                                      collection)
 
         ent_gen = self._gen_classes(
             entities, child, child_id, entity, collection)
@@ -395,7 +408,10 @@ class T1(Connection):
             return ent_gen
 
     def get_all(self, collection, **kwargs):
-        """Retrieves all entities in a collection. Has same signature as .get."""
+        """Retrieve all entities in a collection.
+
+        Has same signature as .get.
+        """
         kwargs.pop('get_all', None)
         return self.get(collection, get_all=True, **kwargs)
 
@@ -405,7 +421,6 @@ class T1(Connection):
         Pages over 100 entities.
         This method should not be called directly: it's called from T1.get.
         """
-
         num_to_fetch = kwargs.get('page_limit', 100)
         params = {
             'page_limit': 1,
@@ -455,8 +470,9 @@ class T1(Connection):
         return val
 
     def find(self, collection, variable, operator, candidates, **kwargs):
-        """Find objects based on query criteria. Helper method for T1.get,
-        with same return values.
+        """Find objects based on query criteria.
+
+        Helper method for T1.get, with same return values.
 
         :param collection: str T1 collection, e.g. "advertisers", "agencies"
         :param variable: str Field to query for, e.g. "name". If operator is

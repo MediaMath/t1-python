@@ -4,7 +4,6 @@
 from __future__ import absolute_import
 from requests import Session, post
 from requests.utils import default_user_agent
-from requests_oauthlib import OAuth2Session
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
 from .errors import ClientError, T1Error
 from .metadata import __version__
@@ -20,7 +19,8 @@ def _generate_user_agent(name='t1-python'):
 
 
 class Connection(object):
-    """Base connection object for TerminalOne session"""
+    """Base connection object for TerminalOne session."""
+
     user_agent = _generate_user_agent()
 
     def __init__(self,
@@ -29,7 +29,7 @@ class Connection(object):
                  json=False,
                  auth_params=None,
                  _create_session=False):
-        """Sets up Requests Session to be used for all connections to T1.
+        """Set up Requests Session to be used for all connections to T1.
 
         :param environment: str to look up API Base to use. e.g. 'production'
             for https://api.mediamath.com/api/v2.0
@@ -40,7 +40,6 @@ class Connection(object):
             future version.
         :param auth_params: dict set of auth parameters:
             "method" required argument. Determines session handler.
-            "oauth2" => "client_id", "client_secret", "redirect_uri", "token_updater"
             "oauth2-ro" => "client_id", "client_secret", "username", "password"
             "cookie" => "username", "password", "api_key"
         :param _create_session: bool flag to create a Requests Session.
@@ -68,49 +67,26 @@ class Connection(object):
         if _create_session:
             self._create_session()
 
-    def _oauth2_session(self, **kwargs):
-        refresh_url = '/'.join(['https:/', self.api_base,
-                                SERVICE_BASE_PATHS['oauth2'], 'token'])
-        refresh_kwargs = {'client_id': self.auth_params['api_key'],
-                          'client_secret': self.auth_params['client_secret']}
-        session = OAuth2Session(
-            client_id=self.auth_params['api_key'],
-            auto_refresh_url=refresh_url,
-            auto_refresh_kwargs=refresh_kwargs,
-            token=self.auth_params['token'],
-            token_updater=self.auth_params['token_updater'],
-            **kwargs
-        )
-        session.headers['User-Agent'] = self.user_agent
-        session.params = {'api_key': self.auth_params['api_key']}
-        if self.json:
-            self.session.headers['Accept'] = ACCEPT_HEADERS['json']
-        return session
-
     def _create_session(self):
         method = self.auth_params['method']
-        if method == 'oauth2':
-            session = self._oauth2_session()
-        else:
-            session = Session()
-            session.headers['User-Agent'] = self.user_agent
-            if method != 'oauth2-resourceowner':
-                session.params = {'api_key': self.auth_params['api_key']}
-            if self.json:
-                session.headers['Accept'] = ACCEPT_HEADERS['json']
+        session = Session()
+        session.headers['User-Agent'] = self.user_agent
+        if method != 'oauth2-resourceowner':
+            session.params = {'api_key': self.auth_params['api_key']}
+        if self.json:
+            session.headers['Accept'] = ACCEPT_HEADERS['json']
 
         Connection.__setattr__(self, 'session', session)
 
-    def _auth_cookie(self, username, password, api_key):
+    def _auth_cookie(self, username, password, api_key=None):
         """Authenticate by generating a session cookie.
 
-        The traditional way of authenticating by making a POST request to /login
-        endpoint and storing the returned session cookie.
+        The traditional way of authenticating by making a POST request to
+        `/login` endpoint and storing the returned session cookie.
         """
         user, _ = self._post(SERVICE_BASE_PATHS['mgmt'], 'login', data={
             'user': username,
-            'password': password,
-            'api_key': api_key,
+            'password': password
         })
         self._check_session(user=user)
 
@@ -130,46 +106,19 @@ class Connection(object):
         )
         self._check_session()
 
-    # these should be stored as instance vars, because they aren't specific
-    # to the user. Except for redirect_uri, because that gets saved as an
-    # instance var for the session
-    def authorization_url(self, redirect_uri=None):
-        """Authenticate using OAuth2"""
-        auth_url = '/'.join(['https:/', self.api_base,
-                             SERVICE_BASE_PATHS['oauth2'], 'authorize'])
-        if redirect_uri is None:
-            try:
-                redirect_uri = self.auth_params['redirect_uri']
-            except KeyError:
-                raise ClientError('Redirect URI not provided!')
+    def fetch_resource_owner_password_token(self, username, password,
+                                            client_id, client_secret):
+        """Authenticate using OAuth2.
 
-        session = self._oauth2_session(redirect_uri=redirect_uri)
-        return session.authorization_url(auth_url)
-
-    def fetch_token(self, state=None, code=None,
-                    authorization_response_url=None, set_session=False):
-        token_url = '/'.join(['https:/',
-                              self.api_base,
-                              SERVICE_BASE_PATHS['oauth2'],
-                              'token'])
-        session = self._oauth2_session(state=state)
-        token = session.fetch_token(
-            token_url,
-            code=code,
-            authorization_response=authorization_response_url,
-            client_secret=self.auth_params['client_secret']
-        )
-        if set_session:
-            Connection.__setattr__(self, 'session', session)
-        return token
-
-    def fetch_resource_owner_password_token(self, username, password, client_id, client_secret):
+        Preferred method at MediaMath for CLI applications.
+        """
         payload = {
             'grant_type': 'password',
             'username': username,
             'password': password,
             'client_id': client_id,
             'client_secret': client_secret,
+            'audience': 'https://api.mediamath.com/',
             'scope': 'openid'
         }
 
@@ -182,14 +131,17 @@ class Connection(object):
         if response.status_code != 200:
             raise ClientError(
                 'Failed to get OAuth2 token. Error: ' + response.text)
-        id_token = json.loads(response.text)['id_token']
-        user = jwt.decode(id_token, verify=False)
+        auth_response = json.loads(response.text)
+        user = jwt.decode(auth_response['id_token'],
+                          algorithms=['RS256'],
+                          verify=False)
         Connection.__setattr__(self, 'user_id',
-                               user['name'])
+                               user['sub'].split("|")[1])
         Connection.__setattr__(self, 'username',
                                user['nickname'])
-        self.session.headers['Authorization'] = 'Bearer ' + id_token
-        return id_token, user
+        self.session.headers['Authorization'] = (
+            'Bearer ' + auth_response['access_token'])
+        return auth_response['access_token'], user
 
     def _check_session(self, user=None):
         """Set session parameters username, user_id, session_id.
@@ -208,7 +160,9 @@ class Connection(object):
                                self.session.cookies['adama_session'])
 
     def _get(self, path, rest, params=None):
-        """Base method for subclasses to call.
+        """
+        Base method for subclasses to call.
+
         :param path: str API path (can be from terminalone.utils.PATHS)
         :param rest: str rest of url (module-specific path, )
         :param params: dict query string params
@@ -218,7 +172,9 @@ class Connection(object):
         return self._parse_response(response)
 
     def _post(self, path, rest, data=None, json=None):
-        """Base method for subclasses to call.
+        """
+        Base method for subclasses to call.
+
         :param url: str API URL
         :param data: dict POST data for formdata posts
         :param json: dict POST data for json posts
