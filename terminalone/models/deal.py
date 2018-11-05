@@ -17,9 +17,11 @@ class Deal(Entity):
     _bill_types = t1types.enum({'EXCHANGE', 'PUBLISHER', 'NONE'}, 'EXCHANGE')
     _price_methods = t1types.enum({'CPM'}, 'CPM')
     _price_types = t1types.enum({'FIXED', 'FLOOR'}, None)
+    _deal_types = t1types.enum({'STANDARD', 'PG'}, 'STANDARD')
     _pull = {
         'created_on': t1types.strpt,
         'deal_identifier': None,
+        'deal_type': None,
         'description': None,
         'end_datetime': t1types.strpt,
         'id': int,
@@ -40,6 +42,7 @@ class Deal(Entity):
     _push = _pull.copy()
     _push.update({
         'bill_type': _bill_types,
+        'deal_type': _deal_types,
         'end_datetime': partial(t1types.strft, offset=True),
         'price_method': _price_methods,
         'price_type': _price_types,
