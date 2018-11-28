@@ -45,7 +45,7 @@ class Campaign(Entity):
         'frequency_amount': int,
         'frequency_interval': None,
         'frequency_type': None,
-        'frequency_optimization': int,
+        'frequency_optimization': None,
         'goal_alert': float,
         'goal_category': None,
         'goal_type': None,
