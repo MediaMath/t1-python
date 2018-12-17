@@ -6,7 +6,7 @@ python:
 install: python setup.py install
 before_script:
 - pip install responses pycodestyle codacy-coverage
-- pycodestyle --exclude=vendor --ignore=E501,E225 --max-line-length=160 terminalone
+- pycodestyle --exclude=vendor --ignore=E501,E225,W503,W504 --max-line-length=160 terminalone
 script:
 - python setup.py test
 after_success:

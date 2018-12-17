@@ -88,10 +88,10 @@ class Entity(Connection):
         aren't to be written to. Because relations are incliuded as attributes
         as well, remove these too.
         """
-        return (key in self._readonly
-                or key in self._relations
-                or (self.is_update and key in self._readonly_update)
-                or push_fn is False)
+        return (key in self._readonly or
+                key in self._relations or
+                (self.is_update and key in self._readonly_update) or
+                push_fn is False)
 
     def _validate_json_post(self, data):
         """Convert Python objects to POST values.
