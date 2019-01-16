@@ -110,7 +110,6 @@ class Campaign(Entity):
         'use_default_ad_server': int,
         'use_mm_freq': int,
         'is_programmatic_guaranteed': int
-
     })
 
     def __init__(self, session, properties=None, **kwargs):
