@@ -83,7 +83,8 @@ class Campaign(Entity):
         'zone_name': None,
         'viewability_type': None,
         'viewability_vendor_id': int,
-        'viewability_sample_rate': float
+        'viewability_sample_rate': float,
+        'is_programmatic_guaranteed': t1types.int_to_bool
     }
     _push = _pull.copy()
     _push.update({
@@ -108,6 +109,7 @@ class Campaign(Entity):
         'status': int,
         'use_default_ad_server': int,
         'use_mm_freq': int,
+        'is_programmatic_guaranteed': int
     })
 
     def __init__(self, session, properties=None, **kwargs):
