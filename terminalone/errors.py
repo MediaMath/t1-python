@@ -95,6 +95,7 @@ class ParserException(Exception):
     def __init__(self, caught):
         self.caught = caught
 
+
 # Map known status.code responses to Exceptions. 'ok' signifies no exception,
 # so that is None. 'invalid' can have many errors and needs
 # an additional level of parsing, while the others can be instantiated directly.

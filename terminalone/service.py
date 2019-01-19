@@ -43,6 +43,7 @@ class T1(Connection):
                  redirect_uri=None,
                  token=None,
                  token_updater=None,
+                 access_token=None,
                  **kwargs):
         """Set up session for main service object.
 
@@ -117,17 +118,21 @@ class T1(Connection):
         self.api_key = api_key
 
         if auth_method != 'oauth2' and auth_method != 'delayed':
-            self.authenticate(auth_method, session_id=session_id)
+            self.authenticate(auth_method, session_id=session_id, access_token=access_token)
 
     def authenticate(self, auth_method, **kwargs):
         """Authenticate using method given."""
         session_id = kwargs.get('session_id')
+        access_token = kwargs.get('access_token')
         if session_id is not None and auth_method in ['cookie',
                                                       'oauth2-resourceowner']:
             return super(T1, self)._auth_session_id(
                 session_id,
                 self.auth_params['api_key']
             )
+
+        if access_token is not None and auth_method in ['oauth2-resourceowner']:
+            return super(T1, self)._auth_access_token(access_token)
 
         if auth_method == 'cookie':
             return super(T1, self)._auth_cookie(self.auth_params['username'],

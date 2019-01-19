@@ -90,6 +90,12 @@ class Connection(object):
         })
         self._check_session(user=user)
 
+    def _auth_access_token(self, access_token):
+        """Authenticate using a passed-in access token.
+        """
+        self.session.headers['Authorization'] = 'Bearer {}'.format(access_token)
+        self._check_session()
+
     def _auth_session_id(self, session_id, api_key, expires=None):
         """Authenticate using a passed-in session ID.
 
