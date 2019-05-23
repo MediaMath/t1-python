@@ -14,7 +14,7 @@ class StrategyDeal(Entity):
         'deal',
         'strategy',
     }
-    
+
     _pull = {
         'deal_id': int,
         'id': int,
@@ -23,7 +23,7 @@ class StrategyDeal(Entity):
     }
     _push = _pull.copy()
 
-    _readonly = Entity._readonly | {'name', }
+    _readonly = Entity._readonly | {'deal_id', 'strategy_id', 'version'}
 
     def __init__(self, session, properties=None, **kwargs):
         super(StrategyDeal, self).__init__(session, properties, **kwargs)
