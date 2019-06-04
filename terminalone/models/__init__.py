@@ -32,6 +32,7 @@ from .siteplacement import SitePlacement
 from .strategy import Strategy
 from .strategyaudiencesegment import StrategyAudienceSegment
 from .strategyconcept import StrategyConcept
+from .strategydeal import StrategyDeal
 from .strategydaypart import StrategyDayPart
 from .strategydomain import StrategyDomain
 from .strategysupplysource import StrategySupplySource
@@ -79,6 +80,7 @@ __all__ = ['ACL',
            'Strategy',
            'StrategyAudienceSegment',
            'StrategyConcept',
+           'StrategyDeal',
            'StrategyDayPart',
            'StrategyDomain',
            'StrategySupplySource',
