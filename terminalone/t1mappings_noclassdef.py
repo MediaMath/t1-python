@@ -30,6 +30,7 @@ SINGULAR = {
     'strategy': 'strategies',
     'strategy_audience_segment': 'strategy_audience_segments',
     'strategy_concept': 'strategy_concepts',
+    'strategy_deal': 'strategy_deals',
     'strategy_day_part': 'strategy_day_parts',
     'strategy_domain_restriction': 'strategy_domain_restrictions',
     'strategy_supply_source': 'strategy_supply_sources',
