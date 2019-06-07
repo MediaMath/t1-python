@@ -1,6 +1,4 @@
----
-title: 'TerminalOne-Python'
----
+# TerminalOne-Python
 
 [![image](https://travis-ci.org/MediaMath/t1-python.svg?branch=master)](https://travis-ci.org/MediaMath/t1-python)
 
