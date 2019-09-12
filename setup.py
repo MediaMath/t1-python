@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import print_function
 import os
 import sys
@@ -6,10 +6,7 @@ import subprocess
 from distutils.util import convert_path
 
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -39,7 +36,7 @@ with open(ver_path) as ver_file:
 
 
 def check_pip():
-    st = str(subprocess.check_output(['pip', 'search', metadata['__name__']]))
+    st = str(subprocess.check_output(['pip3', 'search', metadata['__name__']]))
     pip_version = st[st.index('(') + 1: st.index(')')]
     print(pip_version)
     if pip_version == metadata['__version__']:
@@ -50,8 +47,10 @@ def check_pip():
 
 if sys.argv[-1] == 'publish':
     check_pip()
-    subprocess.call(["python", "setup.py", "sdist"])
+    subprocess.call(["python3", "setup.py", "sdist"])
     filename = "TerminalOne-{}.tar.gz".format(metadata['__version__'])
+    print('Checking {}.'.format(filename))
+    subprocess.call(["twine", "check", "dist/{}".format(filename)])
     print('Uploading {}'.format(filename))
     subprocess.call(["twine", "upload", "dist/{}".format(filename)])
     print("Did you remember to tag the release? ./setup.py tag")
@@ -71,11 +70,12 @@ setup(
     author_email=metadata['__email__'],
     url=metadata['__url__'],
     description=metadata['__description__'],
-    long_description=fread('README.rst'),
+    long_description=fread('README.md'),
+    long_description_content_type='text/markdown',
     packages=packages,
     install_requires=requirements,
     platforms=['any'],
-    license=fread('LICENSE'),
+    license='Apache 2.0',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: Apache Software License',
