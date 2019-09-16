@@ -435,7 +435,7 @@ You can retrieve the URI stub of any report by calling
 `Report.report_uri`:
 
 ``` {.python}
->>> print(rpts.get_uri("geo"))
+>>> print(rpts.report_uri("geo"))
 'geo'
 ```
 
@@ -448,6 +448,25 @@ it:
 ``` {.python}
 >>> report = t1.new("report", rpts.report_uri("performance"))
 ```
+
+The Reporting Service has two version of the API: `/reporting/v1/std` and `reporting-beta/v1/std/`. To call the `beta` version of reporting API:
+
+
+``` {.python}
+>>> rpts = t1.new("report", version="beta")
+```
+
+``` {.python}
+>>> report = t1.new("report", rpts.report_uri("performance"), version="beta")
+```
+
+A short way to do it if the url is known:
+
+``` {.python}
+>>> report = t1.new( "report", "deals?v1", version="beta" )
+
+```
+
 
 You can access metadata about this report from the `Report.metadata`
 property as well. To get data, first set properties about the query with
