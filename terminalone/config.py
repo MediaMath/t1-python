@@ -27,6 +27,7 @@ SERVICE_BASE_PATHS = {
     'deals': 'media/v1.0',
     'mgmt': 'api/v2.0',
     'reports': 'reporting/v1/std',
+    'reports-beta': 'reporting-beta/v1/std',
     'uniques': 'uniques/v1',
     'oauth2': 'oauth2/v1.0',
 }
