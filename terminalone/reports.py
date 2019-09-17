@@ -88,7 +88,6 @@ class Report(Connection):
         """
 
         if self.version == 'beta':
-            print("test")
             url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports-beta'], path])
         else:
             url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports'], path])
