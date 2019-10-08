@@ -11,6 +11,7 @@ from .budgetflight import BudgetFlight
 from .campaign import Campaign
 from .concept import Concept
 from .contact import Contact
+from .contract import Contract
 from .creativeapproval import CreativeApproval
 from .creative import Creative
 from .deal import Deal
@@ -59,6 +60,7 @@ __all__ = ['ACL',
            'Concept',
            'Creative',
            'Contact',
+           'Contract',
            'CreativeApproval',
            'Deal',
            'Organization',
