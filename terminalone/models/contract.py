@@ -22,10 +22,6 @@ class Contract(Entity):
         'updated_on': t1types.strpt,
         'version': int,
     }
-    _push = _pull.copy()
-    _push.update({
-        'use_mm_contract': int,
-    })
 
     def __init__(self, session, properties=None, **kwargs):
         super(Contract, self).__init__(session, properties, **kwargs)
