@@ -78,20 +78,19 @@ class Permission(SubEntity):
         :param data: dict optional data to use instead of self
         :return: None. Object is updated or error is raised
         """
-
         data = self._generate_save_data(data)
         return super(Permission, self).save(data=data, url=url)
 
     def _generate_save_data(self, data=None):
         if data is None:
             data = self._properties.copy()
-        data.pop('organization', None)
-        data.pop('agency', None)
-        data.pop('advertiser', None)
-        if self._properties['advertiser'] is not None:
-            data['advertiser_id'] = self._properties['advertiser'].keys()
-        if self._properties['agency'] is not None:
-            data['agency_id'] = self._properties['agency'].keys()
-        if self._properties['organization'] is not None:
-            data['organization_id'] = self._properties['organization'].keys()
+            data.pop('organization', None)
+            data.pop('agency', None)
+            data.pop('advertiser', None)
+            if self._properties['advertiser'] is not None:
+                data['advertiser_id'] = self._properties['advertiser'].keys()
+            if self._properties['agency'] is not None:
+                data['agency_id'] = self._properties['agency'].keys()
+            if self._properties['organization'] is not None:
+                data['organization_id'] = self._properties['organization'].keys()
         return data
