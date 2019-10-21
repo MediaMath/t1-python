@@ -13,6 +13,7 @@ class Organization(Entity):
     _relations = {
         'currency',
         'seats',
+        'contracts',
     }
     _dmp_settings = t1types.enum({'disabled', 'enabled'}, 'disabled')
     _org_types = t1types.enum({'buyer', 'partner'}, 'buyer')

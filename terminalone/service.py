@@ -150,7 +150,7 @@ class T1(Connection):
         else:
             raise AttributeError('No authentication method for ' + auth_method)
 
-    def new(self, collection, report=None, properties=None, *args, **kwargs):
+    def new(self, collection, report=None, properties=None, version=None, *args, **kwargs):
         """Return a fresh class instance for a new entity.
 
         ac = t1.new('atomic_creative') OR
@@ -172,6 +172,7 @@ class T1(Connection):
                        report=report,
                        environment=self.environment,
                        api_base=self.api_base,
+                       version=version,
                        **kwargs)
 
         return ret(self.session,

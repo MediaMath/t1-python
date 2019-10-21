@@ -11,6 +11,7 @@ SINGULAR = {
     'campaign': 'campaigns',
     'concept': 'concepts',
     'contact': 'contacts',
+    'contract': 'contracts',
     'creative': 'creatives',
     'creative_approval': 'creative_approvals',
     'deal': 'deals',

@@ -31,10 +31,11 @@ class Report(Connection):
         'time_rollup': None,
     }
 
-    def __init__(self, session, report=None, properties=None, **kwargs):
+    def __init__(self, session, report=None, properties=None, version=None, **kwargs):
         super(Report, self).__init__(_create_session=False, **kwargs)
         self.session = session
         self.parameters = {}
+        self.version = version
 
         if report is not None:
             self.report = report
@@ -85,7 +86,12 @@ class Report(Connection):
         :param path: str path to hit. Should not start with slash
         :param params: dict query string params
         """
-        url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports'], path])
+
+        if self.version == 'beta':
+            url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports-beta'], path])
+        else:
+            url = '/'.join(['https:/', self.api_base, SERVICE_BASE_PATHS['reports'], path])
+
         response = self.session.get(url, params=params, stream=True)
 
         if not response.ok:
