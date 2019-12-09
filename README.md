@@ -96,6 +96,11 @@ client ID and secret alongside your credentials:
 >>> t1 = T1(auth_method='oauth2-resourceowner', client_id="my_client_id", client_secret="my_secret", username="my@user", password="mypass")
 ```
 
+If you already have a valid access token (e.g. by following the authorization code flow - outside this library), you can also pass it in order to get authenticated:
+``` {.python}
+>>> t1 = t1 = terminalone.T1(access_token=token, environment=environment, auth_method='oauth2-existingaccesstoken', json=True)
+```
+
 If you have a specific API base (for instance, if you are testing
 against a sandbox deployment) (*Note*: sandbox environments are not yet
 useable), you can use the `api_base` keyword with the *domain*. For
