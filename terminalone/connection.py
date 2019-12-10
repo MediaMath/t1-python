@@ -71,7 +71,8 @@ class Connection(object):
         method = self.auth_params['method']
         session = Session()
         session.headers['User-Agent'] = self.user_agent
-        if method != 'oauth2-resourceowner':
+        if method not in ['oauth2-resourceowner',
+                          'oauth2-existingaccesstoken']:
             session.params = {'api_key': self.auth_params['api_key']}
         if self.json:
             session.headers['Accept'] = ACCEPT_HEADERS['json']
