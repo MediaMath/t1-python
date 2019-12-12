@@ -141,14 +141,12 @@ class T1(Connection):
                                                 self.auth_params['password'],
                                                 self.auth_params['api_key'])
         elif auth_method == 'oauth2-resourceowner':
-            return super(T1, self).fetch_resource_owner_password_token(
-                self.auth_params['username'],
-                self.auth_params['password'],
-                self.auth_params['client_id'],
-                self.auth_params['client_secret'],
-                self.environment,
-                self.realm
-                )
+            return super(T1, self).fetch_resource_owner_password_token(self.auth_params['username'],
+                                                                       self.auth_params['password'],
+                                                                       self.auth_params['client_id'],
+                                                                       self.auth_params['client_secret'],
+                                                                       self.environment,
+                                                                       self.realm)
         elif auth_method == 'basic':
             raise ClientError(
                 'basic authentication is not supported')

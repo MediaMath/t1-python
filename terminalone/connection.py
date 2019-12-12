@@ -158,7 +158,6 @@ class Connection(object):
                 if realm is None:
                     realm="T1DB-QA10"
 
-
         payload = {
             'grant_type': grant_type,
             'realm': realm,
@@ -169,7 +168,6 @@ class Connection(object):
             'audience': 'https://api.mediamath.com/',
             'scope': scope
         }
-
 
         token_url = '/'.join(['https:/',
                               self.auth_base,
