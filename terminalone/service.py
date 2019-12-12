@@ -44,6 +44,7 @@ class T1(Connection):
                  token=None,
                  token_updater=None,
                  access_token=None,
+                 realm=None,
                  **kwargs):
         """Set up session for main service object.
 
@@ -114,6 +115,7 @@ class T1(Connection):
         self._authenticated = False
         self._auth = (username, password, api_key, client_secret)
         self.environment = environment
+        self.realm = realm
         self.json = json
         self.api_key = api_key
 
@@ -143,7 +145,10 @@ class T1(Connection):
                 self.auth_params['username'],
                 self.auth_params['password'],
                 self.auth_params['client_id'],
-                self.auth_params['client_secret'])
+                self.auth_params['client_secret'],
+                self.environment,
+                self.realm
+                )
         elif auth_method == 'basic':
             raise ClientError(
                 'basic authentication is not supported')
