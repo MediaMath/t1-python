@@ -2,9 +2,6 @@
 """Provides connection object for T1."""
 
 from __future__ import absolute_import
-
-from pprint import pprint
-
 from requests import Session, post
 from requests.utils import default_user_agent
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
@@ -173,7 +170,6 @@ class Connection(object):
             'scope': scope
         }
 
-        print("trying to authenticate to: " + self.auth_base)
 
         token_url = '/'.join(['https:/',
                               self.auth_base,
