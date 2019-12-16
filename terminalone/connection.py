@@ -2,6 +2,7 @@
 """Provides connection object for T1."""
 
 from __future__ import absolute_import
+
 from requests import Session, post
 from requests.utils import default_user_agent
 from .config import ACCEPT_HEADERS, API_BASES, SERVICE_BASE_PATHS, AUTH_BASES
@@ -114,19 +115,60 @@ class Connection(object):
         self._check_session()
 
     def fetch_resource_owner_password_token(self, username, password,
-                                            client_id, client_secret):
+                                            client_id, client_secret,
+                                            environment,
+                                            realm=None):
         """Authenticate using OAuth2.
 
         Preferred method at MediaMath for CLI applications.
         """
+
+        scope=None
+        if username.lower().endswith("@mediamath.com"):
+            if environment=='production':
+                grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                realm="MediaMathActiveDirectory"
+                scope = "openid"
+            else:
+                grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                realm = realm
+                if realm is None:
+                    realm="T1DB-QA10"
+            username=username[:-len("@mediamath.com")]
+        elif username.find("@") != -1:
+            if environment=='production':
+                scope="openid"
+                realm="T1DB-Production"
+                grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+            else:
+                grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                realm = realm
+                if realm is None:
+                    realm="T1DB-QA10"
+        else:
+            if environment == 'production':
+                if realm is None:
+                    grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                    realm = "MediaMathActiveDirectory"
+                    scope = "openid"
+                else:
+                    grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                    realm = realm
+            else:
+                grant_type = "http://auth0.com/oauth/grant-type/password-realm"
+                realm = realm
+                if realm is None:
+                    realm="T1DB-QA10"
+
         payload = {
-            'grant_type': 'password',
+            'grant_type': grant_type,
+            'realm': realm,
             'username': username,
             'password': password,
             'client_id': client_id,
             'client_secret': client_secret,
             'audience': 'https://api.mediamath.com/',
-            'scope': 'openid'
+            'scope': scope
         }
 
         token_url = '/'.join(['https:/',
@@ -139,13 +181,35 @@ class Connection(object):
             raise ClientError(
                 'Failed to get OAuth2 token. Error: ' + response.text)
         auth_response = json.loads(response.text)
-        user = jwt.decode(auth_response['id_token'],
+
+        if 'access_token' in auth_response:
+            user_token = auth_response['access_token']
+        else:
+            raise ClientError(
+                'Failed to get OAuth2 token. Error: ' + response.text)
+
+        user = jwt.decode(user_token,
                           algorithms=['RS256'],
                           verify=False)
+
+        if 'https://api.mediamath.com/user_id' in user:
+            user_id = user['https://api.mediamath.com/user_id']
+        else:
+            raise ClientError(
+                'Failed to get user_id. Error: ' + response.text)
+
         Connection.__setattr__(self, 'user_id',
-                               user['sub'].split("|")[1])
+                               user_id)
+
+        if 'https://api.mediamath.com/nickname' in user:
+            nickname = user['https://api.mediamath.com/nickname']
+        else:
+            raise ClientError(
+                'Failed to get nickname. Error: ' + response.text)
+
         Connection.__setattr__(self, 'username',
-                               user['nickname'])
+                               nickname)
+
         self.session.headers['Authorization'] = (
             'Bearer ' + auth_response['access_token'])
         return auth_response['access_token'], user
