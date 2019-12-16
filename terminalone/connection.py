@@ -191,6 +191,8 @@ class Connection(object):
                           algorithms=['RS256'],
                           verify=False)
 
+        print(user)
+
         if 'https://api.mediamath.com/user_id' in user:
             user_id = user['https://api.mediamath.com/user_id']
         else:
