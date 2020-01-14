@@ -44,6 +44,7 @@ class Connection(object):
             "method" required argument. Determines session handler.
             "oauth2-ro" => "client_id", "client_secret", "username", "password"
             "cookie" => "username", "password", "api_key"
+        :param session: requests.Session instance to use for HTTP requests.
         :param _create_session: bool flag to create a Requests Session.
             Should only be used for initial T1 instantiation.
         """
