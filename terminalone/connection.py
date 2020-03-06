@@ -210,6 +210,9 @@ class Connection(object):
         Connection.__setattr__(self, 'username',
                                nickname)
 
+        Connection.__setattr__(self, 'access_token',
+                               auth_response['access_token'])
+
         self.session.headers['Authorization'] = (
             'Bearer ' + auth_response['access_token'])
         return auth_response['access_token'], user
