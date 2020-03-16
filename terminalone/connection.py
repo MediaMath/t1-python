@@ -117,13 +117,13 @@ class Connection(object):
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret,
                                             environment,
-                                            realm=None):
+                                            realm=None,
+                                            scope=None):
         """Authenticate using OAuth2.
 
         Preferred method at MediaMath for CLI applications.
         """
 
-        scope=None
         if username.lower().endswith("@mediamath.com"):
             if environment=='production':
                 grant_type = "http://auth0.com/oauth/grant-type/password-realm"
@@ -134,6 +134,7 @@ class Connection(object):
                 realm = realm
                 if realm is None:
                     realm="T1DB-QA10"
+                    scope="database:qa10 openid"
             username=username[:-len("@mediamath.com")]
         elif username.find("@") != -1:
             if environment=='production':
@@ -145,6 +146,7 @@ class Connection(object):
                 realm = realm
                 if realm is None:
                     realm="T1DB-QA10"
+                    scope = "database:qa10 openid"
         else:
             if environment == 'production':
                 if realm is None:
@@ -159,6 +161,7 @@ class Connection(object):
                 realm = realm
                 if realm is None:
                     realm="T1DB-QA10"
+                    scope = "database:qa10 openid"
 
         payload = {
             'grant_type': grant_type,
