@@ -33,6 +33,7 @@ class Advertiser(Entity):
         'frequency_type': None,
         'id': int,
         'minimize_multi_ads': t1types.int_to_bool,
+        'accountable_and_addressable': t1types.int_to_bool,
         'name': None,
         'sales_contact_id': int,
         'status': t1types.int_to_bool,
@@ -46,6 +47,7 @@ class Advertiser(Entity):
         'frequency_interval': _freq_int,
         'frequency_type': _freq_type,
         'minimize_multi_ads': int,
+        'accountable_and_addressable': int,
         'status': int,
         'dmp_enabled': _dmp_settings,
 

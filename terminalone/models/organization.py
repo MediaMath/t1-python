@@ -35,6 +35,7 @@ class Organization(Entity):
         'name': None,
         'org_type': None,
         'override_suspicious_traffic_filter': t1types.int_to_bool,
+        'accountable_and_addressable': t1types.int_to_bool,
         'phone': None,
         'state': None,
         'status': t1types.int_to_bool,
@@ -52,6 +53,7 @@ class Organization(Entity):
         'dmp_enabled': _dmp_settings,
         'org_type': _org_types,
         'override_suspicious_traffic_filter': int,
+        'accountable_and_addressable': int,
         'status': int,
         'use_evidon_optout': int,
     })
