@@ -29,6 +29,7 @@ class Campaign(Entity):
     _goal_types = t1types.enum({'spend', 'reach', 'cpc', 'cpe', 'cpa', 'roi', 'viewability_rate', 'vcr', 'ctr', 'vcpm'},
                                None)
     _serv_types = t1types.enum({'SELF', 'MANAGED'}, 'SELF')
+    _bid_cross_types = t1types.enum({'DETERMINISTIC_ONLY', 'DETERMINISTIC_FIRST'}, None)
     _pull = {
         'ad_server_fee': float,
         'ad_server_id': int,
@@ -86,7 +87,10 @@ class Campaign(Entity):
         'viewability_type': None,
         'viewability_vendor_id': int,
         'viewability_sample_rate': float,
-        'is_programmatic_guaranteed': t1types.int_to_bool
+        'is_programmatic_guaranteed': t1types.int_to_bool,
+        'restrict_targeting_to_same_device_id': t1types.int_to_bool,
+        'connected_id_type': None,
+        'bid_min_devices': int
     }
     _push = _pull.copy()
     _push.update({
@@ -113,7 +117,9 @@ class Campaign(Entity):
         'suspicious_traffic_filter_level': int,
         'use_default_ad_server': int,
         'use_mm_freq': int,
-        'is_programmatic_guaranteed': int
+        'is_programmatic_guaranteed': int,
+        'restrict_targeting_to_same_device_id': int,
+        'connected_id_type': _bid_cross_types
     })
 
     def __init__(self, session, properties=None, **kwargs):

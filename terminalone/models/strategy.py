@@ -91,6 +91,7 @@ class Strategy(Entity):
         'use_optimization': t1types.int_to_bool,
         'version': int,
         'zone_name': None,
+        'bid_min_devices': int
     }
     _push = _pull.copy()
     _push.update({
@@ -124,7 +125,7 @@ class Strategy(Entity):
         'use_campaign_end': int,
         'use_campaign_start': int,
         'use_mm_freq': int,
-        'use_optimization': int,
+        'use_optimization': int
     })
 
     _readonly = Entity._readonly | {'effective_goal_value', 'zone_name'}
