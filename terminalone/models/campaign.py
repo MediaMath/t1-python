@@ -90,7 +90,8 @@ class Campaign(Entity):
         'is_programmatic_guaranteed': t1types.int_to_bool,
         'restrict_targeting_to_same_device_id': t1types.int_to_bool,
         'connected_id_type': None,
-        'bid_min_devices': int
+        'bid_min_devices': int,
+        'political': t1types.int_to_bool
     }
     _push = _pull.copy()
     _push.update({
@@ -119,7 +120,8 @@ class Campaign(Entity):
         'use_mm_freq': int,
         'is_programmatic_guaranteed': int,
         'restrict_targeting_to_same_device_id': int,
-        'connected_id_type': _bid_cross_types
+        'connected_id_type': _bid_cross_types,
+        'political': int
     })
 
     def __init__(self, session, properties=None, **kwargs):
