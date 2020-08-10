@@ -40,6 +40,7 @@ class Advertiser(Entity):
         'updated_on': t1types.strpt,
         'version': int,
         'vertical_id': int,
+        'political': t1types.int_to_bool
     }
     _push = _pull.copy()
     _push.update({
@@ -50,6 +51,7 @@ class Advertiser(Entity):
         'accountable_and_addressable': int,
         'status': int,
         'dmp_enabled': _dmp_settings,
+        'political': int
 
     })
 
