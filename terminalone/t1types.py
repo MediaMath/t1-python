@@ -100,6 +100,7 @@ def strft(dt_obj, null_on_none=False, offset=False):
             return ""
         raise
 
+
 def float_or_none(value):
     if value is not None:
         if isinstance(value, int):
