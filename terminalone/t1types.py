@@ -100,6 +100,16 @@ def strft(dt_obj, null_on_none=False, offset=False):
             return ""
         raise
 
+def float_or_none(value):
+    if value is not None:
+        if isinstance(value, int):
+            value = float(value)
+        if not isinstance(value, float):
+            raise TypeError('must supply float')
+        return value
+    else:
+        return ""
+
 
 class Deleted:
     """used for when un-setting a field"""

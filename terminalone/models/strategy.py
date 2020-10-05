@@ -40,7 +40,7 @@ class Strategy(Entity):
         'audience_segment_include_op': None,
         'bid_aggressiveness': float,
         'bid_price_is_media_only': t1types.int_to_bool,
-        'budget': float,
+        'budget': t1types.float_or_none,
         'campaign_id': int,
         'created_on': t1types.strpt,
         'currency_code': None,
@@ -234,6 +234,9 @@ class Strategy(Entity):
         if getattr(self, 'use_campaign_end', False) and 'end_date' in data:
             self._properties.pop('end_date', None)
             data['end_date'] = None
+        if 'budget' in data and data['budget'] is None:
+            self._properties.pop('budget', None)
+            data['budget'] = None
 
         super(Strategy, self).save(data=data, url=url)
 
