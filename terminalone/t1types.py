@@ -101,7 +101,7 @@ def strft(dt_obj, null_on_none=False, offset=False):
         raise
 
 
-def float_or_none(value):
+def float_or_none(value, null_on_none=False):
     if value is not None:
         if isinstance(value, int):
             value = float(value)
@@ -109,7 +109,10 @@ def float_or_none(value):
             raise TypeError('must supply float')
         return value
     else:
-        return ""
+        if null_on_none:
+            return ""
+        else:
+            raise TypeError('must supply float')
 
 
 class Deleted:
