@@ -99,6 +99,7 @@ class Strategy(Entity):
         'audience_segment_include_op': _seg_incexc_ops,
         'bid_price_is_media_only': int,
         'end_date': partial(t1types.strft, null_on_none=True),
+        'budget': partial(t1types.float_or_none, null_on_none=True),
         'frequency_interval': _pacing_ints,
         'frequency_optimization': int,
         'frequency_type': _pacing_types,
@@ -234,6 +235,9 @@ class Strategy(Entity):
         if getattr(self, 'use_campaign_end', False) and 'end_date' in data:
             self._properties.pop('end_date', None)
             data['end_date'] = None
+        if 'budget' in data and data['budget'] is None:
+            self._properties.pop('budget', None)
+            data['budget'] = None
 
         super(Strategy, self).save(data=data, url=url)
 

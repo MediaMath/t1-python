@@ -70,8 +70,10 @@ class Entity(Connection):
                 raise ClientError('key {} is invalid: must be of type {}'
                                   .format(attribute, self._pull[attribute]))
             except TypeError as e:
-                raise ClientError('key {} is invalid: {}'
-                                  .format(attribute, e.message))
+                if hasattr(e, 'message'):
+                    raise ClientError('key {} is invalid: {}'.format(attribute, e.message))
+                else:
+                    raise ClientError('key {} is invalid: {}'.format(attribute, e))
         else:
             self._properties[attribute] = value
 
@@ -143,8 +145,10 @@ class Entity(Connection):
                         raise ClientError('key {} is invalid: must be of type {}'
                                           .format(key, self._push[key]))
                     except TypeError as e:
-                        raise ClientError('key {} is invalid: {}'
-                                          .format(key, e.message))
+                        if hasattr(e, 'message'):
+                            raise ClientError('key {} is invalid: {}'.format(key, e.message))
+                        else:
+                            raise ClientError('key {} is invalid: {}'.format(key, e))
                 else:
                     data[key] = value
         return data
