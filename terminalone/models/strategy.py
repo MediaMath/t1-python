@@ -40,7 +40,7 @@ class Strategy(Entity):
         'audience_segment_include_op': None,
         'bid_aggressiveness': float,
         'bid_price_is_media_only': t1types.int_to_bool,
-        'budget': t1types.float_or_none,
+        'budget': float,
         'campaign_id': int,
         'created_on': t1types.strpt,
         'currency_code': None,
