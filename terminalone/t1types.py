@@ -115,6 +115,18 @@ def float_or_none(value, null_on_none=False):
             raise TypeError('must supply float')
 
 
+def int_or_none(value, null_on_none=False):
+    if value is not None:
+        if not isinstance(value, int):
+            raise TypeError('must supply int')
+        return value
+    else:
+        if null_on_none:
+            return ""
+        else:
+            raise TypeError('must supply int')
+
+
 class Deleted:
     """used for when un-setting a field"""
 

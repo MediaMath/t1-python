@@ -26,7 +26,7 @@ requirements = [
     'requests>=2.3.0',
     'requests-oauthlib>=0.5.0',
     'python-dotenv',
-    'pyjwt'
+    'pyjwt==1.7.1'
 ]
 
 metadata = {}
