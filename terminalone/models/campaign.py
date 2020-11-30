@@ -8,6 +8,7 @@ from .. import t1types
 from ..entity import Entity
 from ..errors import ClientError
 from ..vendor import six
+from functools import partial
 
 
 class Campaign(Entity):
@@ -121,7 +122,12 @@ class Campaign(Entity):
         'is_programmatic_guaranteed': int,
         'restrict_targeting_to_same_device_id': int,
         'connected_id_type': _bid_cross_types,
-        'political': int
+        'political': int,
+        'merit_pixel_id': partial(t1types.int_or_none, null_on_none=True),
+        'pc_window_minutes': partial(t1types.int_or_none, null_on_none=True),
+        'pv_window_minutes': partial(t1types.int_or_none, null_on_none=True),
+        'pv_pct': partial(t1types.float_or_none, null_on_none=True),
+        'conversion_variable_minutes': partial(t1types.int_or_none, null_on_none=True)
     })
 
     def __init__(self, session, properties=None, **kwargs):
@@ -131,6 +137,22 @@ class Campaign(Entity):
         """Save object to T1 while accounting for old fields"""
         if data is None:
             data = self._properties.copy()
+
+        if 'merit_pixel_id' in data and data['merit_pixel_id'] is None:
+            self._properties.pop('merit_pixel_id', None)
+            data['merit_pixel_id'] = None
+        if 'pc_window_minutes' in data and data['pc_window_minutes'] is None:
+            self._properties.pop('pc_window_minutes', None)
+            data['pc_window_minutes'] = None
+        if 'pv_window_minutes' in data and data['pv_window_minutes'] is None:
+            self._properties.pop('pv_window_minutes', None)
+            data['pv_window_minutes'] = None
+        if 'pv_pct' in data and data['pv_pct'] is None:
+            self._properties.pop('pv_pct', None)
+            data['pv_pct'] = None
+        if 'conversion_variable_minutes' in data and data['conversion_variable_minutes'] is None:
+            self._properties.pop('conversion_variable_minutes', None)
+            data['conversion_variable_minutes'] = None
 
         super(Campaign, self).save(data=data, url=url)
 
