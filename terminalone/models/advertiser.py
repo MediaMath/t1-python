@@ -14,7 +14,7 @@ class Advertiser(Entity):
     _freq_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                               'not-applicable'}, 'not-applicable')
     _freq_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit'),
-    _bid_cross_types = t1types.enum({'DETERMINISTIC_ONLY', 'DETERMINISTIC_FIRST'}, 'DETERMINISTIC_ONLY')
+    _measure_cross_device_graph = t1types.enum({'DETERMINISTIC_ONLY', 'DETERMINISTIC_FIRST'}, 'DETERMINISTIC_ONLY')
     _relations = {
         'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
     }
