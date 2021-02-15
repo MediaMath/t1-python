@@ -13,7 +13,8 @@ class Advertiser(Entity):
     _dmp_settings = t1types.enum({'disabled', 'inherits'}, 'inherits')
     _freq_int = t1types.enum({'hour', 'day', 'week', 'month', 'campaign',
                               'not-applicable'}, 'not-applicable')
-    _freq_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit')
+    _freq_type = t1types.enum({'even', 'asap', 'no-limit'}, 'no-limit'),
+    _bid_cross_types = t1types.enum({'DETERMINISTIC_ONLY', 'DETERMINISTIC_FIRST'}, 'DETERMINISTIC_ONLY')
     _relations = {
         'ad_server', 'agency', 'billing_contact', 'sales_contact', 'vertical',
     }
@@ -40,7 +41,8 @@ class Advertiser(Entity):
         'updated_on': t1types.strpt,
         'version': int,
         'vertical_id': int,
-        'political': t1types.int_to_bool
+        'political': t1types.int_to_bool,
+        'connected_id_type': None
     }
     _push = _pull.copy()
     _push.update({
@@ -51,8 +53,8 @@ class Advertiser(Entity):
         'accountable_and_addressable': int,
         'status': int,
         'dmp_enabled': _dmp_settings,
-        'political': int
-
+        'political': int,
+        'connected_id_type': _measure_cross_device_graph
     })
 
     def __init__(self, session, properties=None, **kwargs):
