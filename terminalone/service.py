@@ -305,7 +305,8 @@ class T1(Connection):
                     '(or chained parent collection) and a single '
                     'value for it (e.g. {"advertiser": 1}, or '
                     '{"advertiser.agency": 2)')
-            if isinstance(limit, int):
+
+            if isinstance(list(limit.values())[0], int):
                 url.extend(['limit',
                             '{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
             else:
