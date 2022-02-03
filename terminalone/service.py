@@ -305,8 +305,12 @@ class T1(Connection):
                     '(or chained parent collection) and a single '
                     'value for it (e.g. {"advertiser": 1}, or '
                     '{"advertiser.agency": 2)')
-            url.extend(['limit',
-                        '{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
+            if isinstance(limit, int):
+                url.extend(['limit',
+                            '{0!s}={1:d}'.format(*next(six.iteritems(limit)))])
+            else:
+                url.extend(['limit',
+                            '{0!s}={1:s}'.format(*next(six.iteritems(limit)))])
 
         return '/'.join(url), child_id
 
