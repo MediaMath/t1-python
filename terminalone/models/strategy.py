@@ -34,6 +34,7 @@ class Strategy(Entity):
                                  'RTB')
     _type = t1types.enum({'REM', 'GBO', 'AUD'}, 'GBO')
     _alloc_pacing_type = t1types.enum({'monetary', 'impression'}, 'monetary')
+    _use_dba_strategy_pacing_types = t1types.enum({'always', 'never', 'custom'})
 
     _pull = {
         'audience_segment_exclude_op': None,
@@ -91,7 +92,9 @@ class Strategy(Entity):
         'use_optimization': t1types.int_to_bool,
         'version': int,
         'zone_name': None,
-        'bid_min_devices': int
+        'bid_min_devices': int,
+        'use_dba_strategy_pacing': None,
+        'use_dba_strategy_pacing_after_date': None
     }
     _push = _pull.copy()
     _push.update({
@@ -126,7 +129,8 @@ class Strategy(Entity):
         'use_campaign_end': int,
         'use_campaign_start': int,
         'use_mm_freq': int,
-        'use_optimization': int
+        'use_optimization': int,
+        'use_dba_strategy_pacing': _use_dba_strategy_pacing_types
     })
 
     _readonly = Entity._readonly | {'effective_goal_value', 'zone_name'}
