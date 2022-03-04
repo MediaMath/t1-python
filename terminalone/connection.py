@@ -114,6 +114,11 @@ class Connection(object):
         )
         self._check_session()
 
+    def logout(self):
+        """Remove all session information."""
+        self.session.headers['Authorization'] = None
+        self.session.cookies['adama_session'] = None
+
     def fetch_resource_owner_password_token(self, username, password,
                                             client_id, client_secret,
                                             environment,
