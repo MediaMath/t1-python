@@ -38,7 +38,7 @@ class TestDeals(unittest.TestCase):
     def test_collection(self):
         with open('tests/fixtures/json/media_api_deal.json') as f:
             fixture = f.read()
-        responses.add(responses.GET, 'https://api.mediamath.com/media/v1.0/deals/11111',
+        responses.add(responses.GET, 'https://api.mediamath.com/deals/v1.0/deals/11111',
                       body=fixture,
                       content_type='application/json')
         deal = self.t1.get('deals', 11111)
@@ -49,7 +49,7 @@ class TestDeals(unittest.TestCase):
 
         with open('tests/fixtures/json/media_api_deal.json') as f:
             fixture = f.read()
-        responses.add(responses.GET, 'https://api.mediamath.com/media/v1.0/deals/11111',
+        responses.add(responses.GET, 'https://api.mediamath.com/deals/v1.0/deals/11111',
                       body=fixture,
                       content_type='application/json')
         test_deal = self.t1.get('deals', 11111)

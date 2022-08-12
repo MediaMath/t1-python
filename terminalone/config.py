@@ -24,7 +24,7 @@ AUTH_BASES = {
 }
 
 SERVICE_BASE_PATHS = {
-    'deals': 'media/v1.0',
+    'deals': 'deals/v1.0',
     'mgmt': 'api/v2.0',
     'reports': 'reporting/v1/std',
     'reports-beta': 'reporting-beta/v1/std',
