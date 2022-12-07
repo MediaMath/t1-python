@@ -26,7 +26,7 @@ requirements = [
     'requests>=2.3.0',
     'requests-oauthlib>=0.5.0',
     'python-dotenv',
-    'pyjwt==1.7.1'
+    'pyjwt>=2.0.0'
 ]
 
 metadata = {}
@@ -80,7 +80,6 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
