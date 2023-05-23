@@ -29,6 +29,7 @@ class Connection(object):
                  api_base=None,
                  json=False,
                  auth_params=None,
+                 session=None,
                  _create_session=False):
         """Set up Requests Session to be used for all connections to T1.
 
@@ -43,6 +44,7 @@ class Connection(object):
             "method" required argument. Determines session handler.
             "oauth2-ro" => "client_id", "client_secret", "username", "password"
             "cookie" => "username", "password", "api_key"
+        :param session: requests.Session instance to use for HTTP requests.
         :param _create_session: bool flag to create a Requests Session.
             Should only be used for initial T1 instantiation.
         """
@@ -66,11 +68,12 @@ class Connection(object):
         Connection.__setattr__(self, 'json', json)
         Connection.__setattr__(self, 'auth_params', auth_params)
         if _create_session:
-            self._create_session()
+            self._create_session(session=session)
 
-    def _create_session(self):
+    def _create_session(self, session=None):
         method = self.auth_params['method']
-        session = Session()
+        if session is None:
+            session = Session()
         session.headers['User-Agent'] = self.user_agent
         if method not in ['oauth2-resourceowner',
                           'oauth2-existingaccesstoken']:
