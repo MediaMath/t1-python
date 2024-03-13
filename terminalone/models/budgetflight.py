@@ -50,7 +50,7 @@ class BudgetFlight(Entity):
 
     def remove(self):
         """Remove a flight."""
-        url = self._construct_url('delete')
+        url = self._construct_url(addl=['delete'])
         self._post(self._get_service_path(), rest=url, data={'version': self.version})
         for item in list(self._properties.keys()):
             del self._properties[item]
